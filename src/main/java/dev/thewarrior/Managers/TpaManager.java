@@ -4,7 +4,6 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import dev.thewarrior.Managers.Data.Teleport.TpaRequest;
-import dev.thewarrior.Utils.Logger;
 import dev.thewarrior.i18n.Messages;
 
 import javax.annotation.Nonnull;
@@ -62,7 +61,7 @@ public class TpaManager {
      * @return The TpaRequest if found and valid, null otherwise
      */
     @Nullable
-    public TpaRequest acceptRequest(@Nonnull PlayerRef target, String requesterName) {
+    public TpaRequest invalidateRequest(@Nonnull PlayerRef target, String requesterName) {
         UUID targetUuid = target.getUuid();
         ConcurrentHashMap<UUID, TpaRequest> targetRequests = pendingRequests.get(targetUuid);
 

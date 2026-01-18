@@ -13,6 +13,7 @@ import dev.thewarrior.Utils.NamedLocation;
 
 public class PlayerCommandComponent implements Component<EntityStore> {
     private boolean isTellOff = false;
+    private boolean isTpaOff = false;
     private final PlayerHomes playerHomes = new PlayerHomes();
 
     public boolean isTellOff() {
@@ -21,6 +22,14 @@ public class PlayerCommandComponent implements Component<EntityStore> {
 
     public void setTellOff(boolean tellOff) {
         isTellOff = tellOff;
+    }
+
+    public boolean isTpaOff() {
+        return isTpaOff;
+    }
+
+    public void setTpaOff(boolean tpaOff) {
+        isTpaOff = tpaOff;
     }
 
     public boolean hasHome(String name) {
@@ -64,6 +73,7 @@ public class PlayerCommandComponent implements Component<EntityStore> {
     public Component<EntityStore> clone() {
         final PlayerCommandComponent clone = new PlayerCommandComponent();
         clone.isTellOff = this.isTellOff;
+        clone.isTpaOff = this.isTpaOff;
         clone.playerHomes.setHomes(this.playerHomes.getHomes());
         return clone;
     }
@@ -72,6 +82,9 @@ public class PlayerCommandComponent implements Component<EntityStore> {
             .append(new KeyedCodec<>("TellOff", Codec.BOOLEAN),
                     (data, isOff) -> data.isTellOff = isOff,
                     (data) -> data.isTellOff).add()
+            .append(new KeyedCodec<>("TpaOff", Codec.BOOLEAN),
+                    (data, isOff) -> data.isTpaOff = isOff,
+                    (data) -> data.isTpaOff).add()
             .append(new KeyedCodec<>("Homes", NamedLocation.ARRAY_CODEC),
                     (data, homes, _) -> data.playerHomes.setHomes(homes),
                     (data, _) -> data.playerHomes.getHomes()

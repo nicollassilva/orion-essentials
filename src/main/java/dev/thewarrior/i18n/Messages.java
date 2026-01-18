@@ -102,4 +102,18 @@ public class Messages {
     public static final String COMMAND_TPA_REQUEST_ACCEPTED = "Pedido de teleporte de '%s' aceito com sucesso!";
 
     public static final String COMMAND_TPA_REQUEST_TARGET_ACCEPTED = "O usuário '%s' aceitou seu pedido de teleporte!";
+
+    public static final String COMMAND_TPA_REQUEST_DENIED = "Você recusou o pedido de teleporte de '%s'.";
+
+    public static final String COMMAND_TPA_REQUEST_TARGET_DENIED = "O usuário '%s' recusou seu pedido de teleporte.";
+
+    public static final Message COMMAND_TPA_OFF_SUCCESS = Message.raw("Os pedidos de teleporte foram desativados com sucesso!");
+
+    public static final Message COMMAND_TPA_ALREADY_OFF = Message.raw("[AVISO] Os pedidos de teleporte já estão desativados!");
+
+    public static final Message COMMAND_TPA_ON_SUCCESS = Message.raw("Os pedidos de teleporte foram ativados com sucesso!");
+
+    public static final Message COMMAND_TPA_ALREADY_ON = Message.raw("[AVISO] Os pedidos de teleporte já estão ativados!");
+
+    public static final String COMMAND_TPA_TARGET_DISABLED = "[AVISO] O jogador '%s' desativou os pedidos de teleporte.";
 }

@@ -24,8 +24,7 @@ import dev.thewarrior.Commands.Tell.ReplyCommand;
 import dev.thewarrior.Commands.Tell.TellCommand;
 import dev.thewarrior.Commands.Tell.TellOffCommand;
 import dev.thewarrior.Commands.Tell.TellOnCommand;
-import dev.thewarrior.Commands.Tpa.TpaCommand;
-import dev.thewarrior.Commands.Tpa.TpacceptCommand;
+import dev.thewarrior.Commands.Tpa.*;
 import dev.thewarrior.Commands.Warp.BaseWarpCommand;
 import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
@@ -115,6 +114,9 @@ public class MultiCommands extends JavaPlugin {
         // TPA
         this.getCommandRegistry().registerCommand(new TpaCommand(this.tpaManager));
         this.getCommandRegistry().registerCommand(new TpacceptCommand(this.tpaManager, this.teleportManager));
+        this.getCommandRegistry().registerCommand(new TpadenyCommand(this.tpaManager));
+        this.getCommandRegistry().registerCommand(new TpaoffCommand());
+        this.getCommandRegistry().registerCommand(new TpaonCommand());
 
         // Extra
         this.getCommandRegistry().registerCommand(new FreeCameraCommand());
