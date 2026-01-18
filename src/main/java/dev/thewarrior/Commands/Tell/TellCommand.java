@@ -37,7 +37,7 @@ public class TellCommand extends AbstractPlayerCommand {
             @NonNullDecl World world
     ) {
         String rawInput = commandContext.getInputString();
-        String[] parts = rawInput.split("\\s+", 3); // Split into [command, player, message]
+        String[] parts = rawInput.split("\\s+", 3);
 
         if (parts.length < 3) {
             commandContext.sendMessage(Message.join(

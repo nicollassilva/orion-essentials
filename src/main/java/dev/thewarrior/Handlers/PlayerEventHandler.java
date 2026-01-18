@@ -26,11 +26,7 @@ public class PlayerEventHandler {
                     playerRef,
                     Messages.PRIMARY_TITLE_ON_LOGIN,
                     Messages.SECOND_TITLE_ON_LOGIN,
-                    true,
-                    null,
-                    5,
-                    0.5f,
-                    0.5f
+                    true
             );
         }
     }

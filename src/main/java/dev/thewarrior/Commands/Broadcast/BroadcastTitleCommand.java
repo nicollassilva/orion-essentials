@@ -2,6 +2,7 @@ package dev.thewarrior.Commands.Broadcast;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
@@ -9,19 +10,17 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.thewarrior.Managers.PluginConfigManager;
 import dev.thewarrior.Utils.ColorUtil;
+import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-public class BroadcastChatCommand extends AbstractPlayerCommand {
-    private final PluginConfigManager pluginConfigManager;
+public class BroadcastTitleCommand extends AbstractPlayerCommand {
+    public BroadcastTitleCommand() {
+        super("title", "Envia um titulo para todos os jogadores online");
 
-    public BroadcastChatCommand(final PluginConfigManager pluginConfigManager) {
-        super("chat", "Envia uma mensagem para todos os jogadores online");
-
-        this.pluginConfigManager = pluginConfigManager;
-
-        requirePermission("multicommands.broadcast.chat");
+        requirePermission("multicommands.broadcast.title");
         setAllowsExtraArguments(true);
     }
 
@@ -34,12 +33,19 @@ public class BroadcastChatCommand extends AbstractPlayerCommand {
             @NonNullDecl World world
     ) {
         String rawInput = commandContext.getInputString();
-        String[] parts = rawInput.split("\\s+", 2);
+        String[] parts = rawInput.split("\\s+", 3); // [command, type, title]
 
-        if(parts.length < 2) return;
+        if(parts.length < 3) return;
 
-        Universe.get().sendMessage(ColorUtil.colorize(
-                this.pluginConfigManager.getBroadcastFormat().replace("{message}", parts[1])
-        ));
+        for (final PlayerRef player : Universe.get().getPlayers()) {
+            if(player == null || !player.isValid()) continue;
+
+            EventTitleUtil.showEventTitleToPlayer(
+                    player,
+                    ColorUtil.colorize(parts[2].replaceAll("\"", "")),
+                    Message.raw("Mensagem do Servidor"),
+                    true
+            );
+        }
     }
 }
