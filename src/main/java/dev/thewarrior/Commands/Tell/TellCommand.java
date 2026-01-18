@@ -4,11 +4,8 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
-import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.PlayerUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Utils.PlayerUtils;
@@ -16,10 +13,15 @@ import dev.thewarrior.Utils.StringUtils;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
+import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TellCommand extends AbstractPlayerCommand {
     private final Color color = new Color(214, 120, 206);
+    private static final Map<UUID, UUID> lastMessagePartner = new ConcurrentHashMap<>();
 
     public TellCommand() {
         super("tell", "Envia uma mensagem privada para um jogador");
@@ -45,7 +47,8 @@ public class TellCommand extends AbstractPlayerCommand {
                     Message.raw("Permite que você envie mensagens privadas para outro jogador online.\n\n").color(Color.LIGHT_GRAY).italic(true),
                     Message.raw("/tell ").color(Color.WHITE).bold(true), Message.raw("<player> <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia uma mensagem privada\n", 8, " ")),
                     Message.raw("/tellon").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Ativa suas mensagens privadas\n", 46, " ")),
-                    Message.raw("/telloff").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Desativa suas mensagens privadas\n", 45, " "))
+                    Message.raw("/telloff").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Desativa suas mensagens privadas\n", 45, " ")),
+                    Message.raw("/r").color(Color.WHITE).bold(true), Message.raw(" <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Responde à ultima mensagem\n", 29, " "))
             ));
 
             return;
@@ -77,5 +80,17 @@ public class TellCommand extends AbstractPlayerCommand {
 
         playerRef.sendMessage(Message.raw("Para [" + player.getUsername() + "]: " + message).color(color));
         player.sendMessage(Message.raw("[" + playerRef.getUsername() + "]: " + message).color(color));
+
+        lastMessagePartner.put(playerRef.getUuid(), player.getUuid());
+        lastMessagePartner.put(player.getUuid(), playerRef.getUuid());
+    }
+
+    @Nullable
+    public static UUID getLastMessagePartner(UUID playerId) {
+        return lastMessagePartner.get(playerId);
+    }
+
+    public static void onPlayerQuit(UUID uuid) {
+        lastMessagePartner.remove(uuid);
     }
 }

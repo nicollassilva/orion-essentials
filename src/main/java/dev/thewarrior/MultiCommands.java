@@ -13,6 +13,7 @@ import dev.thewarrior.Commands.Discord.DiscordCommand;
 import dev.thewarrior.Commands.Discord.SetDiscordCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
+import dev.thewarrior.Commands.Tell.ReplyCommand;
 import dev.thewarrior.Commands.Tell.TellCommand;
 import dev.thewarrior.Commands.Tell.TellOffCommand;
 import dev.thewarrior.Commands.Tell.TellOnCommand;
@@ -71,6 +72,7 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new TellCommand());
         this.getCommandRegistry().registerCommand(new TellOnCommand());
         this.getCommandRegistry().registerCommand(new TellOffCommand());
+        this.getCommandRegistry().registerCommand(new ReplyCommand());
 
         // Warps
         this.getCommandRegistry().registerCommand(new BaseWarpCommand(this.warpManager, this.teleportManager));
