@@ -3,9 +3,9 @@ $C = "../../Common.ui";
 @AddButtonStyle = TextButtonStyle(
     Default: (Background: #139c47, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
     Hovered: (Background: #16c95a, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
-    Pressed: (Background: #0e7836, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center))
+    Pressed: (Background: #0e7836, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+    Sounds: $C.@ButtonSounds
 );
-
 
 Group {
       LayoutMode: Left;
@@ -20,9 +20,9 @@ Group {
             Padding: (Full: 5);
 
             Label {
-                Text: "Lista de permissões";
+                Text: "Gerenciar Permissões";
                 Anchor: (Height: 25);
-                Style: (FontSize: 12, TextColor: #707c91, RenderUppercase: true, LetterSpacing: 1);
+                Style: (FontSize: 14, TextColor: #707c91, RenderUppercase: true, RenderBold: true, HorizontalAlignment: Center);
             }
 
             Group { Anchor: (Height: 8); }
@@ -34,6 +34,7 @@ Group {
                 $C.@TextField #SearchInput {
                     Anchor: (Width: 190);
                     Value: "";
+                    PlaceholderText: "Procure aqui";
                 }
 
                 Group {
@@ -48,7 +49,7 @@ Group {
                 }
             }
 
-            Group { Anchor: (Top: 10, Bottom: 10, Height: 2); Background: #FFFFFF(0.1); }
+            Group { Anchor: (Top: 5, Bottom: 5, Height: 2); }
 
             Group #PermissionList {
                 Anchor: (Width: 240, Top: 5);
@@ -69,7 +70,7 @@ Group {
 
             Group {
                 Anchor: (Height: 45, Bottom: 5);
-                Background: #000000(0.2);
+                Background: #000000(0.45);
 
                 Label #PermissionName {
                     Padding: (Left: 15);
@@ -87,7 +88,16 @@ Group {
 
             Group {
                 FlexWeight: 1;
-                Background: #000000(0.3);
+                LayoutMode: Top;
+
+                Group #PermissionFormActions {
+                    Anchor: (Height: 160);
+                }
+
+                Group #PermissionContentList {
+                    LayoutMode: Top;
+                    FlexWeight: 1;
+                }
             }
       }
 }

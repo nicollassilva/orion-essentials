@@ -1,15 +1,24 @@
 $C = "../../Common.ui";
 
 @PlayerListButtonStyle = ButtonStyle(
-    Default: (Background: #2642ab),
-    Hovered: (Background: #3559db),
-    Pressed: (Background: #1c3280)
+    Default: (Background: #1b2a45),
+    Hovered: (Background: #223550),
+    Pressed: (Background: #0f1a2e),
+    Sounds: $C.@ButtonSounds
 );
 
 @DeletePermissionButtonStyle = ButtonStyle(
     Default: (Background: #ad2323),
     Hovered: (Background: #e31b1b),
-    Pressed: (Background: #691717)
+    Pressed: (Background: #691717),
+    Sounds: $C.@ButtonSounds
+);
+
+@SaveButtonStyle = ButtonStyle(
+    Default: (Background: #2642ab),
+    Hovered: (Background: #3559db),
+    Pressed: (Background: #1c3280),
+    Sounds: $C.@ButtonSounds
 );
 
 Group {
@@ -39,6 +48,22 @@ Group {
 
           Label {
                 Text: "Deletar";
+                Style: (
+                      FontSize: 14,
+                      RenderBold: true,
+                      TextColor: #b6c9de
+               );
+         }
+    }
+
+    Button #SavePermission {
+          LayoutMode: Top;
+          Anchor: (Right: 5, Height: 30);
+          Padding: (Full: 6);
+          Style: @SaveButtonStyle;
+
+          Label {
+                Text: "Salvar";
                 Style: (
                       FontSize: 14,
                       RenderBold: true,

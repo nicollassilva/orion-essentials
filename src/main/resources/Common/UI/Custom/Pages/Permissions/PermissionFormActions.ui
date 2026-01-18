@@ -1,0 +1,96 @@
+$C = "../../Common.ui";
+
+Group {
+    LayoutMode: Top;
+
+    Group #PermissionActions {
+        LayoutMode: Left;
+        Anchor: (Height: 75);
+
+        Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+
+            Label {
+                Text: "Nome";
+                Anchor: (Bottom: 5);
+                Style: (
+                    FontSize: 14,
+                    RenderBold: true,
+                    TextColor: #707c91
+                );
+            }
+
+            $C.@TextField #PermissionInputName {
+                Value: "";
+                PlaceholderText: "Nome da permissão";
+            }
+        }
+
+        Group {
+            LayoutMode: Top;
+            Anchor: (Width: 180, Left: 5);
+
+            Label {
+                Text: "Prioridade (0..100)";
+                Anchor: (Bottom: 5);
+                Style: (
+                    FontSize: 14,
+                    RenderBold: true,
+                    TextColor: #707c91
+                );
+            }
+
+            $C.@TextField #PermissionInputPriority {
+                Value: "";
+                PlaceholderText: "Prioridade da Tag";
+            }
+        }
+    }
+
+    Group #PermissionActions {
+        LayoutMode: Left;
+        Anchor: (Height: 75);
+
+        Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+
+            Label {
+                Text: "Prefixo";
+                Anchor: (Bottom: 5);
+                Style: (
+                    FontSize: 14,
+                    RenderBold: true,
+                    TextColor: #707c91
+                );
+            }
+
+            $C.@TextField #PermissionInputPrefix {
+                Value: "";
+                PlaceholderText: "Tag antes do nome";
+            }
+        }
+
+        Group {
+            LayoutMode: Top;
+            Anchor: (Left: 5);
+            FlexWeight: 1;
+
+            Label {
+                Text: "Sufixo";
+                Anchor: (Bottom: 5);
+                Style: (
+                    FontSize: 14,
+                    RenderBold: true,
+                    TextColor: #707c91
+                );
+            }
+
+            $C.@TextField #PermissionInputSuffix {
+                Value: "";
+                PlaceholderText: "Tag depois do nome";
+            }
+        }
+    }
+}

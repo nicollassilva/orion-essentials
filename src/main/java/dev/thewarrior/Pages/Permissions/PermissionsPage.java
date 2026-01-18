@@ -74,6 +74,18 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
                 commandBuilder.clear("#PermissionButtonActions");
                 commandBuilder.append("#PermissionButtonActions", "Pages/Permissions/PermissionHeaderActions.ui");
 
+                commandBuilder.clear("#PermissionFormActions");
+                commandBuilder.append("#PermissionFormActions", "Pages/Permissions/PermissionFormActions.ui");
+
+                commandBuilder.clear("#PermissionInputName.Value");
+                commandBuilder.set("#PermissionInputName.Value", this.selectedPermission);
+
+                commandBuilder.clear("#PermissionContentList");
+                commandBuilder.append("#PermissionContentList", "Pages/Permissions/PermissionContentList.ui");
+
+                commandBuilder.clear("#PermissionContentList");
+                commandBuilder.append("#PermissionContentList", "Pages/Permissions/PermissionListHeaderActions.ui");
+
                 this.sendUpdate(commandBuilder);
             }
             case "SearchPermission" -> {
@@ -91,9 +103,7 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
                 this.sendPermissionsListUpdate(commandBuilder, eventBuilder, permissions, true);
             }
-            default -> {
-                System.out.println("Unknown action: " + data.action);
-            }
+            default -> closePage(ref, store);
         }
     }
 

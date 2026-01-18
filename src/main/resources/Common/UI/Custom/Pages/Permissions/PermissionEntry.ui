@@ -3,7 +3,8 @@ $C = "../../Common.ui";
 @EntryButtonStyle = ButtonStyle(
     Default: (Background: #2b3542),
     Hovered: (Background: #3b4552),
-    Pressed: (Background: #1b2532)
+    Pressed: (Background: #1b2532),
+    Sounds: $C.@ButtonSounds
 );
 
 Button {
