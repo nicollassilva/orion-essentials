@@ -22,9 +22,9 @@ public class PermissionsCommand extends CommandBase {
         commandContext.sendMessage(Message.join(
                 Message.raw("\n- Como usar o comando ").color(Color.GREEN), Message.raw("/permissions").color(Color.WHITE).bold(true), Message.raw(":\n").color(Color.GREEN),
                 Message.raw("Permite que você gerencie as permissões do servidor/jogador.\n\n").color(Color.LIGHT_GRAY).italic(true),
-                Message.raw("/permissions ").color(Color.WHITE).bold(true), Message.raw("manage").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Gerencia permissões\n", 40, " ")),
-                Message.raw("/permissions ").color(Color.WHITE).bold(true), Message.raw("set <player> <nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Seta a permissão\n", 16, " ")),
-                Message.raw("/permissions ").color(Color.WHITE).bold(true), Message.raw("remove <player> <nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Remove a permissão\n", 8, " "))
+                Message.raw("/permissions ").color(Color.MAGENTA).bold(true), Message.raw("manage").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Gerencia permissões\n", 40, " ")),
+                Message.raw("/permissions ").color(Color.MAGENTA).bold(true), Message.raw("set <player> <nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Seta a permissão\n", 16, " ")),
+                Message.raw("/permissions ").color(Color.MAGENTA).bold(true), Message.raw("remove <player> <nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Remove a permissão\n", 8, " "))
         ));
     }
 }

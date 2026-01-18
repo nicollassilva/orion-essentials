@@ -26,9 +26,9 @@ public class BroadcastBaseCommand extends CommandBase {
         commandContext.sendMessage(Message.join(
                 Message.raw("\n- Como usar o comando ").color(Color.GREEN), Message.raw("/broadcast").color(Color.WHITE).bold(true), Message.raw(":\n").color(Color.GREEN),
                 Message.raw("Permite que você envie mensagens para todos os jogadores online.\n\n").color(Color.LIGHT_GRAY).italic(true),
-                Message.raw("/bc ").color(Color.WHITE).bold(true), Message.raw("chat <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia a mensagem no chat \n", 26, " ")),
-                Message.raw("/bc ").color(Color.WHITE).bold(true), Message.raw("title <duração?> <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia a mensagem como título \n", 4, " ")),
-                Message.raw("/bc ").color(Color.WHITE).bold(true), Message.raw("notif <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia a mensagem como notificação \n", 25, " "))
+                Message.raw("/bc ").color(Color.MAGENTA).bold(true), Message.raw("chat <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia a mensagem no chat \n", 26, " ")),
+                Message.raw("/bc ").color(Color.MAGENTA).bold(true), Message.raw("title <duração?> <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia a mensagem como título \n", 4, " ")),
+                Message.raw("/bc ").color(Color.MAGENTA).bold(true), Message.raw("notif <mensagem>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Envia a mensagem como notificação \n", 25, " "))
         ));
     }
 }

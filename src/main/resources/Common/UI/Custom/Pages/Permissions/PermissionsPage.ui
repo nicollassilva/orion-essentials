@@ -29,21 +29,21 @@ Group {
 
             Group #PermissionActions {
                 LayoutMode: Left;
-                Anchor: (Height: 40);
+                Anchor: (Height: 35);
 
                 $C.@TextField #SearchInput {
-                    Anchor: (Width: 190);
+                    Anchor: (Width: 200);
                     Value: "";
                     PlaceholderText: "Procure aqui";
                 }
 
                 Group {
                     LayoutMode: Right;
-                    Anchor: (Height: 40, Left: 5);
+                    Anchor: (Height: 35, Left: 5);
 
                     TextButton #InsertButton {
                         Text: "+";
-                        Anchor: (Width: 45, Height: 40);
+                        Anchor: (Width: 35, Height: 35);
                         Style: @AddButtonStyle;
                     }
                 }

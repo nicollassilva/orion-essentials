@@ -15,9 +15,9 @@ $C = "../../Common.ui";
 );
 
 @SaveButtonStyle = ButtonStyle(
-    Default: (Background: #2642ab),
-    Hovered: (Background: #3559db),
-    Pressed: (Background: #1c3280),
+    Default: (Background: #139c47),
+    Hovered: (Background: #16c95a),
+    Pressed: (Background: #0e7836),
     Sounds: $C.@ButtonSounds
 );
 
