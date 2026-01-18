@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
@@ -31,6 +32,7 @@ import dev.thewarrior.Managers.PluginConfigManager;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.Managers.WarpManager;
 import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
+import dev.thewarrior.Utils.Logger;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class MultiCommands extends JavaPlugin {
@@ -47,6 +49,9 @@ public class MultiCommands extends JavaPlugin {
 
     @Override
     protected void setup() {
+        Logger.init(getLogger());
+        Logger.info("MultiCommands Plugin is setting up...");
+
         this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
         this.warpManager = new WarpManager(this.getDataDirectory());
         this.teleportManager = new TeleportManager(this.pluginConfigManager);
@@ -60,7 +65,7 @@ public class MultiCommands extends JavaPlugin {
         this.registerSystems();
         this.registerEvents();
 
-        getLogger().atFine().log("========== MULTI COMMANDS PLUGIN STARTED ==========");
+        Logger.info("MultiCommands has been started!");
     }
 
     public PluginConfigManager getConfig() {
@@ -108,5 +113,7 @@ public class MultiCommands extends JavaPlugin {
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class,
                 event -> PlayerEventHandler.onPlayerDisconnect(event, this.teleportManager)
         );
+
+        this.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
     }
 }
