@@ -20,6 +20,8 @@ import dev.thewarrior.Commands.Home.HomeCommand;
 import dev.thewarrior.Commands.Home.HomesCommand;
 import dev.thewarrior.Commands.Home.SetHomeCommand;
 import dev.thewarrior.Commands.MultiCommands.PluginReloadCommand;
+import dev.thewarrior.Commands.Permissions.PermissionsCommand;
+import dev.thewarrior.Commands.Permissions.PermissionsManageCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
 import dev.thewarrior.Commands.Teleports.TpHereCommand;
@@ -125,6 +127,10 @@ public class MultiCommands extends JavaPlugin {
         // Extra
         this.getCommandRegistry().registerCommand(new PluginReloadCommand(this));
         this.getCommandRegistry().registerCommand(new FreeCameraCommand());
+
+        // Permissions
+        this.getCommandRegistry().registerCommand(new PermissionsCommand());
+        this.getCommandRegistry().registerCommand(new PermissionsManageCommand());
     }
 
     public void registerSystems() {

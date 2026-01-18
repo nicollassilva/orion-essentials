@@ -1,0 +1,49 @@
+$C = "../../Common.ui";
+
+@PlayerListButtonStyle = ButtonStyle(
+    Default: (Background: #2642ab),
+    Hovered: (Background: #3559db),
+    Pressed: (Background: #1c3280)
+);
+
+@DeletePermissionButtonStyle = ButtonStyle(
+    Default: (Background: #ad2323),
+    Hovered: (Background: #e31b1b),
+    Pressed: (Background: #691717)
+);
+
+Group {
+    LayoutMode: Left;
+
+    Button #SeePlayers {
+          LayoutMode: Top;
+          Anchor: (Right: 5, Height: 30);
+          Padding: (Full: 6);
+          Style: @PlayerListButtonStyle;
+
+          Label {
+                Text: "Lista de Jogadores";
+                Style: (
+                      FontSize: 14,
+                      RenderBold: true,
+                      TextColor: #b6c9de
+               );
+         }
+    }
+
+    Button #DeletePermission {
+          LayoutMode: Top;
+          Anchor: (Right: 5, Height: 30);
+          Padding: (Full: 6);
+          Style: @DeletePermissionButtonStyle;
+
+          Label {
+                Text: "Deletar";
+                Style: (
+                      FontSize: 14,
+                      RenderBold: true,
+                      TextColor: #b6c9de
+               );
+         }
+    }
+}

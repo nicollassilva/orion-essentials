@@ -1,0 +1,93 @@
+$C = "../../Common.ui";
+
+@AddButtonStyle = TextButtonStyle(
+    Default: (Background: #139c47, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+    Hovered: (Background: #16c95a, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+    Pressed: (Background: #0e7836, LabelStyle: (FontSize: 22, TextColor: #FFFFFF, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center))
+);
+
+
+Group {
+      LayoutMode: Left;
+      Anchor: (Width: 800, Height: 600);
+      Padding: (Left: 5, Right: 5, Top: 5, Bottom: 5);
+      Background: #0a1119;
+
+      Group #LeftSide {
+            LayoutMode: Top;
+            Anchor: (Width: 250);
+            Background: #000000(0.45);
+            Padding: (Full: 5);
+
+            Label {
+                Text: "Lista de permissões";
+                Anchor: (Height: 25);
+                Style: (FontSize: 12, TextColor: #707c91, RenderUppercase: true, LetterSpacing: 1);
+            }
+
+            Group { Anchor: (Height: 8); }
+
+            Group #PermissionActions {
+                LayoutMode: Left;
+                Anchor: (Height: 40);
+
+                $C.@TextField #SearchInput {
+                    Anchor: (Width: 190);
+                    Value: "";
+                }
+
+                Group {
+                    LayoutMode: Right;
+                    Anchor: (Height: 40, Left: 5);
+
+                    TextButton #InsertButton {
+                        Text: "+";
+                        Anchor: (Width: 45, Height: 40);
+                        Style: @AddButtonStyle;
+                    }
+                }
+            }
+
+            Group { Anchor: (Top: 10, Bottom: 10, Height: 2); Background: #FFFFFF(0.1); }
+
+            Group #PermissionList {
+                Anchor: (Width: 240, Top: 5);
+                FlexWeight: 1;
+                LayoutMode: TopScrolling;
+                ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+                Group #Permissions {
+                    LayoutMode: Top;
+                }
+            }
+      }
+
+      Group #RightSide {
+            LayoutMode: Top;
+            Anchor: (Left: 5);
+            FlexWeight: 1;
+
+            Group {
+                Anchor: (Height: 45, Bottom: 5);
+                Background: #000000(0.2);
+
+                Label #PermissionName {
+                    Padding: (Left: 15);
+                    Style: (
+                        TextColor: #b6c9de,
+                        RenderBold: true,
+                        VerticalAlignment: Center
+                    );
+                }
+
+                Group #PermissionButtonActions {
+                    LayoutMode: Right;
+                }
+            }
+
+            Group {
+                FlexWeight: 1;
+                Background: #000000(0.3);
+            }
+      }
+}

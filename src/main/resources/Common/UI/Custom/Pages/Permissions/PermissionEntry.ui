@@ -1,0 +1,22 @@
+$C = "../../Common.ui";
+
+@EntryButtonStyle = ButtonStyle(
+    Default: (Background: #2b3542),
+    Hovered: (Background: #3b4552),
+    Pressed: (Background: #1b2532)
+);
+
+Button {
+      LayoutMode: Top;
+      Anchor: (Left: 0, Bottom: 5, Height: 40, Width: 240);
+      Padding: (Top: 12, Left: 20);
+      Style: @EntryButtonStyle;
+
+      Label #Name {
+            Style: (
+                  FontSize: 14,
+                  RenderBold: true,
+                  TextColor: #b6c9de
+           );
+     }
+}
