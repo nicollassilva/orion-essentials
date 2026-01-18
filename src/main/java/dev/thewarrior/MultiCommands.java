@@ -10,6 +10,8 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
 import dev.thewarrior.Commands.Discord.SetDiscordCommand;
+import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
+import dev.thewarrior.Commands.Spawn.SpawnCommand;
 import dev.thewarrior.Commands.Tell.BaseTellCommand;
 import dev.thewarrior.Commands.Warp.BaseWarpCommand;
 import dev.thewarrior.Commands.Warp.DelWarpCommand;
@@ -70,6 +72,10 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new WarpsCommand(this.warpManager));
         this.getCommandRegistry().registerCommand(new SetWarpCommand(this.warpManager));
         this.getCommandRegistry().registerCommand(new DelWarpCommand(this.warpManager));
+
+        // Spawn
+        this.getCommandRegistry().registerCommand(new SpawnCommand(this.pluginConfigManager, this.teleportManager));
+        this.getCommandRegistry().registerCommand(new SetSpawnCommand(this.pluginConfigManager, this.teleportManager));
     }
 
     public void registerSystems() {

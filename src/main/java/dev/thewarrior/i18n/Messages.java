@@ -53,9 +53,15 @@ public class Messages {
 
     public static final Message TELEPORT_FAILED_PLAYER_MOVED = Message.raw("[AVISO] Falha ao teleportar: você se moveu");
 
-    public static final Message COMMAND_WARP_SUCCESS = Message.raw("Teleporte para a warp realizado com sucesso!");
+    public static final Message COMMAND_WARP_SUCCESS = Message.raw("Teleporte concluído com sucesso!");
 
     public static final Message COMMAND_WARPS_EMPTY = Message.raw("O servidor ainda não possui warps definidas.");
 
     public static final Message COMMAND_WARPS_TITLE = Message.raw("\nWarps disponíveis: \n");
+
+    public static final Message COMMAND_SPAWN_NOT_SET = Message.raw("[AVISO] O spawn do servidor ainda não foi definido.");
+
+    public static final Message COMMAND_SPAWN_SUCCESS = Message.raw("Você teleportou para o spawn.");
+
+    public static final Message COMMAND_SET_SPAWN_SUCCESS = Message.raw("O local de spawn do servidor foi definido com sucesso!");
 }

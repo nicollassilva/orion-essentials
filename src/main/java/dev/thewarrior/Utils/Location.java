@@ -69,4 +69,12 @@ public class Location {
     public void setPitch(float pitch) {
         this.pitch = pitch;
     }
+
+    public float getRoll() {
+        return roll;
+    }
+
+    public void setRoll(float roll) {
+        this.roll = roll;
+    }
 }
