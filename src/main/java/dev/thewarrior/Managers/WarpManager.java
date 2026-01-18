@@ -7,6 +7,7 @@ import dev.thewarrior.Utils.Location;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -45,6 +46,10 @@ public class WarpManager extends StorableManager<WarpData> {
 
     public Location getWarp(String name) {
         return this.data.getWarp(name.toLowerCase());
+    }
+
+    public Map<String, Location> getWarps() {
+        return this.data.getWarps();
     }
 
     public boolean hasWarp(String name) {

@@ -2,15 +2,17 @@ package dev.thewarrior.Commands.Warp;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
-import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.WarpManager;
+import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+
+import java.awt.*;
 
 public class WarpsCommand extends AbstractPlayerCommand {
     private final WarpManager warpManager;
@@ -31,6 +33,21 @@ public class WarpsCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        // TODO: Implementar listagem de warps (com UI)
+
+        if (this.warpManager.getWarps().isEmpty()) {
+            playerRef.sendMessage(Messages.COMMAND_WARPS_EMPTY.color(Color.WHITE));
+            return;
+        }
+
+        StringBuilder warpList = new StringBuilder();
+
+        for (String warpName : this.warpManager.getWarps().keySet()) {
+            warpList.append(warpName).append("\n");
+        }
+
+        playerRef.sendMessage(Message.join(
+                Messages.COMMAND_WARPS_TITLE.color(Color.WHITE),
+                Message.raw(warpList.toString()).color(Color.ORANGE)
+        ));
     }
 }

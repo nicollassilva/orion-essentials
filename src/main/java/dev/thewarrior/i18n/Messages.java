@@ -51,7 +51,11 @@ public class Messages {
 
     public static final Message TELEPORT_FAILED_EXCEPTION = Message.raw("[ERRO] Falha ao teleportar: ocorreu um erro inesperado.");
 
-    public static final Message TELEPORT_FAILED_PLAYER_MOVED = Message.raw("[ERRO] Falha ao teleportar: você se moveu");
+    public static final Message TELEPORT_FAILED_PLAYER_MOVED = Message.raw("[AVISO] Falha ao teleportar: você se moveu");
 
     public static final Message COMMAND_WARP_SUCCESS = Message.raw("Teleporte para a warp realizado com sucesso!");
+
+    public static final Message COMMAND_WARPS_EMPTY = Message.raw("O servidor ainda não possui warps definidas.");
+
+    public static final Message COMMAND_WARPS_TITLE = Message.raw("\nWarps disponíveis: \n");
 }

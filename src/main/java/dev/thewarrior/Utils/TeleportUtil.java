@@ -21,6 +21,7 @@ import dev.thewarrior.i18n.Messages;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -262,13 +263,13 @@ public class TeleportUtil {
         final PlayerRef target = Universe.get().getPlayer(targetUuid);
 
         if (target == null) {
-            return Messages.TELEPORT_FAILED_PLAYER_OFFLINE;
+            return Messages.TELEPORT_FAILED_PLAYER_OFFLINE.color(Color.RED);
         }
 
         final Ref<EntityStore> targetRef = target.getReference();
 
         if (targetRef == null || !targetRef.isValid()) {
-            return Messages.TELEPORT_FAILED_PLAYER_NOT_AVAILABLE;
+            return Messages.TELEPORT_FAILED_PLAYER_NOT_AVAILABLE.color(Color.RED);
         }
 
         Store<EntityStore> targetStore = targetRef.getStore();
