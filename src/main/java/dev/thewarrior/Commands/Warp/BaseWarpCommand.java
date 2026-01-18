@@ -12,7 +12,7 @@ import java.awt.*;
 
 public class BaseWarpCommand extends CommandBase {
     public BaseWarpCommand(final WarpManager warpManager, final TeleportManager teleportManager) {
-        super("warp", "Comando base para teleportar à warps.");
+        super("warp", "Conjunto de comandos para teleportar à warps.");
 
         addUsageVariant(new WarpCommand(warpManager, teleportManager));
 
@@ -22,7 +22,8 @@ public class BaseWarpCommand extends CommandBase {
     @Override
     protected void executeSync(@NonNullDecl CommandContext commandContext) {
         Message helper = Message.join(
-                Message.raw("\n- Como usar o comando ").color(Color.GREEN), Message.raw("/warp").color(Color.WHITE).bold(true), Message.raw(":\n\n").color(Color.GREEN),
+                Message.raw("\n- Como usar o comando ").color(Color.GREEN), Message.raw("/warp").color(Color.WHITE).bold(true), Message.raw(":\n").color(Color.GREEN),
+                Message.raw("Permite que você se teleporte para áreas do servidor.\n\n").color(Color.LIGHT_GRAY).italic(true),
                 Message.raw("/warp ").color(Color.WHITE).bold(true), Message.raw("<nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Teleporte para a warp especificada\n", 13, " ")),
                 Message.raw("/warps").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Veja a lista de warps disponíveis\n", 27, " "))
         );

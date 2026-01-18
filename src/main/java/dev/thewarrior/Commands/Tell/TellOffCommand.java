@@ -16,7 +16,7 @@ import java.awt.*;
 
 public class TellOffCommand extends AbstractPlayerCommand {
     public TellOffCommand() {
-        super("off", "Desativa as mensagens privadas enviadas por outros jogadores");
+        super("telloff", "Desativa as mensagens privadas enviadas por outros jogadores");
 
         requirePermission("multicommands.tell.off");
     }

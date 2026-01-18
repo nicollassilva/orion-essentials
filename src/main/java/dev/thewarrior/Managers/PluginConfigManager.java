@@ -41,4 +41,8 @@ public class PluginConfigManager extends StorableManager<PluginConfigData> {
 
         return this.saveConfig();
     }
+
+    public String getBroadcastFormat() {
+        return this.data.getBroadcastFormat();
+    }
 }

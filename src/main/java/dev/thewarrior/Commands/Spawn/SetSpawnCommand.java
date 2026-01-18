@@ -62,14 +62,14 @@ public class SetSpawnCommand extends AbstractPlayerCommand {
                 rotation.getY(),
                 rotation.getX(),
                 rotation.getZ()
-        ));
+        )).thenAccept(_ -> {
+            final Vector3d spawnPosition = new Vector3d(position.getX(), position.getY(), position.getZ());
+            final Vector3f spawnRotation = new Vector3f(0, rotation.getY(), 0);
+            final Transform spawnTransform = new Transform(spawnPosition, spawnRotation);
 
-        final Vector3d spawnPosition = new Vector3d(position.getX(), position.getY(), position.getZ());
-        final Vector3f spawnRotation = new Vector3f(0, rotation.getY(), 0);
-        final Transform spawnTransform = new Transform(spawnPosition, spawnRotation);
+            world.getWorldConfig().setSpawnProvider(new GlobalSpawnProvider(spawnTransform));
 
-        world.getWorldConfig().setSpawnProvider(new GlobalSpawnProvider(spawnTransform));
-
-        playerRef.sendMessage(Messages.COMMAND_SET_SPAWN_SUCCESS.color(Color.GREEN));
+            playerRef.sendMessage(Messages.COMMAND_SET_SPAWN_SUCCESS.color(Color.GREEN));
+        });
     }
 }

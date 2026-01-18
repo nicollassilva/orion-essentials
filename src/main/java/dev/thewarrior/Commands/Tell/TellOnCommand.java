@@ -16,7 +16,7 @@ import java.awt.*;
 
 public class TellOnCommand extends AbstractPlayerCommand {
     public TellOnCommand() {
-        super("on", "Habilita receber mensagens privadas de outros jogadores");
+        super("tellon", "Habilita receber mensagens privadas de outros jogadores");
 
         requirePermission("multicommands.tell.on");
     }

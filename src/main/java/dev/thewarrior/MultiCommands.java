@@ -8,11 +8,14 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
 import dev.thewarrior.Commands.Discord.SetDiscordCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
-import dev.thewarrior.Commands.Tell.BaseTellCommand;
+import dev.thewarrior.Commands.Tell.TellCommand;
+import dev.thewarrior.Commands.Tell.TellOffCommand;
+import dev.thewarrior.Commands.Tell.TellOnCommand;
 import dev.thewarrior.Commands.Warp.BaseWarpCommand;
 import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
@@ -27,7 +30,7 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class MultiCommands extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandData> PlayerDataComponent;
-    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public PluginConfigManager pluginConfigManager;
     public WarpManager warpManager;
@@ -65,7 +68,9 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new SetDiscordCommand(this.pluginConfigManager));
 
         // Tell
-        this.getCommandRegistry().registerCommand(new BaseTellCommand(this.pluginConfigManager));
+        this.getCommandRegistry().registerCommand(new TellCommand());
+        this.getCommandRegistry().registerCommand(new TellOnCommand());
+        this.getCommandRegistry().registerCommand(new TellOffCommand());
 
         // Warps
         this.getCommandRegistry().registerCommand(new BaseWarpCommand(this.warpManager, this.teleportManager));
@@ -76,6 +81,9 @@ public class MultiCommands extends JavaPlugin {
         // Spawn
         this.getCommandRegistry().registerCommand(new SpawnCommand(this.pluginConfigManager, this.teleportManager));
         this.getCommandRegistry().registerCommand(new SetSpawnCommand(this.pluginConfigManager, this.teleportManager));
+
+        // Broadcast
+        this.getCommandRegistry().registerCommand(new BroadcastBaseCommand(this.pluginConfigManager));
     }
 
     public void registerSystems() {

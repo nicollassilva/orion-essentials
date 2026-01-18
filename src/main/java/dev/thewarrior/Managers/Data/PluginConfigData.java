@@ -6,6 +6,7 @@ public class PluginConfigData {
     private String discordLink = "";
     private int teleportDelaySeconds = 3;
     private Location spawnLocation = null;
+    private String broadcastFormat = "&e[&6Broadcast&e] &f{message}";
 
     public String getDiscordLink() {
         return discordLink;
@@ -29,5 +30,9 @@ public class PluginConfigData {
 
     public void setSpawnLocation(Location spawnLocation) {
         this.spawnLocation = spawnLocation;
+    }
+
+    public String getBroadcastFormat() {
+        return broadcastFormat;
     }
 }

@@ -19,6 +19,8 @@ public class Messages {
 
     public static final Message COMMAND_TELL_ALREADY_ON = Message.raw("[AVISO] As mensagens privadas já estão ativadas!");
 
+    public static final Message COMMAND_TELL_USAGE = Message.raw("[AVISO] Uso correto: /tell <jogador> <mensagem>");
+
     public static final Message PRIMARY_TITLE_ON_LOGIN = Message.raw("Seja bem-vindo!");
 
     public static final Message SECOND_TITLE_ON_LOGIN = Message.raw("Orion Network");
