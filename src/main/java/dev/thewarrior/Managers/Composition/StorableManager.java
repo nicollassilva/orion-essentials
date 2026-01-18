@@ -10,10 +10,12 @@ import java.util.concurrent.CompletableFuture;
 public abstract class StorableManager<T> {
     protected final Path configFile;
     protected T data;
+    protected Class<T> dataClass;
 
     public StorableManager(@Nonnull Path dataFolder, String fileName, Class<T> dataClass) {
         this.configFile = dataFolder.resolve(fileName);
         this.data = this.createDefaultData();
+        this.dataClass = dataClass;
 
         this.loadConfig(dataClass);
     }
@@ -88,9 +90,8 @@ public abstract class StorableManager<T> {
 
     /**
      * Reloads the configuration from the file.
-     * @param dataClass The class type of the data to deserialize
      */
-    public void reload(Class<T> dataClass) {
-        this.loadConfig(dataClass);
+    public void reload() {
+        this.loadConfig(this.dataClass);
     }
 }

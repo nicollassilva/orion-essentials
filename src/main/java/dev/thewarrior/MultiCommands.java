@@ -3,10 +3,12 @@ package dev.thewarrior;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
@@ -17,6 +19,7 @@ import dev.thewarrior.Commands.Home.DelHomeCommand;
 import dev.thewarrior.Commands.Home.HomeCommand;
 import dev.thewarrior.Commands.Home.HomesCommand;
 import dev.thewarrior.Commands.Home.SetHomeCommand;
+import dev.thewarrior.Commands.MultiCommands.PluginReloadCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
 import dev.thewarrior.Commands.Teleports.TpHereCommand;
@@ -36,6 +39,7 @@ import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.Managers.TpaManager;
 import dev.thewarrior.Managers.WarpManager;
 import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
+import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -119,6 +123,7 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new TpaonCommand());
 
         // Extra
+        this.getCommandRegistry().registerCommand(new PluginReloadCommand(this));
         this.getCommandRegistry().registerCommand(new FreeCameraCommand());
     }
 
@@ -134,5 +139,13 @@ public class MultiCommands extends JavaPlugin {
         );
 
         this.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
+    }
+
+    public void reloadConfig(PlayerRef requester) {
+        this.pluginConfigManager.reload();
+        this.warpManager.reload();
+
+        Logger.info("Plugin configuration reloaded by " + requester.getUsername());
+        requester.sendMessage(ColorUtil.colorize("&a[MultiCommands] Configurações recarregadas com sucesso!"));
     }
 }
