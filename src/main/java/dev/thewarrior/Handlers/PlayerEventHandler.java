@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Tell.TellCommand;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.MultiCommands;
@@ -33,9 +34,11 @@ public class PlayerEventHandler {
     }
 
     public static void onPlayerDisconnect(final PlayerDisconnectEvent event, final TeleportManager teleportManager) {
-        final UUID playerId = event.getPlayerRef().getUuid();
+        final UUID uuid = event.getPlayerRef().getUuid();
 
-        TellCommand.onPlayerQuit(playerId);
-        teleportManager.onPlayerQuit(playerId);
+        teleportManager.onPlayerQuit(uuid);
+
+        TellCommand.onPlayerQuit(uuid);
+        FreeCameraCommand.onPlayerQuit(uuid);
     }
 }

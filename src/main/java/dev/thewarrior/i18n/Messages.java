@@ -92,4 +92,14 @@ public class Messages {
     public static final String COMMAND_TPA_SUCCESS = "Você enviou um pedido de teleporte para '%s'.";
 
     public static final Message COMMAND_TPA_TARGET_SUCCESS = Message.raw("quer se teleportar para você! \n");
+
+    public static final Message COMMAND_FREE_CAMERA_ENABLED = Message.raw("Modo de câmera livre ativado com sucesso! Para desativar, use o comando novamente.");
+
+    public static final Message COMMAND_FREE_CAMERA_DISABLED = Message.raw("Modo de câmera livre desativado com sucesso!");
+
+    public static final Message COMMAND_TPA_NO_PENDING_REQUESTS = Message.raw("[AVISO] Você não possui pedidos de teleporte pendentes.");
+
+    public static final String COMMAND_TPA_REQUEST_ACCEPTED = "Pedido de teleporte de '%s' aceito com sucesso!";
+
+    public static final String COMMAND_TPA_REQUEST_TARGET_ACCEPTED = "O usuário '%s' aceitou seu pedido de teleporte!";
 }

@@ -17,8 +17,10 @@ public class PlayerHomes {
 
     public void addHome(NamedLocation home) {
         NamedLocation[] newHomes = new NamedLocation[homes.length + 1];
+
         System.arraycopy(homes, 0, newHomes, 0, homes.length);
         newHomes[homes.length] = home;
+
         this.homes = newHomes;
     }
 

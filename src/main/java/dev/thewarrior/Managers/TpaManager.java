@@ -62,29 +62,34 @@ public class TpaManager {
      * @return The TpaRequest if found and valid, null otherwise
      */
     @Nullable
-    public TpaRequest acceptRequest(@Nonnull PlayerRef target, @Nonnull String requesterName) {
+    public TpaRequest acceptRequest(@Nonnull PlayerRef target, String requesterName) {
         UUID targetUuid = target.getUuid();
         ConcurrentHashMap<UUID, TpaRequest> targetRequests = pendingRequests.get(targetUuid);
 
-        if (targetRequests == null || targetRequests.isEmpty()) {
-            return null;
-        }
+        if (targetRequests == null || targetRequests.isEmpty()) return null;
 
-        // Find the request by requester name (case-insensitive)
         TpaRequest foundRequest = null;
         UUID foundRequesterUuid = null;
 
-        for (Map.Entry<UUID, TpaRequest> entry : targetRequests.entrySet()) {
-            if (entry.getValue().getRequesterName().equalsIgnoreCase(requesterName)) {
-                foundRequest = entry.getValue();
-                foundRequesterUuid = entry.getKey();
-                break;
+        if(requesterName != null && !requesterName.isEmpty()) {
+            for (Map.Entry<UUID, TpaRequest> entry : targetRequests.entrySet()) {
+                if (entry.getValue().getRequesterName().equalsIgnoreCase(requesterName)) {
+                    foundRequest = entry.getValue();
+                    foundRequesterUuid = entry.getKey();
+                    break;
+                }
             }
+        } else {
+            try {
+                foundRequest = (TpaRequest) targetRequests.values().toArray()[targetRequests.size() - 1];
+
+                if(foundRequest != null) {
+                    foundRequesterUuid = foundRequest.getRequesterUuid();
+                }
+            } catch (Exception _) {}
         }
 
-        if (foundRequest == null) {
-            return null;
-        }
+        if (foundRequest == null || foundRequesterUuid == null) return null;
 
         targetRequests.remove(foundRequesterUuid);
         foundRequest.cancel();

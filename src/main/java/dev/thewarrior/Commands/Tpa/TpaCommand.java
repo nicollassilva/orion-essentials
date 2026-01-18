@@ -27,11 +27,12 @@ public class TpaCommand extends AbstractPlayerCommand {
     private final RequiredArg<PlayerRef> targetArg;
 
     public TpaCommand(@Nonnull TpaManager tpaManager) {
-        super("tpa", "Request to teleport to a player");
-        this.tpaManager = tpaManager;
-        this.targetArg = withRequiredArg("player", "Player to teleport to", ArgTypes.PLAYER_REF);
+        super("tpa", "Solicita teletransporte para outro jogador.");
 
-        requirePermission("essentials.tpa");
+        this.tpaManager = tpaManager;
+        this.targetArg = withRequiredArg("player", "Player alvo", ArgTypes.PLAYER_REF);
+
+        requirePermission("multicommands.tpa");
     }
 
     @Override
@@ -56,14 +57,14 @@ public class TpaCommand extends AbstractPlayerCommand {
 
         boolean created = tpaManager.createRequest(playerRef, target);
 
-        if (!created) {
-            playerRef.sendMessage(Message.raw(String.format(Messages.COMMAND_TPA_FAILED, target.getUsername())).color(Color.YELLOW));
-            return;
-        }
+//        if (!created) {
+//            playerRef.sendMessage(Message.raw(String.format(Messages.COMMAND_TPA_FAILED, target.getUsername())).color(Color.YELLOW));
+//            return;
+//        }
 
         playerRef.sendMessage(Message.raw(String.format(Messages.COMMAND_TPA_SUCCESS, target.getUsername())).color(Color.GREEN));
 
-        SoundsUtil.playSound(target, "SFX_Alchemy_Bench_Close");
+        SoundsUtil.playSound(target, "SFX_Alchemy_Bench_Open");
 
         target.sendMessage(Message.join(
                 Message.raw("-".repeat(46) + "\n").color(Color.LIGHT_GRAY).bold(true),

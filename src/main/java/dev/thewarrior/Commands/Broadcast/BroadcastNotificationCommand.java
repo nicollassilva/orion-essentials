@@ -2,25 +2,22 @@ package dev.thewarrior.Commands.Broadcast;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.thewarrior.Managers.PluginConfigManager;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Utils.ColorUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-public class BroadcastChatCommand extends AbstractPlayerCommand {
-    private final PluginConfigManager pluginConfigManager;
+public class BroadcastNotificationCommand extends AbstractPlayerCommand {
+    public BroadcastNotificationCommand() {
+        super("notif", "Envia uma notificação para todos os jogadores online");
 
-    public BroadcastChatCommand(final PluginConfigManager pluginConfigManager) {
-        super("chat", "Envia uma mensagem para todos os jogadores online");
-
-        this.pluginConfigManager = pluginConfigManager;
-
-        requirePermission("multicommands.broadcast.chat");
+        requirePermission("multicommands.broadcast.notification");
         setAllowsExtraArguments(true);
     }
 
@@ -37,8 +34,10 @@ public class BroadcastChatCommand extends AbstractPlayerCommand {
 
         if(parts.length <3) return;
 
-        Universe.get().sendMessage(ColorUtil.colorize(
-                this.pluginConfigManager.getBroadcastFormat().replace("{message}", parts[2])
-        ));
+        NotificationUtil.sendNotificationToUniverse(
+                ColorUtil.colorize(parts[2]),
+                Message.raw("Mensagem do Servidor"),
+                NotificationStyle.Default
+        );
     }
 }

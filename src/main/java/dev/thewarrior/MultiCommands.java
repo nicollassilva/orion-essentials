@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
+import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
 import dev.thewarrior.Commands.Discord.SetDiscordCommand;
 import dev.thewarrior.Commands.Home.DelHomeCommand;
@@ -24,6 +25,7 @@ import dev.thewarrior.Commands.Tell.TellCommand;
 import dev.thewarrior.Commands.Tell.TellOffCommand;
 import dev.thewarrior.Commands.Tell.TellOnCommand;
 import dev.thewarrior.Commands.Tpa.TpaCommand;
+import dev.thewarrior.Commands.Tpa.TpacceptCommand;
 import dev.thewarrior.Commands.Warp.BaseWarpCommand;
 import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
@@ -112,6 +114,10 @@ public class MultiCommands extends JavaPlugin {
 
         // TPA
         this.getCommandRegistry().registerCommand(new TpaCommand(this.tpaManager));
+        this.getCommandRegistry().registerCommand(new TpacceptCommand(this.tpaManager, this.teleportManager));
+
+        // Extra
+        this.getCommandRegistry().registerCommand(new FreeCameraCommand());
     }
 
     public void registerSystems() {
