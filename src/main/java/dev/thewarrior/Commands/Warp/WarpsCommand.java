@@ -39,7 +39,7 @@ public class WarpsCommand extends AbstractPlayerCommand {
             return;
         }
 
-        StringBuilder warpList = new StringBuilder();
+        final StringBuilder warpList = new StringBuilder();
 
         for (String warpName : this.warpManager.getWarps().keySet()) {
             warpList.append(warpName).append("\n");

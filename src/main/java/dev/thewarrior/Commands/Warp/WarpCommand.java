@@ -56,7 +56,7 @@ public class WarpCommand extends AbstractPlayerCommand {
         this.teleportManager.queueTeleport(
                 playerRef, ref, store, startPosition,
                 warpLocation.getWorld(), warpLocation.getX(), warpLocation.getY(), warpLocation.getZ(), warpLocation.getYaw(), warpLocation.getPitch(),
-                Messages.COMMAND_WARP_SUCCESS
+                Messages.COMMAND_GENERIC_TELEPORT_SUCCESS
         );
     }
 }

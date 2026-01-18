@@ -1,24 +1,27 @@
-package dev.thewarrior.Commands.Tell;
+package dev.thewarrior.Commands.Home;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Components.PlayerCommandComponent;
+import dev.thewarrior.Managers.WarpManager;
 import dev.thewarrior.MultiCommands;
+import dev.thewarrior.Utils.NamedLocation;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
 
-public class TellOffCommand extends AbstractPlayerCommand {
-    public TellOffCommand() {
-        super("telloff", "Desativa as mensagens privadas enviadas por outros jogadores");
+public class HomesCommand extends AbstractPlayerCommand {
+    public HomesCommand() {
+        super("homes", "Lista todas as suas homes definidas");
 
-        requirePermission("multicommands.tell.off");
+        requirePermission("multicommands.home");
     }
 
     @Override
@@ -29,16 +32,22 @@ public class TellOffCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        PlayerCommandComponent playerData = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        final PlayerCommandComponent component = store.getComponent(ref, MultiCommands.PlayerDataComponent);
 
-        if(playerData == null) return;
-
-        if(playerData.isTellOff()) {
-            playerRef.sendMessage(Messages.COMMAND_TELL_ALREADY_OFF.color(Color.YELLOW));
+        if(component == null) {
+            playerRef.sendMessage(Messages.CANNOT_GET_OWN_PLAYER_DATA.color(Color.RED));
             return;
         }
 
-        playerData.setTellOff(true);
-        playerRef.sendMessage(Messages.COMMAND_TELL_OFF_SUCCESS.color(Color.GREEN));
+        final StringBuilder homes = new StringBuilder();
+
+        for (NamedLocation location : component.getHomes()) {
+            homes.append(location.getName()).append("\n");
+        }
+
+        playerRef.sendMessage(Message.join(
+                Messages.COMMAND_HOME_TITLE.color(Color.WHITE),
+                Message.raw(homes.toString()).color(Color.ORANGE)
+        ));
     }
 }

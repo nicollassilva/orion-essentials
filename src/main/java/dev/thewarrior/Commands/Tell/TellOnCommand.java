@@ -7,7 +7,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.thewarrior.Data.PlayerCommandData;
+import dev.thewarrior.Components.PlayerCommandComponent;
 import dev.thewarrior.MultiCommands;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -29,7 +29,7 @@ public class TellOnCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandData playerData = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        final PlayerCommandComponent playerData = store.getComponent(ref, MultiCommands.PlayerDataComponent);
 
         if(playerData == null) return;
 

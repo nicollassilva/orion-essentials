@@ -11,6 +11,10 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
 import dev.thewarrior.Commands.Discord.SetDiscordCommand;
+import dev.thewarrior.Commands.Home.DelHomeCommand;
+import dev.thewarrior.Commands.Home.HomeCommand;
+import dev.thewarrior.Commands.Home.HomesCommand;
+import dev.thewarrior.Commands.Home.SetHomeCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
 import dev.thewarrior.Commands.Tell.ReplyCommand;
@@ -21,7 +25,7 @@ import dev.thewarrior.Commands.Warp.BaseWarpCommand;
 import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
 import dev.thewarrior.Commands.Warp.WarpsCommand;
-import dev.thewarrior.Data.PlayerCommandData;
+import dev.thewarrior.Components.PlayerCommandComponent;
 import dev.thewarrior.Handlers.PlayerEventHandler;
 import dev.thewarrior.Managers.PluginConfigManager;
 import dev.thewarrior.Managers.TeleportManager;
@@ -30,7 +34,7 @@ import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class MultiCommands extends JavaPlugin {
-    public static ComponentType<EntityStore, PlayerCommandData> PlayerDataComponent;
+    public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
     public static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public PluginConfigManager pluginConfigManager;
@@ -50,7 +54,7 @@ public class MultiCommands extends JavaPlugin {
 
     @Override
     public void start() {
-        PlayerDataComponent = getEntityStoreRegistry().registerComponent(PlayerCommandData.class, "PlayerCommandData", PlayerCommandData.CODEC);
+        PlayerDataComponent = getEntityStoreRegistry().registerComponent(PlayerCommandComponent.class, "PlayerCommandData", PlayerCommandComponent.CODEC);
 
         this.registerCommands();
         this.registerSystems();
@@ -86,6 +90,12 @@ public class MultiCommands extends JavaPlugin {
 
         // Broadcast
         this.getCommandRegistry().registerCommand(new BroadcastBaseCommand(this.pluginConfigManager));
+
+        // Home
+        this.getCommandRegistry().registerCommand(new SetHomeCommand());
+        this.getCommandRegistry().registerCommand(new DelHomeCommand());
+        this.getCommandRegistry().registerCommand(new HomeCommand(this.teleportManager));
+        this.getCommandRegistry().registerCommand(new HomesCommand());
     }
 
     public void registerSystems() {

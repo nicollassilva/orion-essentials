@@ -19,8 +19,6 @@ public class Messages {
 
     public static final Message COMMAND_TELL_ALREADY_ON = Message.raw("[AVISO] As mensagens privadas já estão ativadas!");
 
-    public static final Message COMMAND_TELL_USAGE = Message.raw("[AVISO] Uso correto: /tell <jogador> <mensagem>");
-
     public static final Message PRIMARY_TITLE_ON_LOGIN = Message.raw("Seja bem-vindo!");
 
     public static final Message SECOND_TITLE_ON_LOGIN = Message.raw("Orion Network");
@@ -55,7 +53,7 @@ public class Messages {
 
     public static final Message TELEPORT_FAILED_PLAYER_MOVED = Message.raw("[AVISO] Falha ao teleportar: você se moveu");
 
-    public static final Message COMMAND_WARP_SUCCESS = Message.raw("Teleporte concluído com sucesso!");
+    public static final Message COMMAND_GENERIC_TELEPORT_SUCCESS = Message.raw("Você foi teleportado com sucesso!");
 
     public static final Message COMMAND_WARPS_EMPTY = Message.raw("O servidor ainda não possui warps definidas.");
 
@@ -66,4 +64,18 @@ public class Messages {
     public static final Message COMMAND_SPAWN_SUCCESS = Message.raw("Você teleportou para o spawn.");
 
     public static final Message COMMAND_SET_SPAWN_SUCCESS = Message.raw("O local de spawn do servidor foi definido com sucesso!");
+
+    public static final String COMMAND_SET_HOME_SUCCESS = "A home '%s' foi definida com sucesso!";
+
+    public static final String COMMAND_DEL_HOME_SUCCESS = "A home '%s' foi deletada com sucesso!";
+
+    public static final Message HOME_NAME_INVALID = Message.raw("[ERRO] O nome da home é inválido. Ele deve conter entre 1 e 16 caracteres e somente caracteres alfanuméricos.");
+
+    public static final Message CANNOT_GET_OWN_PLAYER_DATA = Message.raw("[ERRO] Não foi possível obter os dados do jogador.");
+
+    public static final Message COMMAND_SET_HOME_FAILED = Message.raw("[ERRO] Falha ao definir a home.");
+
+    public static final String COMMAND_HOME_NOT_EXISTS = "[AVISO] Falha no comando: a home '%s' não foi encontrada.";
+
+    public static final Message COMMAND_HOME_TITLE = Message.raw("\nHomes disponíveis: \n");
 }
