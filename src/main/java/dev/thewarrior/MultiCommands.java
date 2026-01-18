@@ -18,10 +18,12 @@ import dev.thewarrior.Commands.Home.HomesCommand;
 import dev.thewarrior.Commands.Home.SetHomeCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
+import dev.thewarrior.Commands.Teleports.TpHereCommand;
 import dev.thewarrior.Commands.Tell.ReplyCommand;
 import dev.thewarrior.Commands.Tell.TellCommand;
 import dev.thewarrior.Commands.Tell.TellOffCommand;
 import dev.thewarrior.Commands.Tell.TellOnCommand;
+import dev.thewarrior.Commands.Tpa.TpaCommand;
 import dev.thewarrior.Commands.Warp.BaseWarpCommand;
 import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
@@ -30,6 +32,7 @@ import dev.thewarrior.Components.PlayerCommandComponent;
 import dev.thewarrior.Handlers.PlayerEventHandler;
 import dev.thewarrior.Managers.PluginConfigManager;
 import dev.thewarrior.Managers.TeleportManager;
+import dev.thewarrior.Managers.TpaManager;
 import dev.thewarrior.Managers.WarpManager;
 import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
 import dev.thewarrior.Utils.Logger;
@@ -42,6 +45,7 @@ public class MultiCommands extends JavaPlugin {
     public PluginConfigManager pluginConfigManager;
     public WarpManager warpManager;
     public TeleportManager teleportManager;
+    public TpaManager tpaManager;
 
     public MultiCommands(@NonNullDecl JavaPluginInit init) {
         super(init);
@@ -55,6 +59,7 @@ public class MultiCommands extends JavaPlugin {
         this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
         this.warpManager = new WarpManager(this.getDataDirectory());
         this.teleportManager = new TeleportManager(this.pluginConfigManager);
+        this.tpaManager = new TpaManager();
     }
 
     @Override
@@ -89,6 +94,9 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new SetWarpCommand(this.warpManager));
         this.getCommandRegistry().registerCommand(new DelWarpCommand(this.warpManager));
 
+        // Teleports
+        this.getCommandRegistry().registerCommand(new TpHereCommand());
+
         // Spawn
         this.getCommandRegistry().registerCommand(new SpawnCommand(this.pluginConfigManager, this.teleportManager));
         this.getCommandRegistry().registerCommand(new SetSpawnCommand(this.pluginConfigManager, this.teleportManager));
@@ -101,6 +109,9 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new DelHomeCommand());
         this.getCommandRegistry().registerCommand(new HomeCommand(this.teleportManager));
         this.getCommandRegistry().registerCommand(new HomesCommand());
+
+        // TPA
+        this.getCommandRegistry().registerCommand(new TpaCommand(this.tpaManager));
     }
 
     public void registerSystems() {

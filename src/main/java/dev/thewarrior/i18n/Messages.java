@@ -9,6 +9,8 @@ public class Messages {
 
     public static final Message CANNOT_TELL_YOURSELF = Message.raw("[AVISO] Você não pode enviar uma mensagem privada para si mesmo!");
 
+    public static final Message CANNOT_TELEPORT_YOURSELF = Message.raw("[AVISO] Você não pode teleportar a si mesmo!");
+
     public static final Message COMMAND_DISCORD_LINK = Message.raw("> Entre no nosso Discord clicando aqui.");
 
     public static final Message COMMAND_TELL_OFF_SUCCESS = Message.raw("As mensagens privadas foram desativadas com sucesso!");
@@ -78,4 +80,16 @@ public class Messages {
     public static final String COMMAND_HOME_NOT_EXISTS = "[AVISO] Falha no comando: a home '%s' não foi encontrada.";
 
     public static final Message COMMAND_HOME_TITLE = Message.raw("\nHomes disponíveis: \n");
+
+    public static final String COMMAND_TP_HERE_SUCCESS = "Você teleportou '%s' para você.";
+
+    public static final String COMMAND_TP_HERE_TARGET_SUCCESS = "Você foi puxado por '%s'.";
+
+    public static final String TELEPORT_REQUEST_EXPIRED = "Seu pedido de teleporte para '%s' expirou.";
+
+    public static final String COMMAND_TPA_FAILED = "[AVISO] Você já possui um pedido pendente para '%s'.";
+
+    public static final String COMMAND_TPA_SUCCESS = "Você enviou um pedido de teleporte para '%s'.";
+
+    public static final Message COMMAND_TPA_TARGET_SUCCESS = Message.raw("quer se teleportar para você! \n");
 }

@@ -54,7 +54,7 @@ public class PluginConfigManager extends StorableManager<PluginConfigData> {
     }
 
     /**
-     * Syncs the saved Essentials spawn with the world's native spawn provider.
+     * Syncs the saved spawn with the world's native spawn provider.
      * This updates the spawn marker on the map.
      * Should be called after worlds are loaded.
      */
