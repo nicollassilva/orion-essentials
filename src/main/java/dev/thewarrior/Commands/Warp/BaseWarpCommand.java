@@ -3,22 +3,36 @@ package dev.thewarrior.Commands.Warp;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
+import dev.thewarrior.Managers.TeleportManager;
+import dev.thewarrior.Managers.WarpManager;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
 
 public class BaseWarpCommand extends CommandBase {
-    public BaseWarpCommand() {
-        super("warp", "Comando base para teletransporte a warps.");
+    public BaseWarpCommand(final WarpManager warpManager, final TeleportManager teleportManager) {
+        super("warp", "Comando base para teleportar à warps.");
+
+        addUsageVariant(new WarpCommand(warpManager, teleportManager));
+
+        requirePermission("multicommands.warp");
     }
 
     @Override
     protected void executeSync(@NonNullDecl CommandContext commandContext) {
-        commandContext.sendMessage(Message.join(
-                Message.raw("- Como usar o comando ").color(Color.GREEN), Message.raw("/tell").color(Color.WHITE).bold(true), Message.raw(":\n\n").color(Color.GREEN),
-                Message.raw("/tell ").color(Color.WHITE).bold(true), Message.raw("<player> <mensagem>").color(Color.YELLOW).bold(true), Message.raw(" Envia uma mensagem privada\n"),
-                Message.raw("/telloff").color(Color.WHITE).bold(true), Message.raw(" Desative as mensagens privadas\n"),
-                Message.raw("/tellon").color(Color.WHITE).bold(true), Message.raw(" Ative as mensagens privadas\n")
-        ));
+        Message helper = Message.join(
+                Message.raw("- Como usar o comando ").color(Color.GREEN), Message.raw("/warp").color(Color.WHITE).bold(true), Message.raw(":\n\n").color(Color.GREEN),
+                Message.raw("/warp ").color(Color.WHITE).bold(true), Message.raw("<nome>").color(Color.YELLOW).bold(true), Message.raw(" - Teleporte para a warp especificada\n"),
+                Message.raw("/warps").color(Color.WHITE).bold(true), Message.raw(" Veja a lista de warps disponíveis\n")
+        );
+
+        if(commandContext.sender().hasPermission("multicommands.warp.manage")) {
+            helper.insertAll(
+                    Message.raw("/setwarp ").color(Color.MAGENTA).bold(true), Message.raw("<nome>").color(Color.YELLOW).bold(true), Message.raw(" - Define uma nova warp\n"),
+                    Message.raw("/delwarp ").color(Color.MAGENTA).bold(true), Message.raw("<nome>").color(Color.YELLOW).bold(true), Message.raw(" - Deleta a warp especificada\n")
+            );
+        }
+
+        commandContext.sendMessage(helper);
     }
 }

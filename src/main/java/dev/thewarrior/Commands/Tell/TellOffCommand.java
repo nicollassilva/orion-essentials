@@ -34,7 +34,7 @@ public class TellOffCommand extends AbstractPlayerCommand {
         if(playerData == null) return;
 
         if(playerData.isTellOff()) {
-            playerRef.sendMessage(Messages.COMMAND_TELL_ALREADY_OFF.color(Color.RED));
+            playerRef.sendMessage(Messages.COMMAND_TELL_ALREADY_OFF.color(Color.YELLOW));
             return;
         }
 

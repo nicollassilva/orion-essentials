@@ -41,19 +41,19 @@ public class TellCommand extends AbstractPlayerCommand {
         PlayerRef player = this.target.get(commandContext);
 
         if(player == null || !player.isValid()) {
-            commandContext.sendMessage(Messages.PLAYER_NOT_FOUND);
+            commandContext.sendMessage(Messages.PLAYER_NOT_FOUND.color(Color.RED));
             return;
         }
 
-//        if(playerRef.getUsername().equals(player.getUsername())) {
-//            commandContext.sendMessage(Messages.CANNOT_TELL_YOURSELF.color(Color.RED));
-//            return;
-//        }
+        if(playerRef.getUsername().equals(player.getUsername())) {
+            commandContext.sendMessage(Messages.CANNOT_TELL_YOURSELF.color(Color.YELLOW));
+            return;
+        }
 
         final Ref<EntityStore> playerEntity = player.getReference();
 
         if(playerEntity == null || !playerEntity.isValid()) {
-            commandContext.sendMessage(Messages.PLAYER_NOT_FOUND);
+            commandContext.sendMessage(Messages.PLAYER_NOT_FOUND.color(Color.RED));
             return;
         }
 
