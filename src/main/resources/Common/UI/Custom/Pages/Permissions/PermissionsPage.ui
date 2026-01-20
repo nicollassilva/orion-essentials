@@ -91,12 +91,16 @@ Group {
                 LayoutMode: Top;
 
                 Group #PermissionFormActions {
-                    Anchor: (Height: 160);
+                    Anchor: (Height: 140);
                 }
 
                 Group #PermissionContentList {
-                    LayoutMode: Top;
                     FlexWeight: 1;
+                }
+
+                Group #PermissionContentListContainer {
+                  LayoutMode: TopScrolling;
+                  Anchor: (Top: 3, Height: 350);
                 }
             }
       }

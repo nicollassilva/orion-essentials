@@ -15,56 +15,18 @@ $C = "../../Common.ui";
 );
 
 Group {
-    Anchor: (Height: 45, Bottom: 5);
-    Background: #000000(0.45);
+    LayoutMode: Left;
+    Anchor: (Height: 35, Bottom: 5);
+    Background: #17c7a8(0.45);
 
     Label {
         Padding: (Left: 15);
         Text: "Lista de Permissões";
         Style: (
-            TextColor: #b6c9de,
+            TextColor: #d6eaff,
             RenderBold: true,
-            VerticalAlignment: Center
+            VerticalAlignment: Center,
+            HorizontalAlignment: Center
         );
-    }
-
-    Group {
-        LayoutMode: Right;
-
-        Group {
-            LayoutMode: Left;
-
-            Button #DettachPermission {
-                  LayoutMode: Top;
-                  Anchor: (Right: 5, Width: 30, Height: 30);
-                  Padding: (Top: 2, Left: 10);
-                  Style: @DettachPermissionButtonStyle;
-
-                  Label {
-                        Text: "-";
-                        Style: (
-                              FontSize: 18,
-                              RenderBold: true,
-                              TextColor: #b6c9de
-                       );
-                 }
-            }
-
-            Button #AttachPermission {
-                  LayoutMode: Top;
-                  Anchor: (Right: 5, Width: 30, Height: 30);
-                  Padding: (Top: 2, Left: 9);
-                  Style: @AttachButtonStyle;
-
-                  Label {
-                        Text: "+";
-                        Style: (
-                              FontSize: 18,
-                              RenderBold: true,
-                              TextColor: #b6c9de
-                       );
-                 }
-            }
-        }
     }
 }

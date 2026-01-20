@@ -117,7 +117,6 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
         commandBuilder.clear("#PermissionButtonActions");
         commandBuilder.clear("#PermissionFormActions");
         commandBuilder.clear("#PermissionContentList");
-        commandBuilder.clear("#PermissionContentList");
 
         if(this.selectedPermission == null || this.selectedPermission.isEmpty()) return;
 
@@ -135,8 +134,10 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
         commandBuilder.append("#PermissionButtonActions", "Pages/Permissions/PermissionHeaderActions.ui");
         commandBuilder.append("#PermissionFormActions", "Pages/Permissions/PermissionFormActions.ui");
-        commandBuilder.append("#PermissionContentList", "Pages/Permissions/PermissionContentList.ui");
         commandBuilder.append("#PermissionContentList", "Pages/Permissions/PermissionListHeaderActions.ui");
+
+        commandBuilder.clear("#PermissionContentListContainer");
+        commandBuilder.append("#PermissionContentListContainer", "Pages/Permissions/PermissionContentListEntry.ui");
 
         commandBuilder.set("#PermissionName.Text", this.selectedPermission);
         commandBuilder.set("#PermissionInputName.Value", this.selectedPermission);
