@@ -3,16 +3,17 @@ package dev.thewarrior.Commands.Permissions;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
+import dev.thewarrior.Managers.PermissionManager;
 import dev.thewarrior.Utils.StringUtils;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
 
 public class PermissionsCommand extends CommandBase {
-    public PermissionsCommand() {
+    public PermissionsCommand(final PermissionManager permissionManager) {
         super("permissions", "Comando para gerenciar as permissões do servidor.");
 
-        addSubCommand(new PermissionsManageCommand());
+        addSubCommand(new PermissionsManageCommand(permissionManager));
 
         requirePermission("multicommands.permissions");
     }

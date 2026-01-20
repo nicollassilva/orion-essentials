@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 public class Logger {
     private static HytaleLogger logger;
+    private static String prefix = "[MultiCommands] ";
 
     // ANSI color codes
     private static final String GREEN = "\u001B[32m";
@@ -21,18 +22,18 @@ public class Logger {
     }
 
     public static void info(@Nonnull String message) {
-        logger.at(Level.INFO).log(GREEN + message + RESET);
+        logger.at(Level.INFO).log(prefix + GREEN + message + RESET);
     }
 
     public static void warning(@Nonnull String message) {
-        logger.at(Level.WARNING).log(YELLOW + message + RESET);
+        logger.at(Level.WARNING).log(prefix + YELLOW + message + RESET);
     }
 
     public static void error(@Nonnull String message) {
-        logger.at(Level.SEVERE).log(RED + message + RESET);
+        logger.at(Level.SEVERE).log(prefix + RED + message + RESET);
     }
 
     public static void error(@Nonnull String message, @Nonnull Throwable throwable) {
-        logger.at(Level.SEVERE).withCause(throwable).log(RED + message + RESET);
+        logger.at(Level.SEVERE).withCause(throwable).log(prefix + RED + message + RESET);
     }
 }

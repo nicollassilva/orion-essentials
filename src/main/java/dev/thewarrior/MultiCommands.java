@@ -3,7 +3,6 @@ package dev.thewarrior;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -11,6 +10,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Adapters.PermissionDataAdapter;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
@@ -21,7 +21,6 @@ import dev.thewarrior.Commands.Home.HomesCommand;
 import dev.thewarrior.Commands.Home.SetHomeCommand;
 import dev.thewarrior.Commands.MultiCommands.PluginReloadCommand;
 import dev.thewarrior.Commands.Permissions.PermissionsCommand;
-import dev.thewarrior.Commands.Permissions.PermissionsManageCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
 import dev.thewarrior.Commands.Teleports.TpHereCommand;
@@ -36,10 +35,8 @@ import dev.thewarrior.Commands.Warp.SetWarpCommand;
 import dev.thewarrior.Commands.Warp.WarpsCommand;
 import dev.thewarrior.Components.PlayerCommandComponent;
 import dev.thewarrior.Handlers.PlayerEventHandler;
-import dev.thewarrior.Managers.PluginConfigManager;
-import dev.thewarrior.Managers.TeleportManager;
-import dev.thewarrior.Managers.TpaManager;
-import dev.thewarrior.Managers.WarpManager;
+import dev.thewarrior.Managers.*;
+import dev.thewarrior.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
 import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
@@ -47,12 +44,18 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class MultiCommands extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
-    public static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+    public static Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .registerTypeAdapter(PermissionData.class, new PermissionDataAdapter())
+            .create();
 
     public PluginConfigManager pluginConfigManager;
     public WarpManager warpManager;
     public TeleportManager teleportManager;
     public TpaManager tpaManager;
+    public PermissionManager permissionManager;
 
     public MultiCommands(@NonNullDecl JavaPluginInit init) {
         super(init);
@@ -61,12 +64,13 @@ public class MultiCommands extends JavaPlugin {
     @Override
     protected void setup() {
         Logger.init(getLogger());
-        Logger.info("MultiCommands Plugin is setting up...");
+        Logger.info("Setting up...");
 
         this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
         this.warpManager = new WarpManager(this.getDataDirectory());
         this.teleportManager = new TeleportManager(this.pluginConfigManager);
         this.tpaManager = new TpaManager();
+        this.permissionManager = new PermissionManager(this.getDataDirectory());
     }
 
     @Override
@@ -77,7 +81,7 @@ public class MultiCommands extends JavaPlugin {
         this.registerSystems();
         this.registerEvents();
 
-        Logger.info("MultiCommands has been started!");
+        Logger.info("Has been started!");
     }
 
     public PluginConfigManager getConfig() {
@@ -129,8 +133,7 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new FreeCameraCommand());
 
         // Permissions
-        this.getCommandRegistry().registerCommand(new PermissionsCommand());
-        this.getCommandRegistry().registerCommand(new PermissionsManageCommand());
+        this.getCommandRegistry().registerCommand(new PermissionsCommand(this.permissionManager));
     }
 
     public void registerSystems() {
@@ -151,7 +154,7 @@ public class MultiCommands extends JavaPlugin {
         this.pluginConfigManager.reload();
         this.warpManager.reload();
 
-        Logger.info("Plugin configuration reloaded by " + requester.getUsername());
+        Logger.info("Reloaded by " + requester.getUsername());
         requester.sendMessage(ColorUtil.colorize("&a[MultiCommands] Configurações recarregadas com sucesso!"));
     }
 }
