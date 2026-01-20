@@ -1,6 +1,6 @@
 $C = "../../Common.ui";
 
-@DettachButtonStyle = ButtonStyle(
+@DetachButtonStyle = ButtonStyle(
     Default: (Background: #ad2323),
     Hovered: (Background: #e31b1b),
     Pressed: (Background: #691717),
@@ -23,14 +23,20 @@ Button {
     Anchor: (Height: 35, Bottom: 5);
     Style: @PermissionEntryStyle;
 
-    Label {
+    Label #PermissionListEntryLabel {
+        Visible: true;
         Padding: (Left: 15);
-        Text: "multicommands.tell.*";
         Style: (
             FontSize: 14,
             TextColor: #FFFFFF,
             VerticalAlignment: Center
         );
+    }
+
+    $C.@TextField #PermissionListEntryInputName {
+      Anchor: (Left: 15, Height: 25, Width: 300);
+      Visible: false;
+      Value: "";
     }
 
     Group {
@@ -45,7 +51,7 @@ Button {
               Anchor: (Height: 25);
               Style: @EditButtonStyle;
 
-              Label {
+              Label #Label {
                 Text: "Editar";
                 Style: (
                   FontSize: 14,
@@ -55,11 +61,11 @@ Button {
               }
             }
 
-            Button #DettachPermission {
+            Button #DetachPermission {
                   LayoutMode: Top;
                   Padding: (Left: 5, Right: 5, Top: 3);
-                  Anchor: (Left: 5, Height: 25);
-                  Style: @DettachButtonStyle;
+                  Anchor: (Left: 5, Height: 25, Right: 5);
+                  Style: @DetachButtonStyle;
 
                   Label {
                         Text: "X";

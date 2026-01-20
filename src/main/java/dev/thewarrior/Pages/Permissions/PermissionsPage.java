@@ -23,12 +23,18 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData> {
+    private final Pattern permissionPattern = Pattern.compile("^[a-zA-Z0-9_.-]{1,64}$");
+
     private final PermissionManager permissionManager;
     private final Map<String, PermissionData> filteredGroups;
 
     private String selectedPermission = "";
+
+    private String updatingPermission = "";
+    private String updatedPermission = "";
 
     public PermissionsPage(@Nonnull PlayerRef playerRef, PermissionManager permissionManager) {
         super(playerRef, CustomPageLifetime.CanDismiss, PermissionsPageData.CODEC);
@@ -55,10 +61,44 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull PermissionsPageData data) {
+        System.out.println("Handling PermissionsPageData event: " + data.action);
+
         switch (data.action) {
+            // Permission cases
             case "AddPermission" -> this.onAdd(ref, store, data);
-            case "SelectPermission" -> this.onSelect(ref, store, data);
+            case "SelectPermission" -> this.onSelect(ref, store, data.target, false);
             case "SearchPermission" -> this.onSearch(ref, store, data);
+            case "SavePermission" -> {
+                this.permissionManager.save(data.target);
+
+                final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+
+                if(playerRef != null && playerRef.isValid()) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&2Permissão marcada para ser salva!"), data.target);
+                }
+            }
+
+            // Permission Node cases
+            case "AddPermissionNode" -> {
+                final PermissionData permissionData = this.getGroupsData().getGroupData(data.target);
+
+                if(permissionData == null) return;
+
+                permissionData.addPermission("new.permission" + System.currentTimeMillis());
+
+                this.onSelect(ref, store, data.target, true);
+            }
+            case "OpenEditPermissionNode" -> this.onEditPermissionNode(ref, store, data);
+            case "UpdatePermissionNode" -> this.updatedPermission = data.permissionName;
+            case "DetachPermissionNode" -> {
+                final PermissionData permissionData = this.getGroupsData().getGroupData(this.selectedPermission);
+
+                if(permissionData == null) return;
+
+                permissionData.removePermission(data.target);
+
+                this.onSelect(ref, store, this.selectedPermission, true);
+            }
             default -> this.onClose(ref, store);
         }
     }
@@ -70,7 +110,7 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
         final UICommandBuilder commandBuilder = new UICommandBuilder();
         final String randomName = "NewGroup_" + System.currentTimeMillis();
 
-        this.getGroupsData().addGroup(randomName);
+        this.getGroupsData().addGroup(randomName, true);
 
         this.sendPermissionsListUpdate(commandBuilder, eventBuilder, true);
 
@@ -78,41 +118,27 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
         if(playerRef == null) return;
 
-        this.permissionManager.saveAsync(randomName).thenRun(() -> {
-            NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&2Grupo de permissão criado com sucesso!"), randomName);
-        }).exceptionally(ex -> {;
-            NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cFalha ao criar o grupo de permissão: " + ex.getMessage()), randomName);
-            return null;
-        });
+        this.permissionManager.save(randomName);
+        this.onSelect(ref, store, randomName, true);
+
+        NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&2Grupo de permissão criado com sucesso!"), randomName);
     }
 
-    private void onSelect(Ref<EntityStore> ref, Store<EntityStore> store, PermissionsPageData data) {
-        if(this.selectedPermission.equalsIgnoreCase(data.target)) return;
+    private void onSelect(Ref<EntityStore> ref, Store<EntityStore> store, String selectedPermission, boolean forceUpdate) {
+        if(this.selectedPermission.equalsIgnoreCase(selectedPermission) && !forceUpdate) return;
 
-        this.selectedPermission = data.target;
+        this.updatingPermission = "";
+        this.selectedPermission = selectedPermission;
 
         final UICommandBuilder commandBuilder = new UICommandBuilder();
-
-        this.onSelectInternally(ref, store, commandBuilder);
-
-        this.sendUpdate(commandBuilder);
-    }
-
-    private void onSearch(Ref<EntityStore> ref, Store<EntityStore> store, PermissionsPageData data) {
         final UIEventBuilder eventBuilder = new UIEventBuilder();
-        final UICommandBuilder commandBuilder = new UICommandBuilder();
 
-        if(data.searchValue.isEmpty()) {
-            this.sendPermissionsListUpdate(commandBuilder, eventBuilder, true);
-            return;
-        }
+        this.onSelectInternally(ref, store, commandBuilder, eventBuilder);
 
-        this.getGroupsData().getFilteredGroups(data.searchValue, this.filteredGroups::put);
-
-        this.sendPermissionsListUpdate(commandBuilder, eventBuilder, true);
+        this.sendUpdate(commandBuilder, eventBuilder, false);
     }
 
-    private void onSelectInternally(Ref<EntityStore> ref, Store<EntityStore> store, UICommandBuilder commandBuilder) {
+    private void onSelectInternally(Ref<EntityStore> ref, Store<EntityStore> store, UICommandBuilder commandBuilder, UIEventBuilder eventBuilder) {
         commandBuilder.clear("#PermissionName");
         commandBuilder.clear("#PermissionButtonActions");
         commandBuilder.clear("#PermissionFormActions");
@@ -136,14 +162,135 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
         commandBuilder.append("#PermissionFormActions", "Pages/Permissions/PermissionFormActions.ui");
         commandBuilder.append("#PermissionContentList", "Pages/Permissions/PermissionListHeaderActions.ui");
 
-        commandBuilder.clear("#PermissionContentListContainer");
-        commandBuilder.append("#PermissionContentListContainer", "Pages/Permissions/PermissionContentListEntry.ui");
-
+        commandBuilder.set("#PermissionTitle.Text", permissionData.needsUpdate() ? "Possui modificações não salvas." : "");
         commandBuilder.set("#PermissionName.Text", this.selectedPermission);
+        commandBuilder.set("#DeletePermission.Disabled", this.permissionManager.isMandatoryPermission(this.selectedPermission));
         commandBuilder.set("#PermissionInputName.Value", this.selectedPermission);
         commandBuilder.set("#PermissionInputPriority.Value", String.valueOf(permissionData.getPriority()));
         commandBuilder.set("#PermissionInputPrefix.Value", permissionData.getPrefix());
         commandBuilder.set("#PermissionInputSuffix.Value", permissionData.getSuffix());
+
+        eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#SavePermission", EventData.of("Action", "SavePermission").append("Target", this.selectedPermission), false);
+        eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#AddPermissionNode", EventData.of("Action", "AddPermissionNode").append("Target", this.selectedPermission), false);
+
+        this.buildContentListContainer(commandBuilder, eventBuilder, permissionData);
+    }
+
+    private void onSearch(Ref<EntityStore> ref, Store<EntityStore> store, PermissionsPageData data) {
+        final UIEventBuilder eventBuilder = new UIEventBuilder();
+        final UICommandBuilder commandBuilder = new UICommandBuilder();
+
+        if(data.searchValue.isEmpty()) {
+            this.sendPermissionsListUpdate(commandBuilder, eventBuilder, true);
+            return;
+        }
+
+        this.getGroupsData().getFilteredGroups(data.searchValue, this.filteredGroups::put);
+
+        this.sendPermissionsListUpdate(commandBuilder, eventBuilder, true);
+    }
+
+    private void onEditPermissionNode(Ref<EntityStore> ref, Store<EntityStore> store, PermissionsPageData data) {
+        String[] parts = data.target.split("~", 2); // [selector, permissionNode]
+
+        if(parts.length != 2 || parts[0].isEmpty() || parts[1].isEmpty()) return;
+
+        final UICommandBuilder commandBuilder = new UICommandBuilder();
+        final UIEventBuilder eventBuilder = new UIEventBuilder();
+
+        final String selector = parts[0];
+        final String permission = parts[1];
+
+        if(this.updatingPermission.isEmpty()) {
+            this.updatingPermission = permission;
+            this.updatedPermission = permission;
+
+            commandBuilder.set(selector + " #EditPermission #Label.Text", "Salvar");
+            commandBuilder.set(selector + " #PermissionListEntryLabel.Visible", false);
+
+            commandBuilder.set(selector + " #PermissionListEntryInputName.Visible", true);
+            commandBuilder.set(selector + " #PermissionListEntryInputName.Value", permission);
+
+            eventBuilder.addEventBinding(CustomUIEventBindingType.ValueChanged,
+                    selector + " #PermissionListEntryInputName",
+                    EventData.of("Action", "UpdatePermissionNode")
+                            .append("Target", selector + "~" + permission)
+                            .append("@PermissionName", selector + " #PermissionListEntryInputName.Value"),
+                    false
+            );
+        } else {
+            PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+
+            if(playerRef == null || !playerRef.isValid()) {
+                playerRef = null;
+            }
+
+            if(!this.permissionPattern.matcher(this.updatedPermission).matches()) {
+                if(playerRef != null) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cAlguma permissão possui caracteres inválidos! Use apenas letras, números, '_', '-' e '.' com no máximo 64 caracteres."));
+                }
+
+                return;
+            }
+
+            if(this.updatedPermission.isEmpty()) {
+                if(playerRef != null) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cO nome da permissão não pode estar vazio!"));
+                }
+            } else if(!this.updatingPermission.equals(this.updatedPermission)) {
+                final PermissionData permissionData = this.getGroupsData().getGroupData(this.selectedPermission);
+
+                if (permissionData != null) {
+                    boolean isUpdated = permissionData.updatePermission(this.updatingPermission, this.updatedPermission);
+
+                    if(!isUpdated && playerRef != null) {
+                        NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cNão foi possível encontrar a permissão para atualizar!"));
+                    }
+                }
+            }
+
+            this.updatingPermission = "";
+            this.updatedPermission = "";
+
+            commandBuilder.set(selector + " #EditPermission #Label.Text", "Editar");
+            commandBuilder.set(selector + " #PermissionListEntryLabel.Visible", true);
+
+            commandBuilder.set(selector + " #PermissionListEntryInputName.Visible", false);
+
+            this.buildContentListContainer(commandBuilder, eventBuilder, this.getGroupsData().getGroupData(this.selectedPermission));
+        }
+
+        this.sendUpdate(commandBuilder, eventBuilder, false);
+    }
+
+    private void buildContentListContainer(UICommandBuilder commandBuilder, UIEventBuilder eventBuilder, PermissionData permissionData) {
+        commandBuilder.clear("#PermissionContentListContainer");
+
+        int count = 0;
+
+        for (final String permissionNode : permissionData.getPermissions()) {
+            String selector = "#PermissionContentListContainer[" + count + "]";
+
+            commandBuilder.append("#PermissionContentListContainer", "Pages/Permissions/PermissionContentListEntry.ui");
+
+            commandBuilder.set(selector + " #PermissionListEntryLabel.Text", permissionNode);
+
+            eventBuilder.addEventBinding(
+                    CustomUIEventBindingType.Activating,
+                    selector + " #DetachPermission",
+                    EventData.of("Action", "DetachPermissionNode").append("Target", permissionNode),
+                    false
+            );
+
+            eventBuilder.addEventBinding(
+                    CustomUIEventBindingType.Activating,
+                    selector + " #EditPermission",
+                    EventData.of("Action", "OpenEditPermissionNode").append("Target", selector + "~" + permissionNode),
+                    false
+            );
+
+            count++;
+        }
     }
 
     private void sendPermissionsListUpdate(UICommandBuilder commandBuilder, UIEventBuilder eventBuilder, boolean sendUpdate) {

@@ -11,6 +11,7 @@ $C = "../../Common.ui";
     Default: (Background: #ad2323),
     Hovered: (Background: #e31b1b),
     Pressed: (Background: #691717),
+    Disabled: (Background: #555555),
     Sounds: $C.@ButtonSounds
 );
 
@@ -18,6 +19,7 @@ $C = "../../Common.ui";
     Default: (Background: #139c47),
     Hovered: (Background: #16c95a),
     Pressed: (Background: #0e7836),
+    Disabled: (Background: #555555),
     Sounds: $C.@ButtonSounds
 );
 

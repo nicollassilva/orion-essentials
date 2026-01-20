@@ -8,16 +8,16 @@ $C = "../../Common.ui";
 );
 
 @AttachButtonStyle = ButtonStyle(
-    Default: (Background: #2642ab),
-    Hovered: (Background: #3559db),
-    Pressed: (Background: #1c3280),
+    Default: (Background: #139c47),
+    Hovered: (Background: #16c95a),
+    Pressed: (Background: #0e7836),
     Sounds: $C.@ButtonSounds
 );
 
 Group {
     LayoutMode: Left;
     Anchor: (Height: 35, Bottom: 5);
-    Background: #17c7a8(0.45);
+    Background: #000000(0.45);
 
     Label {
         Padding: (Left: 15);
@@ -28,5 +28,41 @@ Group {
             VerticalAlignment: Center,
             HorizontalAlignment: Center
         );
+    }
+
+    Group {
+        LayoutMode: Right;
+
+        Button #AddPermissionNode {
+            LayoutMode: Top;
+            Padding: (Left: 8, Right: 5, Top: 3);
+            Anchor: (Height: 25, Left: 25);
+            Style: @AttachButtonStyle;
+
+            Label {
+                Text: "Adicionar";
+                Style: (
+                    FontSize: 14,
+                    RenderBold: true,
+                    TextColor: #b6c9de
+                );
+            }
+        }
+
+        Button #ClearAllPermissionsNode {
+            LayoutMode: Top;
+            Padding: (Left: 8, Right: 5, Top: 3);
+            Anchor: (Height: 25, Left: 5);
+            Style: @DettachPermissionButtonStyle;
+
+            Label {
+                Text: "Limpar";
+                Style: (
+                    FontSize: 14,
+                    RenderBold: true,
+                    TextColor: #b6c9de
+                );
+            }
+        }
     }
 }

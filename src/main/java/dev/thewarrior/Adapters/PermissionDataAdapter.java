@@ -4,10 +4,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PermissionDataAdapter extends TypeAdapter<PermissionData> {
     @Override
@@ -23,7 +23,7 @@ public class PermissionDataAdapter extends TypeAdapter<PermissionData> {
 
     @Override
     public PermissionData read(JsonReader reader) throws IOException {
-        final List<String> permissions = new ObjectArrayList<>();
+        final List<String> permissions = new CopyOnWriteArrayList<>();
 
         reader.beginArray();
 

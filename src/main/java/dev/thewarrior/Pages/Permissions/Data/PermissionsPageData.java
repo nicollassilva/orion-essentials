@@ -12,6 +12,9 @@ public class PermissionsPageData {
             .append(new KeyedCodec<>("@SearchValue", Codec.STRING),
                     (d, v) -> d.searchValue = v,
                     (d) -> d.searchValue).add()
+            .append(new KeyedCodec<>("@PermissionName", Codec.STRING),
+                    (d, v) -> d.permissionName = v,
+                    (d) -> d.permissionName).add()
             .append(new KeyedCodec<>("Target", Codec.STRING),
                     (d, v) -> d.target = v,
                     (d) -> d.target).add()
@@ -20,4 +23,6 @@ public class PermissionsPageData {
     public String action;
     public String target;
     public String searchValue;
+
+    public String permissionName;
 }

@@ -72,8 +72,13 @@ Group {
                 Anchor: (Height: 45, Bottom: 5);
                 Background: #000000(0.45);
 
+                Label #PermissionTitle {
+                    Padding: (Left: 5, Top: 30);
+                    Style: (FontSize: 13, TextColor: #911304);
+                }
+
                 Label #PermissionName {
-                    Padding: (Left: 15);
+                    Padding: (Left: 25);
                     Style: (
                         TextColor: #b6c9de,
                         RenderBold: true,

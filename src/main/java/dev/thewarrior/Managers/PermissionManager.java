@@ -1,49 +1,75 @@
 package dev.thewarrior.Managers;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.ShutdownReason;
+import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Managers.Data.Permission.PermissionGroupsData;
+import dev.thewarrior.Managers.Permission.PermissionBackupManager;
 import dev.thewarrior.MultiCommands;
 import dev.thewarrior.Utils.Logger;
+import dev.thewarrior.Utils.ThrottledTask;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PermissionManager {
+    private final AtomicBoolean isLoaded = new AtomicBoolean(false);
+
     private final Path defaultConfigFile;
+
     private final Path pluginConfigFile;
+    private JsonObject pluginRootObject;
+
     private PermissionGroupsData groupsData;
-    private JsonObject rootObject;
+
+    private final ThrottledTask saveTask;
+    private final Set<String> groupsToSave = ConcurrentHashMap.newKeySet();
+
+    private final PermissionBackupManager backupManager;
 
     public PermissionManager(final Path dataPath) {
         this.defaultConfigFile = Paths.get("permissions.json");
         this.pluginConfigFile = dataPath.resolve("permissions.json");
 
+        this.backupManager = new PermissionBackupManager(
+                this.defaultConfigFile,
+                this.pluginConfigFile,
+                dataPath.resolve("PermissionBackups")
+        );
+
+        this.saveTask = new ThrottledTask(HytaleServer.SCHEDULED_EXECUTOR, this::saveAsync, 1000);
+
         this.syncLoad();
     }
 
     private void syncLoad() {
+        if(this.isLoaded.getAndSet(true)) return;
+
         boolean hasError = false;
 
         try (final Reader reader = Files.newBufferedReader(this.defaultConfigFile)) {
-            this.rootObject = MultiCommands.gson.fromJson(reader, JsonObject.class);
+            JsonObject defaultRootObject = MultiCommands.gson.fromJson(reader, JsonObject.class);
 
-            final PermissionGroupsData data = MultiCommands.gson.fromJson(this.rootObject, PermissionGroupsData.class);
+            final PermissionGroupsData data = MultiCommands.gson.fromJson(defaultRootObject, PermissionGroupsData.class);
 
             if(data == null) {
                 hasError = true;
-                return;
             }
 
             this.groupsData = data;
         } catch (Exception e) {
             Logger.error("Failed to load permissions data: " + e.getMessage());
+            HytaleServer.get().shutdownServer();
+            return;
         }
 
         if(!Files.exists(this.pluginConfigFile)) {
@@ -57,8 +83,8 @@ public class PermissionManager {
         }
 
         try (final Reader reader = Files.newBufferedReader(this.pluginConfigFile)) {
-            final JsonObject pluginRoot = MultiCommands.gson.fromJson(reader, JsonObject.class);
-            final JsonObject permissionsObject = pluginRoot.getAsJsonObject("groups");
+            this.pluginRootObject = MultiCommands.gson.fromJson(reader, JsonObject.class);
+            final JsonObject permissionsObject = this.pluginRootObject.getAsJsonObject("groups");
 
             if (permissionsObject != null) {
                 for (String groupName : permissionsObject.keySet()) {
@@ -84,16 +110,80 @@ public class PermissionManager {
         return this.groupsData.getGroupData(groupName);
     }
 
-    public CompletableFuture<Void> saveAsync(final String groupName) {
-        return CompletableFuture.runAsync(() -> {
+    public boolean isMandatoryPermission(String groupName) {
+        final String lower = groupName.toLowerCase();
+
+        return lower.equals("default") || lower.equals("op") || lower.equals("adventure") || lower.equals("creative");
+    }
+
+    public void save(final String groupName) {
+        final PermissionData data = this.getGroupData(groupName);
+
+        if (data == null || !data.needsUpdate()) return;
+
+        this.groupsToSave.add(groupName);
+
+        this.saveTask.execute();
+    }
+
+    private void saveAsync() {
+        if (this.groupsToSave.isEmpty()) return;
+
+        final Set<String> groupsToProcess = new ObjectArraySet<>();
+
+        this.groupsToSave.removeIf(group -> {
+            groupsToProcess.add(group);
+
+            return true;
+        });
+
+        CompletableFuture.runAsync(() -> {
             try {
-                final JsonElement groupJson = MultiCommands.gson.toJsonTree(this.groupsData.getGroupData(groupName));
+                boolean needsFileUpdate = false;
+                boolean needsBackup = false;
 
-                this.rootObject.add(groupName, groupJson);
+                for (final String groupName : groupsToProcess) {
+                    final PermissionData data = this.getGroupData(groupName);
 
-                Files.writeString(this.defaultConfigFile, MultiCommands.gson.toJson(this.rootObject));
+                    if (data == null) {
+                        Logger.error("[CRITICAL] No permission data found for group: " + groupName);
+                        continue;
+                    }
+
+                    if (data.needsPermissionsUpdate()) {
+                        needsBackup |= !data.getPermissionsToDelete().isEmpty() || !data.getPermissionsToAdd().isEmpty();
+
+                        PermissionsModule.get().removeGroupPermission(groupName, data.getPermissionsToDelete());
+                        PermissionsModule.get().addGroupPermission(groupName, data.getPermissionsToAdd());
+
+                        data.clearPendingPermissionsChanges();
+                    }
+
+                    if (data.needsDataUpdate()) {
+                        final JsonObject updatedGroupData = data.getUpdatedCustomData();
+                        JsonObject groupsObject = this.pluginRootObject.getAsJsonObject("groups");
+
+                        if (groupsObject == null) {
+                            groupsObject = new JsonObject();
+                            this.pluginRootObject.add("groups", groupsObject);
+                        }
+
+                        groupsObject.add(groupName, updatedGroupData);
+                        needsFileUpdate = true;
+                    }
+                }
+
+                if(needsBackup) {
+                    this.backupManager.createBackup();
+                }
+
+                if (needsFileUpdate) {
+                    Files.writeString(this.pluginConfigFile, MultiCommands.gson.toJson(this.pluginRootObject));
+                }
             } catch (Exception e) {
                 Logger.error("[CRITICAL] Failed to save permissions data: " + e.getMessage());
+            } finally {
+                groupsToProcess.clear();
             }
         });
     }

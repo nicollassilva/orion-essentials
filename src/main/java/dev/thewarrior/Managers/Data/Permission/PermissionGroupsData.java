@@ -1,20 +1,36 @@
 package dev.thewarrior.Managers.Data.Permission;
 
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 
 public class PermissionGroupsData {
     private Map<String, PermissionData> groups;
 
-    public PermissionData addGroup(String groupName) {
+    public PermissionData addGroup(String groupName, boolean insertDefaultPermissions) {
         if(this.groups.containsKey(groupName)) {
             return this.groups.get(groupName);
         }
 
-        return this.groups.put(groupName, new PermissionData(new ObjectArrayList<>()));
+        final List<String> defaultPermissions = new CopyOnWriteArrayList<>();
+
+        if(insertDefaultPermissions) {
+            defaultPermissions.add("multicommands.tpaon");
+            defaultPermissions.add("multicommands.home");
+            defaultPermissions.add("multicommands.tpaoff");
+            defaultPermissions.add("multicommands.warp");
+            defaultPermissions.add("multicommands.tell.*");
+            defaultPermissions.add("multicommands.tpdeny");
+            defaultPermissions.add("multicommands.tpa");
+            defaultPermissions.add("multicommands.tpa");
+            defaultPermissions.add("multicommands.tpaccept");
+            defaultPermissions.add("multicommands.delhome");
+        }
+
+        return this.groups.put(groupName, new PermissionData(defaultPermissions, true));
     }
 
     public Map<String, PermissionData> getGroups() {
@@ -44,24 +60,8 @@ public class PermissionGroupsData {
 
         if(existingData == null) return;
 
-        existingData.setPrefix(element.has("prefix") ? element.get("prefix").getAsString() : "");
-        existingData.setSuffix(element.has("suffix") ? element.get("suffix").getAsString() : "");
-        existingData.setPriority(element.has("priority") ? element.get("priority").getAsInt() : 0);
-    }
-
-    public void syncGroupData(String groupName, String prefix, String suffix, Integer priority) {
-        if(!this.groups.containsKey(groupName)) return;
-
-        final PermissionData existingData = this.groups.get(groupName);
-
-        if (prefix != null) {
-            existingData.setPrefix(prefix);
-        }
-        if (suffix != null) {
-            existingData.setSuffix(suffix);
-        }
-        if (priority != null) {
-            existingData.setPriority(priority);
-        }
+        existingData.setPrefix(element.has("prefix") ? element.get("prefix").getAsString() : "", false);
+        existingData.setSuffix(element.has("suffix") ? element.get("suffix").getAsString() : "", false);
+        existingData.setPriority(element.has("priority") ? element.get("priority").getAsInt() : 0, false);
     }
 }
