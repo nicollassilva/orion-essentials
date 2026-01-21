@@ -12,17 +12,36 @@ public class PermissionsPageData {
             .append(new KeyedCodec<>("@SearchValue", Codec.STRING),
                     (d, v) -> d.searchValue = v,
                     (d) -> d.searchValue).add()
-            .append(new KeyedCodec<>("@PermissionName", Codec.STRING),
-                    (d, v) -> d.permissionName = v,
-                    (d) -> d.permissionName).add()
+            .append(new KeyedCodec<>("@PermissionNodeName", Codec.STRING),
+                    (d, v) -> d.permissionNodeName = v,
+                    (d) -> d.permissionNodeName).add()
             .append(new KeyedCodec<>("Target", Codec.STRING),
                     (d, v) -> d.target = v,
                     (d) -> d.target).add()
+            .append(new KeyedCodec<>("@PermissionName", Codec.STRING),
+                    (d, v) -> d.name = v,
+                    (d) -> d.name).add()
+            .append(new KeyedCodec<>("@PermissionPrefix", Codec.STRING),
+                    (d, v) -> d.prefix = v,
+                    (d) -> d.prefix).add()
+            .append(new KeyedCodec<>("@PermissionSuffix", Codec.STRING),
+                    (d, v) -> d.suffix = v,
+                    (d) -> d.suffix).add()
+            .append(new KeyedCodec<>("@PermissionPriority", Codec.INTEGER),
+                    (d, v) -> d.priority = v,
+                    (d) -> d.priority).add()
             .build();
 
     public String action;
     public String target;
     public String searchValue;
 
-    public String permissionName;
+    // Used when adding/removing permission nodes
+    public String permissionNodeName;
+
+    // Used when updating permission
+    public String name;
+    public String prefix;
+    public String suffix;
+    public int priority;
 }

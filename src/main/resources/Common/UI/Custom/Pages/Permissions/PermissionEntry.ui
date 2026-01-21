@@ -11,7 +11,7 @@ Button {
       LayoutMode: Top;
       Anchor: (Left: 0, Bottom: 5, Height: 40, Width: 240);
       Padding: (Top: 12, Left: 20);
-      Style: @EntryButtonStyle;
+      Background: #2b3542;
 
       Label #Name {
             Style: (

@@ -104,8 +104,8 @@ Group {
                 }
 
                 Group #PermissionContentListContainer {
-                  LayoutMode: TopScrolling;
-                  Anchor: (Top: 3, Height: 350);
+                      LayoutMode: TopScrolling;
+                      Anchor: (Top: 3, Height: 350);
                 }
             }
       }

@@ -41,9 +41,8 @@ Group {
                 );
             }
 
-            $C.@TextField #PermissionInputPriority {
-                Value: "";
-                PlaceholderText: "Prioridade da Tag";
+            $C.@NumberField #PermissionInputPriority {
+                Value: 0;
             }
         }
     }

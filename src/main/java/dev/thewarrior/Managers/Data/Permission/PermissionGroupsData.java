@@ -10,27 +10,16 @@ import java.util.function.BiConsumer;
 public class PermissionGroupsData {
     private Map<String, PermissionData> groups;
 
-    public PermissionData addGroup(String groupName, boolean insertDefaultPermissions) {
+    public PermissionData addGroup(String groupName, List<String> defaultPermissions) {
         if(this.groups.containsKey(groupName)) {
             return this.groups.get(groupName);
         }
 
-        final List<String> defaultPermissions = new CopyOnWriteArrayList<>();
-
-        if(insertDefaultPermissions) {
-            defaultPermissions.add("multicommands.tpaon");
-            defaultPermissions.add("multicommands.home");
-            defaultPermissions.add("multicommands.tpaoff");
-            defaultPermissions.add("multicommands.warp");
-            defaultPermissions.add("multicommands.tell.*");
-            defaultPermissions.add("multicommands.tpdeny");
-            defaultPermissions.add("multicommands.tpa");
-            defaultPermissions.add("multicommands.tpa");
-            defaultPermissions.add("multicommands.tpaccept");
-            defaultPermissions.add("multicommands.delhome");
-        }
-
         return this.groups.put(groupName, new PermissionData(defaultPermissions, true));
+    }
+
+    public PermissionData removeGroup(String groupName) {
+        return this.groups.remove(groupName);
     }
 
     public Map<String, PermissionData> getGroups() {

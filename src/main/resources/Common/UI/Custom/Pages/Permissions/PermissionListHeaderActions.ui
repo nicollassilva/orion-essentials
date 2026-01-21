@@ -49,20 +49,20 @@ Group {
             }
         }
 
-        Button #ClearAllPermissionsNode {
-            LayoutMode: Top;
-            Padding: (Left: 8, Right: 5, Top: 3);
-            Anchor: (Height: 25, Left: 5);
-            Style: @DettachPermissionButtonStyle;
-
-            Label {
-                Text: "Limpar";
-                Style: (
-                    FontSize: 14,
-                    RenderBold: true,
-                    TextColor: #b6c9de
-                );
-            }
-        }
+//        Button #ClearAllPermissionsNode {
+//            LayoutMode: Top;
+//            Padding: (Left: 8, Right: 5, Top: 3);
+//            Anchor: (Height: 25, Left: 5);
+//            Style: @DettachPermissionButtonStyle;
+//
+//            Label {
+//                Text: "Limpar";
+//                Style: (
+//                    FontSize: 14,
+//                    RenderBold: true,
+//                    TextColor: #b6c9de
+//                );
+//            }
+//        }
     }
 }

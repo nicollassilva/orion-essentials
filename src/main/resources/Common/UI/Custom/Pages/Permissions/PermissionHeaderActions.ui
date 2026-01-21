@@ -26,21 +26,21 @@ $C = "../../Common.ui";
 Group {
     LayoutMode: Left;
 
-    Button #SeePlayers {
-          LayoutMode: Top;
-          Anchor: (Right: 5, Height: 30);
-          Padding: (Full: 6);
-          Style: @PlayerListButtonStyle;
-
-          Label {
-                Text: "Lista de Jogadores";
-                Style: (
-                      FontSize: 14,
-                      RenderBold: true,
-                      TextColor: #b6c9de
-               );
-         }
-    }
+//    Button #SeePlayers {
+//          LayoutMode: Top;
+//          Anchor: (Right: 5, Height: 30);
+//          Padding: (Full: 6);
+//          Style: @PlayerListButtonStyle;
+//
+//          Label {
+//                Text: "Lista de Jogadores";
+//                Style: (
+//                      FontSize: 14,
+//                      RenderBold: true,
+//                      TextColor: #b6c9de
+//               );
+//         }
+//    }
 
     Button #DeletePermission {
           LayoutMode: Top;

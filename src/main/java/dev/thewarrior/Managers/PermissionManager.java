@@ -16,6 +16,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -116,6 +117,33 @@ public class PermissionManager {
         return lower.equals("default") || lower.equals("op") || lower.equals("adventure") || lower.equals("creative");
     }
 
+    public boolean hasGroupData(final String groupName) {
+        return this.groupsData.hasGroup(groupName);
+    }
+
+    public void swapPermission(final String currentPermissionName) {
+        final PermissionData currentData = this.getGroupData(currentPermissionName);
+
+        if(currentData == null) {
+            throw new NoSuchElementException();
+        }
+
+        if(!currentData.needsNameUpdate()) return;
+
+        final Set<String> permissions = new ObjectArraySet<>(currentData.getPermissions());
+
+        this.groupsData.removeGroup(currentPermissionName);
+
+        PermissionsModule.get().removeGroupPermission(currentPermissionName, permissions);
+
+        permissions.removeAll(currentData.getPermissionsToDelete());
+        permissions.addAll(currentData.getPermissionsToAdd());
+
+        this.groupsData.addGroup(currentData.getUpdatedName(), currentData.getPermissions());
+
+        PermissionsModule.get().addGroupPermission(currentData.getUpdatedName(), permissions);
+    }
+
     public void save(final String groupName) {
         final PermissionData data = this.getGroupData(groupName);
 
@@ -150,11 +178,16 @@ public class PermissionManager {
                         continue;
                     }
 
-                    if (data.needsPermissionsUpdate()) {
+                    final boolean hasNameUpdate = data.needsNameUpdate();
+                    final String finalGroupName = hasNameUpdate ? data.getUpdatedName() : groupName;
+
+                    if(hasNameUpdate) {
+                        this.swapPermission(groupName);
+                    } else if (data.needsPermissionsUpdate()) {
                         needsBackup |= !data.getPermissionsToDelete().isEmpty() || !data.getPermissionsToAdd().isEmpty();
 
-                        PermissionsModule.get().removeGroupPermission(groupName, data.getPermissionsToDelete());
-                        PermissionsModule.get().addGroupPermission(groupName, data.getPermissionsToAdd());
+                        PermissionsModule.get().removeGroupPermission(finalGroupName, data.getPermissionsToDelete());
+                        PermissionsModule.get().addGroupPermission(finalGroupName, data.getPermissionsToAdd());
 
                         data.clearPendingPermissionsChanges();
                     }
@@ -168,8 +201,16 @@ public class PermissionManager {
                             this.pluginRootObject.add("groups", groupsObject);
                         }
 
-                        groupsObject.add(groupName, updatedGroupData);
+                        if(hasNameUpdate) {
+                            groupsObject.remove(groupName);
+                        }
+
+                        groupsObject.add(finalGroupName, updatedGroupData);
                         needsFileUpdate = true;
+                    }
+
+                    if(hasNameUpdate) {
+                        data.setUpdatedName("");
                     }
                 }
 

@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.stream.Stream;
 
 public class PermissionBackupManager {
-    private static final int MAX_BACKUPS = 15;
+    private static final int MAX_BACKUPS = 50;
     private static final DateTimeFormatter BACKUP_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
 
     private final Path defaultConfigFile;

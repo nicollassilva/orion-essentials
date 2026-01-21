@@ -1,7 +1,6 @@
 package dev.thewarrior.Managers.Data.Permission;
 
 import com.google.gson.JsonObject;
-import dev.thewarrior.Utils.Logger;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 
 import java.util.List;
@@ -21,6 +20,8 @@ public class PermissionData {
     private final AtomicBoolean needsDataUpdate = new AtomicBoolean(false);
     private final AtomicBoolean needsPermissionsUpdate = new AtomicBoolean(false);
 
+    private String updatedName = "";
+
     public PermissionData(List<String> permissions, boolean isCreating) {
         this.permissions = permissions;
 
@@ -37,6 +38,17 @@ public class PermissionData {
 
     public PermissionData(List<String> permissions) {
         this(permissions, false);
+    }
+
+    public void setUpdatedName(String name) {
+        this.updatedName = name;
+
+        this.needsPermissionsUpdate.set(true);
+        this.needsDataUpdate.set(true);
+    }
+
+    public String getUpdatedName() {
+        return this.updatedName;
     }
 
     public void addPermission(String permission) {
@@ -91,16 +103,20 @@ public class PermissionData {
         this.permissionsToDelete.clear();
     }
 
+    public boolean needsNameUpdate() {
+        return this.updatedName != null && !this.updatedName.isEmpty();
+    }
+
     public boolean needsUpdate() {
-        return this.needsDataUpdate.get() || this.needsPermissionsUpdate.get();
+        return this.needsDataUpdate.get() || this.needsPermissionsUpdate.get() || this.needsNameUpdate();
     }
 
     public boolean needsDataUpdate() {
-        return this.needsDataUpdate.getAndSet(false);
+        return this.needsDataUpdate.getAndSet(false) || this.needsNameUpdate();
     }
 
     public boolean needsPermissionsUpdate() {
-        return this.needsPermissionsUpdate.getAndSet(false);
+        return this.needsPermissionsUpdate.getAndSet(false) || this.needsNameUpdate();
     }
 
     public String getPrefix() {
