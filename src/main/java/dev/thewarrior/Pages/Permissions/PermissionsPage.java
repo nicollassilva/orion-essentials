@@ -18,7 +18,6 @@ import dev.thewarrior.Managers.Data.Permission.PermissionGroupsData;
 import dev.thewarrior.Managers.PermissionManager;
 import dev.thewarrior.Pages.Permissions.Data.PermissionsPageData;
 import dev.thewarrior.Utils.ColorUtil;
-import dev.thewarrior.Utils.Logger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -38,6 +37,8 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
     private String updatingPermission = "";
     private String updatedPermission = "";
+
+    private boolean deleteConfirmed = false;
 
     public PermissionsPage(@Nonnull PlayerRef playerRef, PermissionManager permissionManager) {
         super(playerRef, CustomPageLifetime.CanDismiss, PermissionsPageData.CODEC);
@@ -165,6 +166,34 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
                 this.sendUpdate(new UICommandBuilder().set("#PermissionTitle.Text", ""));
             }
+            case "DeletePermission" -> {
+                final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+                final boolean refIsValid = playerRef != null && playerRef.isValid();
+
+                if(!this.deleteConfirmed) {
+                    if(refIsValid) {
+                        NotificationUtil.sendNotification(
+                                playerRef.getPacketHandler(),
+                                ColorUtil.colorize("&eClique novamente para confirmar a exclusão do grupo de permissão: &6" + this.selectedPermission)
+                        );
+                    }
+                    this.deleteConfirmed = true;
+                    return;
+                }
+
+                this.deleteConfirmed = false;
+                this.permissionManager.deletePermission(this.selectedPermission);
+
+                this.onClose(ref, store);
+
+                if(refIsValid) {
+                    NotificationUtil.sendNotification(
+                            playerRef.getPacketHandler(),
+                            ColorUtil.colorize("&2Grupo de permissão excluído com sucesso!"),
+                            this.selectedPermission
+                    );
+                }
+            }
 
             // Permission Node cases
             case "AddPermissionNode" -> {
@@ -236,6 +265,7 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
 
         this.updatingPermission = "";
         this.selectedPermission = selectedPermission;
+        this.deleteConfirmed = false;
 
         final UICommandBuilder commandBuilder = new UICommandBuilder();
         final UIEventBuilder eventBuilder = new UIEventBuilder();
@@ -289,6 +319,14 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
         commandBuilder.set("#PermissionInputPriority.Value", permissionData.getPriority());
         commandBuilder.set("#PermissionInputPrefix.Value", permissionData.getPrefix());
         commandBuilder.set("#PermissionInputSuffix.Value", permissionData.getSuffix());
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#DeletePermission",
+                EventData.of("Action", "DeletePermission")
+                        .append("Target", this.selectedPermission),
+                false
+        );
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,

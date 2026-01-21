@@ -144,6 +144,28 @@ public class PermissionManager {
         PermissionsModule.get().addGroupPermission(currentData.getUpdatedName(), permissions);
     }
 
+    public void deletePermission(final String groupName) {
+        CompletableFuture.runAsync(() -> {
+            final PermissionData data = this.getGroupData(groupName);
+
+            if (data == null) return;
+
+            PermissionsModule.get().removeGroupPermission(groupName, new ObjectArraySet<>(data.getPermissions()));
+
+            this.groupsData.removeGroup(groupName);
+
+            if (this.pluginRootObject != null) {
+                final JsonObject groupsObject = this.pluginRootObject.getAsJsonObject("groups");
+
+                if (groupsObject != null) {
+                    groupsObject.remove(groupName);
+                }
+            }
+
+            this.save(groupName);
+        });
+    }
+
     public void save(final String groupName) {
         final PermissionData data = this.getGroupData(groupName);
 
