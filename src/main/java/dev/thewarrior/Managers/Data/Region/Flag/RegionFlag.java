@@ -18,6 +18,7 @@ public enum RegionFlag {
     BREAK("break", "Controla permissões de destruição de blocos", RegionFlagType.MAPPED),
     USE("use", "Controla permissões de uso de itens", RegionFlagType.MAPPED),
     COMMANDS("commands", "Controla permissões de comandos", RegionFlagType.MAPPED),
+    PERMISSIONS("permissions", "Controla permissões especiais", RegionFlagType.MAPPED),
 
     // Flags do tipo MESSAGE
     GREETING("greeting", "Mensagem exibida ao entrar na região", RegionFlagType.MESSAGE),
@@ -29,6 +30,7 @@ public enum RegionFlag {
     MOB_SPAWNING("mob_spawning", "Permite spawn de mobs na região", RegionFlagType.BOOLEAN),
     FALL_DAMAGE("fall_damage", "Permite dano de queda na região", RegionFlagType.BOOLEAN),
     HUNGER("hunger", "Permite fome na região", RegionFlagType.BOOLEAN),
+    DROP("drop", "Permite dropar itens na região", RegionFlagType.BOOLEAN),
 
     // Flag não encontrada
     NOT_FOUND("not_found", "Flag não encontrada", RegionFlagType.UNKNOWN);

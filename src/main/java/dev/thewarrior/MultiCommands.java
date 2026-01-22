@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Adapters.PermissionDataAdapter;
 import dev.thewarrior.Adapters.RegionAreaAdapter;
+import dev.thewarrior.Events.ItemDropProtectionSystem;
 import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Camera.FreeCameraCommand;
@@ -147,6 +148,9 @@ public class MultiCommands extends JavaPlugin {
 
     public void registerSystems() {
         this.getEntityStoreRegistry().registerSystem(new TeleportMovementCheckerSystem(this.teleportManager));
+
+        // Regions Systems
+        this.getEntityStoreRegistry().registerSystem(new ItemDropProtectionSystem(this.regionManager));
     }
 
     public void registerEvents() {

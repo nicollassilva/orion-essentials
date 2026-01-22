@@ -13,7 +13,9 @@ import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent.PlayerReque
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.Managers.Data.Region.Data.RegionData;
+import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
+import dev.thewarrior.Managers.RegionManager;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nullable;
@@ -21,13 +23,16 @@ import java.util.Collections;
 import java.util.Set;
 
 public class ItemDropProtectionSystem extends EntityEventSystem<EntityStore, PlayerRequest> {
-    private final MultiCommands plugin;
-    private final String bypassPermission = "multicommands.bypass.item_drop_protection";
+    private final RegionManager regionManager;
 
-    protected ItemDropProtectionSystem(MultiCommands plugin) {
+    private final String bypassPermission = "multicommands.bypass.item_drop_protection";
+    private final RegionFlag regionFlag;
+
+    public ItemDropProtectionSystem(RegionManager regionManager) {
         super(PlayerRequest.class);
 
-        this.plugin = plugin;
+        this.regionManager = regionManager;
+        this.regionFlag = RegionFlag.DROP;
     }
 
     @Override
@@ -45,15 +50,19 @@ public class ItemDropProtectionSystem extends EntityEventSystem<EntityStore, Pla
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
         if(player == null || playerRef == null || !playerRef.isValid()) return;
-        if(player.hasPermission(this.bypassPermission)) return;
+        //if(player.hasPermission(this.bypassPermission)) return;
 
         final TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
 
         if(transform == null) return;
 
-        int x = (int) Math.floor(transform.getPosition().getX());
-        int y = (int) Math.floor(transform.getPosition().getY());
-        int z = (int) Math.floor(transform.getPosition().getZ());
+        final RegionData regionData = this.regionManager.getHighestPriorityRegion(
+                playerRef.getUuid(), transform, store.getExternalData().getWorld()
+        );
+
+        if(regionData == null || Boolean.TRUE.equals(regionData.getFlags().getBoolean(this.regionFlag.getName()))) return;
+
+        event.setCancelled(true);
     }
 
     @Nullable

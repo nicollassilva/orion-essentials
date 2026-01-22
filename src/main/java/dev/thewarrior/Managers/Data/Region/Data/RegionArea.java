@@ -77,4 +77,57 @@ public class RegionArea {
 
         return String.format("X: %.0f, Y: %.0f, Z: %.0f", this.center.x, this.center.y, this.center.z);
     }
+
+    public boolean isGlobal() {
+        return this.hasEmptyBounds();
+    }
+
+    public int getMinX() {
+        return this.min != null ? (int) this.min.getX() : Integer.MIN_VALUE;
+    }
+
+    public int getMaxX() {
+        return this.max != null ? (int) this.max.getX() : Integer.MAX_VALUE;
+    }
+
+    public int getMinY() {
+        return this.min != null ? (int) this.min.getY() : Integer.MIN_VALUE;
+    }
+
+    public int getMaxY() {
+        return this.max != null ? (int) this.max.getY() : Integer.MAX_VALUE;
+    }
+
+    public int getMinZ() {
+        return this.min != null ? (int) this.min.getZ() : Integer.MIN_VALUE;
+    }
+
+    public int getMaxZ() {
+        return this.max != null ? (int) this.max.getZ() : Integer.MAX_VALUE;
+    }
+
+    public boolean containsCuboid(int x, int y, int z) {
+        if (isGlobal()) return true;
+
+        return x >= getMinX() && x <= getMaxX() &&
+               y >= getMinY() && y <= getMaxY() &&
+               z >= getMinZ() && z <= getMaxZ();
+    }
+
+    public boolean containsArea(int x, int z) {
+        if (isGlobal()) return true;
+
+        return x >= getMinX() && x <= getMaxX() &&
+               z >= getMinZ() && z <= getMaxZ();
+    }
+
+    public boolean containsSphere(double x, double y, double z) {
+        if (this.center == null) return false;
+
+        double dx = x - this.center.x;
+        double dy = y - this.center.y;
+        double dz = z - this.center.z;
+
+        return (dx * dx + dy * dy + dz * dz) <= this.radiusSquared;
+    }
 }

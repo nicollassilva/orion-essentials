@@ -34,6 +34,7 @@ public abstract class StorableManager<T> {
     private void loadConfig(Class<T> dataClass) {
         if(!Files.exists(this.configFile)) {
             this.saveConfigSync();
+            this.onDataLoaded();
             return;
         }
 
@@ -44,9 +45,18 @@ public abstract class StorableManager<T> {
             if (loadedData != null) {
                 this.data = loadedData;
             }
+            this.onDataLoaded();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Called after data is loaded from file.
+     * Subclasses can override this to perform post-load operations.
+     */
+    protected void onDataLoaded() {
+        // Default implementation does nothing
     }
 
     /**

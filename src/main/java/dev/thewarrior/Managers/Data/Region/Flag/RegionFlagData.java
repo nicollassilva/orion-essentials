@@ -126,9 +126,8 @@ public class RegionFlagData {
      */
     public boolean hasFlag(String flagName) {
         String key = flagName.toLowerCase();
-        return this.mappedFlags.containsKey(key) ||
-               this.messageFlags.containsKey(key) ||
-               this.booleanFlags.containsKey(key);
+
+        return this.mappedFlags.containsKey(key) || this.messageFlags.containsKey(key) || this.booleanFlags.containsKey(key);
     }
 
     /**
@@ -136,6 +135,7 @@ public class RegionFlagData {
      */
     public void clearFlag(String flagName) {
         String key = flagName.toLowerCase();
+
         this.mappedFlags.remove(key);
         this.messageFlags.remove(key);
         this.booleanFlags.remove(key);
