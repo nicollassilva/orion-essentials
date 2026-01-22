@@ -107,18 +107,15 @@ public class RegionArea {
     }
 
     public boolean containsCuboid(int x, int y, int z) {
-        if (isGlobal()) return true;
+        if (this.isGlobal()) return true;
 
-        return x >= getMinX() && x <= getMaxX() &&
-               y >= getMinY() && y <= getMaxY() &&
-               z >= getMinZ() && z <= getMaxZ();
+        return x >= this.getMinX() && x <= this.getMaxX() && y >= this.getMinY() && y <= this.getMaxY() && z >= this.getMinZ() && z <= this.getMaxZ();
     }
 
     public boolean containsArea(int x, int z) {
-        if (isGlobal()) return true;
+        if (this.isGlobal()) return true;
 
-        return x >= getMinX() && x <= getMaxX() &&
-               z >= getMinZ() && z <= getMaxZ();
+        return x >= this.getMinX() && x <= this.getMaxX() && z >= this.getMinZ() && z <= this.getMaxZ();
     }
 
     public boolean containsSphere(double x, double y, double z) {

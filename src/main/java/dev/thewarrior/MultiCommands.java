@@ -12,8 +12,6 @@ import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Adapters.PermissionDataAdapter;
 import dev.thewarrior.Adapters.RegionAreaAdapter;
-import dev.thewarrior.Events.ItemDropProtectionSystem;
-import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
@@ -38,9 +36,13 @@ import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
 import dev.thewarrior.Commands.Warp.WarpsCommand;
 import dev.thewarrior.Components.PlayerCommandComponent;
+import dev.thewarrior.Events.BlockBreakProtectionSystem;
+import dev.thewarrior.Events.DamageProtectionSystem;
+import dev.thewarrior.Events.ItemDropProtectionSystem;
 import dev.thewarrior.Handlers.PlayerEventHandler;
-import dev.thewarrior.Managers.*;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
+import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
+import dev.thewarrior.Managers.*;
 import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
 import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
@@ -151,6 +153,8 @@ public class MultiCommands extends JavaPlugin {
 
         // Regions Systems
         this.getEntityStoreRegistry().registerSystem(new ItemDropProtectionSystem(this.regionManager));
+        this.getEntityStoreRegistry().registerSystem(new DamageProtectionSystem(this.regionManager));
+        this.getEntityStoreRegistry().registerSystem(new BlockBreakProtectionSystem(this.regionManager));
     }
 
     public void registerEvents() {

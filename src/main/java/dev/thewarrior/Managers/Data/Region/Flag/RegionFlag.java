@@ -2,15 +2,6 @@ package dev.thewarrior.Managers.Data.Region.Flag;
 
 import javax.annotation.Nullable;
 
-/**
- * Enum que define os tipos de flags disponíveis para regiões.
- *
- * Cada flag tem um tipo de valor esperado:
- * - MAPPED: Aceita mapeamentos key -> value (ex: build, interact)
- * - MESSAGE: Aceita uma mensagem de texto (ex: greeting, farewell)
- * - LIST: Aceita uma lista de valores (ex: blocked_commands)
- * - BOOLEAN: Aceita apenas true/false global (ex: pvp, invincible)
- */
 public enum RegionFlag {
     // Flags do tipo MAPPED (key -> boolean)
     BUILD("build", "Controla permissões de construção", RegionFlagType.MAPPED),
@@ -26,10 +17,11 @@ public enum RegionFlag {
 
     // Flags do tipo BOOLEAN
     PVP("pvp", "Permite ou bloqueia PvP na região", RegionFlagType.BOOLEAN),
+    PVM("pvm", "Permite ou bloqueia dano de monstros na região", RegionFlagType.BOOLEAN),
+    PVE("pve", "Permite ou bloqueia dano ambiental na região", RegionFlagType.BOOLEAN),
     INVINCIBLE("invincible", "Jogadores são invencíveis na região", RegionFlagType.BOOLEAN),
     MOB_SPAWNING("mob_spawning", "Permite spawn de mobs na região", RegionFlagType.BOOLEAN),
     FALL_DAMAGE("fall_damage", "Permite dano de queda na região", RegionFlagType.BOOLEAN),
-    HUNGER("hunger", "Permite fome na região", RegionFlagType.BOOLEAN),
     DROP("drop", "Permite dropar itens na região", RegionFlagType.BOOLEAN),
 
     // Flag não encontrada

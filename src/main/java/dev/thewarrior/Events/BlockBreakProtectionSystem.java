@@ -8,10 +8,11 @@ import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent.PlayerRequest;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
@@ -20,19 +21,19 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
-public class ItemDropProtectionSystem extends EntityEventSystem<EntityStore, PlayerRequest> {
+public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, BreakBlockEvent> {
     private final RegionManager regionManager;
-
-    private final String bypassPermission = "multicommands.bypass.item_drop_protection";
+    private static final String BYPASS_PERMISSION = "multicommands.bypass.block_break";
     private final String regionFlag;
 
-    public ItemDropProtectionSystem(RegionManager regionManager) {
-        super(PlayerRequest.class);
-
+    public BlockBreakProtectionSystem(RegionManager regionManager) {
+        super(BreakBlockEvent.class);
         this.regionManager = regionManager;
-        this.regionFlag = RegionFlag.DROP.getName();
+
+        this.regionFlag = RegionFlag.BREAK.getName();
     }
 
     @Override
@@ -41,28 +42,40 @@ public class ItemDropProtectionSystem extends EntityEventSystem<EntityStore, Pla
             @NonNullDecl ArchetypeChunk<EntityStore> archetypeChunk,
             @NonNullDecl Store<EntityStore> store,
             @NonNullDecl CommandBuffer<EntityStore> commandBuffer,
-            @NonNullDecl PlayerRequest event
+            @NonNullDecl BreakBlockEvent event
     ) {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
         final Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
         final Player player = store.getComponent(ref, Player.getComponentType());
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
-        if(player == null || playerRef == null || !playerRef.isValid()) return;
-        if(player.hasPermission(this.bypassPermission)) return;
+        if (player == null || playerRef == null || !playerRef.isValid()) return;
+        //if (player.hasPermission(BYPASS_PERMISSION)) return;
 
-        final TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
+        final int blockX = event.getTargetBlock().getX();
+        final int blockY = event.getTargetBlock().getY();
+        final int blockZ = event.getTargetBlock().getZ();
+        final World world = store.getExternalData().getWorld();
+        final BlockType blockType = world.getBlockType(blockX, blockY, blockZ);
 
-        if(transform == null) return;
+        final List<RegionData> regions = this.regionManager.getApplicableRegions(world.getName(), blockX, blockY, blockZ);
 
-        final RegionData regionData = this.regionManager.getHighestPriorityRegion(
-                playerRef.getUuid(), transform, store.getExternalData().getWorld()
-        );
+        if (regions.isEmpty()) return;
 
-        if(regionData == null || !regionData.getFlags().hasFlag(this.regionFlag) || Boolean.TRUE.equals(regionData.getFlags().getBoolean(this.regionFlag))) return;
+        if (isBreakAllowed(regions, blockType)) return;
 
         event.setCancelled(true);
+    }
+
+    private boolean isBreakAllowed(List<RegionData> regions, BlockType blockType) {
+        for (RegionData region : regions) {
+            if (!region.getFlags().hasFlag(this.regionFlag)) continue;
+
+            return region.getFlags().checkMappedPermission(this.regionFlag, blockType.getId());
+        }
+
+        return true;
     }
 
     @Nullable
@@ -75,3 +88,5 @@ public class ItemDropProtectionSystem extends EntityEventSystem<EntityStore, Pla
         return Collections.singleton(RootDependency.first());
     }
 }
+
+

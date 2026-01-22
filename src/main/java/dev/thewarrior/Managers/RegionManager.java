@@ -124,7 +124,7 @@ public class RegionManager extends StorableManager<RegionManagerData> {
     }
 
     @Nonnull
-    private List<RegionData> getApplicableRegions(@Nonnull String worldName, int x, int y, int z) {
+    public List<RegionData> getApplicableRegions(@Nonnull String worldName, int x, int y, int z) {
         return this.findApplicableRegions(worldName, x, y, z);
     }
 
@@ -144,7 +144,7 @@ public class RegionManager extends StorableManager<RegionManagerData> {
         if (candidates.size() == 1) {
             RegionData region = candidates.getFirst();
 
-            if (containsPosition(region, x, y, z)) {
+            if (this.containsPosition(region, x, y, z)) {
                 return candidates; // Retorna a mesma lista
             }
 
@@ -154,7 +154,7 @@ public class RegionManager extends StorableManager<RegionManagerData> {
         List<RegionData> result = null;
 
         for (RegionData region : candidates) {
-            if (!containsPosition(region, x, y, z)) continue;
+            if (!this.containsPosition(region, x, y, z)) continue;
 
             if (result == null) {
                 result = new ArrayList<>(candidates.size());

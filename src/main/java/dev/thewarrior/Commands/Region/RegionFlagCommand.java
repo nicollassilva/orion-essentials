@@ -93,13 +93,9 @@ public class RegionFlagCommand extends AbstractPlayerCommand {
         String key = parts[4];
 
         if (parts.length < 6) {
-            final Boolean value = flags.checkMappedPermission(flag.getName(), key);
+            final boolean value = flags.checkMappedPermission(flag.getName(), key);
 
-            if (value == null) {
-                ctx.sendMessage(Message.raw("Flag '" + flag.getName() + "' não tem valor definido para '" + key + "'.").color(Color.YELLOW));
-            } else {
-                ctx.sendMessage(Message.raw("Flag '" + flag.getName() + "' [" + key + "] = " + value).color(Color.GREEN));
-            }
+            ctx.sendMessage(Message.raw("Valor da flag '" + flag.getName() + "' de chave [" + key + "] = " + value).color(Color.GREEN));
             return;
         }
 

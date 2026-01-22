@@ -123,12 +123,12 @@ public class RegionSpatialIndex {
         }
 
         // Caso especial: só tem regiões globais
-        if (totalSize == (globals != null ? globals.size() : 0) && globals != null) {
+        if (totalSize == (globals != null ? globals.size() : 0)) {
             return globals; // Retorna diretamente sem copiar
         }
 
         // Caso especial: só tem regiões do chunk
-        if (globals == null && large == null && chunkRegions != null) {
+        if (globals == null && large == null) {
             return chunkRegions; // Retorna diretamente sem copiar
         }
 
