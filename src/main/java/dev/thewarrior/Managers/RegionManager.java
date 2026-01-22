@@ -44,6 +44,35 @@ public class RegionManager extends StorableManager<RegionManagerData> {
         return this.data.getRegionByName(name);
     }
 
+    public void deleteRegion(final RegionData regionData) {
+        this.data.removeRegion(regionData);
+        this.saveConfig();
+    }
+
+    public void updateRegion(final RegionData regionData, String newName, Integer newPriority, Vector3i newMin, Vector3i newMax) {
+        if (newName != null && !newName.isEmpty()) {
+            regionData.setName(newName);
+        }
+
+        if (newPriority != null && !regionData.getType().equals(RegionType.GLOBAL)) {
+            regionData.setPriority(newPriority);
+        }
+
+        if (newMin != null && newMax != null && !regionData.getType().equals(RegionType.GLOBAL)) {
+            final RegionArea newArea = switch (regionData.getType()) {
+                case AREA -> this.regionAreaFactory.createArea(newMin.getX(), newMin.getY(), newMin.getZ(), newMax.getX(), newMax.getY(), newMax.getZ());
+                case CUBOID -> this.regionAreaFactory.createCuboid(newMin.getX(), newMin.getY(), newMin.getZ(), newMax.getX(), newMax.getY(), newMax.getZ());
+                default -> null;
+            };
+
+            if (newArea != null) {
+                regionData.setArea(newArea);
+            }
+        }
+
+        this.saveConfig();
+    }
+
     public RegionData create(RegionType type, String name, String worldName, Vector3i min, Vector3i max, int priority) throws Exception {
         final RegionArea area = switch (type) {
             case GLOBAL -> this.regionAreaFactory.createGlobal();

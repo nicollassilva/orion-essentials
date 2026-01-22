@@ -85,7 +85,7 @@ public class RegionData {
         if(this.area.hasEmptyBounds()) return "N/A";
 
         return "&6Min: &r" + this.area.getMinString(this.type) + "\n" +
-               "&6Max: &r" + this.area.getMaxString(this.type) + "\n" +
-                (this.area.getCenter() != null ? "&6Center: &r" + this.area.getCenterString() : "");
+               "&6Max: &r" + this.area.getMaxString(this.type) +
+                (this.area.getCenter() != null ? "\n&6Center: &r" + this.area.getCenterString() : "");
     }
 }
