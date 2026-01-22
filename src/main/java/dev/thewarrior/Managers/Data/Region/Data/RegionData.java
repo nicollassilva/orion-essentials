@@ -1,6 +1,7 @@
 package dev.thewarrior.Managers.Data.Region.Data;
 
 import dev.thewarrior.Managers.Data.Region.Composition.RegionType;
+import dev.thewarrior.Managers.Data.Region.Flag.RegionFlagData;
 
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ public class RegionData {
     private int priority;
     private RegionArea area;
     private long creationTime;
+    private RegionFlagData flags;
 
     public RegionData(UUID id, String worldName, String name, RegionType type, int priority, RegionArea area, long creationTime) {
         this.id = id;
@@ -27,6 +29,7 @@ public class RegionData {
         this.priority = priority;
         this.area = area;
         this.creationTime = creationTime;
+        this.flags = new RegionFlagData();
     }
 
     public UUID getId() {
@@ -75,6 +78,17 @@ public class RegionData {
 
     public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public RegionFlagData getFlags() {
+        if (this.flags == null) {
+            this.flags = new RegionFlagData();
+        }
+        return this.flags;
+    }
+
+    public void setFlags(RegionFlagData flags) {
+        this.flags = flags;
     }
 
     public String getBounds() {

@@ -40,9 +40,9 @@ public class RegionListCommand extends AbstractPlayerCommand {
         if (regions.isEmpty()) {
             commandContext.sendMessage(Message.join(
                     Message.raw("Nenhuma região foi encontrada no servidor.\n").color(Color.YELLOW),
-                    Message.raw("Use ").color(Color.GRAY),
-                    Message.raw("/region create").color(Color.WHITE).bold(true),
-                    Message.raw(" para criar uma nova região.\n").color(Color.GRAY)
+                    Message.raw("Use ").color(Color.LIGHT_GRAY),
+                    Message.raw("/region create").color(Color.GREEN).bold(true),
+                    Message.raw(" para criar uma nova região.\n").color(Color.LIGHT_GRAY)
             ));
             return;
         }

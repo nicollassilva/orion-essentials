@@ -21,6 +21,7 @@ public class RegionBaseCommand extends CommandBase {
         addSubCommand(new RegionDeleteCommand(regionManager));
         addSubCommand(new RegionUpdateCommand(regionManager));
         addSubCommand(new RegionDeselectCommand());
+        addSubCommand(new RegionFlagCommand(regionManager));
     }
 
     public boolean canGeneratePermission() {
@@ -34,10 +35,11 @@ public class RegionBaseCommand extends CommandBase {
                 Message.raw("Permite gerenciar regiões protegidas no servidor.\n\n").color(Color.LIGHT_GRAY).italic(true),
                 Message.raw("/region create").color(Color.WHITE).bold(true), Message.raw(" <type> <name>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Cria uma nova região\n", 10, " ")),
                 Message.raw("/region list").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Mostra todas as regiões criadas\n", 45, " ")),
-                Message.raw("/region detail").color(Color.WHITE).bold(true), Message.raw(" <name> <seconds>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Detalhes da região especificada\n", 4, " ")),
+                Message.raw("/region detail").color(Color.WHITE).bold(true), Message.raw(" <name> [show]").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Detalhes da região\n", 11, " ")),
                 Message.raw("/region deselect").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Remove a seleção atual\n", 35, " ")),
-                Message.raw("/region delete").color(Color.WHITE).bold(true), Message.raw(" <name>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Remove uma região existente\n", 23, " ")),
-                Message.raw("/region update").color(Color.WHITE).bold(true), Message.raw(" <name>").color(Color.YELLOW).bold(true), Message.raw(" --[newName|priority|updateArea]").color(Color.LIGHT_GRAY)
+                Message.raw("/region delete").color(Color.WHITE).bold(true), Message.raw(" <name>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Remove uma região\n", 28, " ")),
+                Message.raw("/region update").color(Color.WHITE).bold(true), Message.raw(" <name> [options]").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Atualiza uma região\n", 8, " ")),
+                Message.raw("/region flag").color(Color.WHITE).bold(true), Message.raw(" <region> [flag] [args]").color(Color.YELLOW).bold(true), Message.raw(" Gerencia flags\n")
         ));
     }
 

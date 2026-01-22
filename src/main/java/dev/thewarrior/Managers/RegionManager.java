@@ -96,4 +96,8 @@ public class RegionManager extends StorableManager<RegionManagerData> {
 
         return data;
     }
+
+    public void save() {
+        this.saveConfig();
+    }
 }
