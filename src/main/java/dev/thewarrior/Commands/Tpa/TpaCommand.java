@@ -67,10 +67,10 @@ public class TpaCommand extends AbstractPlayerCommand {
             return;
         }
 
-//        if (target.getUuid().equals(playerRef.getUuid())) {
-//            playerRef.sendMessage(Messages.CANNOT_TELEPORT_YOURSELF.color(Color.YELLOW));
-//            return;
-//        }
+        if (target.getUuid().equals(playerRef.getUuid())) {
+            playerRef.sendMessage(Messages.CANNOT_TELEPORT_YOURSELF.color(Color.YELLOW));
+            return;
+        }
 
         Store<EntityStore> targetStore = targetRef.getStore();
         PlayerCommandComponent targetData = targetStore.getComponent(targetRef, MultiCommands.PlayerDataComponent);
@@ -89,10 +89,10 @@ public class TpaCommand extends AbstractPlayerCommand {
 
         boolean created = this.tpaManager.createRequest(playerRef, target);
 
-//        if (!created) {
-//            playerRef.sendMessage(Message.raw(String.format(Messages.COMMAND_TPA_FAILED, target.getUsername())).color(Color.YELLOW));
-//            return;
-//        }
+        if (!created) {
+            playerRef.sendMessage(Message.raw(String.format(Messages.COMMAND_TPA_FAILED, target.getUsername())).color(Color.YELLOW));
+            return;
+        }
 
         playerRef.sendMessage(Message.raw(String.format(Messages.COMMAND_TPA_SUCCESS, target.getUsername())).color(Color.GREEN));
 

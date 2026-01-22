@@ -11,6 +11,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Adapters.PermissionDataAdapter;
+import dev.thewarrior.Adapters.RegionAreaAdapter;
+import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
 import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Discord.DiscordCommand;
@@ -21,6 +23,7 @@ import dev.thewarrior.Commands.Home.HomesCommand;
 import dev.thewarrior.Commands.Home.SetHomeCommand;
 import dev.thewarrior.Commands.MultiCommands.PluginReloadCommand;
 import dev.thewarrior.Commands.Permissions.PermissionsCommand;
+import dev.thewarrior.Commands.Region.RegionBaseCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
 import dev.thewarrior.Commands.Spawn.SpawnCommand;
 import dev.thewarrior.Commands.Teleports.TpHereCommand;
@@ -49,6 +52,7 @@ public class MultiCommands extends JavaPlugin {
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .registerTypeAdapter(PermissionData.class, new PermissionDataAdapter())
+            .registerTypeAdapter(RegionArea.class, new RegionAreaAdapter())
             .create();
 
     public PluginConfigManager pluginConfigManager;
@@ -56,6 +60,7 @@ public class MultiCommands extends JavaPlugin {
     public TeleportManager teleportManager;
     public TpaManager tpaManager;
     public PermissionManager permissionManager;
+    public RegionManager regionManager;
 
     public MultiCommands(@NonNullDecl JavaPluginInit init) {
         super(init);
@@ -71,6 +76,7 @@ public class MultiCommands extends JavaPlugin {
         this.teleportManager = new TeleportManager(this.pluginConfigManager);
         this.tpaManager = new TpaManager();
         this.permissionManager = new PermissionManager(this.getDataDirectory());
+        this.regionManager = new RegionManager(this.getDataDirectory());
     }
 
     @Override
@@ -134,6 +140,9 @@ public class MultiCommands extends JavaPlugin {
 
         // Permissions
         this.getCommandRegistry().registerCommand(new PermissionsCommand(this.permissionManager));
+
+        // Regions
+        this.getCommandRegistry().registerCommand(new RegionBaseCommand(this.regionManager));
     }
 
     public void registerSystems() {

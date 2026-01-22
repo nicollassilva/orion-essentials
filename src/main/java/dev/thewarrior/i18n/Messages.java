@@ -116,4 +116,16 @@ public class Messages {
     public static final Message COMMAND_TPA_ALREADY_ON = Message.raw("[AVISO] Os pedidos de teleporte já estão ativados!");
 
     public static final String COMMAND_TPA_TARGET_DISABLED = "[AVISO] O jogador '%s' desativou os pedidos de teleporte.";
+
+    public static final Message ERROR_CREATING_REGION_NO_SELECTION = Message.raw("[ERRO] Não foi possível criar a região: nenhuma seleção válida encontrada.");
+
+    public static final Message ERROR_CREATING_REGION_INVALID_TYPE = Message.raw("[ERRO] O tipo de região fornecido é inválido.");
+
+    public static final Message ERROR_CREATING_REGION_GENERIC = Message.raw("[ERRO] Ocorreu um erro ao criar a região.");
+
+    public static final Message ERROR_CREATING_REGION_INVALID_PRIORITY = Message.raw("[ERRO] A prioridade da região é inválida. Ela deve ser um número inteiro maior ou igual a 0.");
+
+    public static final Message ERROR_CREATING_REGION_NAME_ALREADY_EXISTS = Message.raw("[ERRO] O nome da região já existe. Por favor, escolha um nome diferente.");
+
+    public static final Message ERROR_CREATING_REGION_GLOBAL_ALREADY_EXISTS = Message.raw("[ERRO] Já existe uma região global definida para este mundo.");
 }
