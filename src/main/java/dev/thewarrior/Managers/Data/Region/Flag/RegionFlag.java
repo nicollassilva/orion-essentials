@@ -7,7 +7,8 @@ public enum RegionFlag {
     BUILD("build", "Controla permissões de construção", RegionFlagType.MAPPED),
     INTERACT("interact", "Controla permissões de interação com blocos/entidades", RegionFlagType.MAPPED),
     BREAK("break", "Controla permissões de destruição de blocos", RegionFlagType.MAPPED),
-    USE("use", "Controla permissões de uso de itens", RegionFlagType.MAPPED),
+    USE_ITEM("use", "Controla permissões de uso de itens", RegionFlagType.MAPPED), // Tomar poções, comer comida, etc.
+    PICKUP_ITEM("pickup", "Controla permissões de pegar itens", RegionFlagType.MAPPED),
     COMMANDS("commands", "Controla permissões de comandos", RegionFlagType.MAPPED),
     PERMISSIONS("permissions", "Controla permissões especiais", RegionFlagType.MAPPED),
 

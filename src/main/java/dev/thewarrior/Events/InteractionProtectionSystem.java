@@ -8,9 +8,10 @@ import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent.Pre;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -22,18 +23,20 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, BreakBlockEvent> {
+public class InteractionProtectionSystem extends EntityEventSystem<EntityStore, Pre> {
     private final RegionManager regionManager;
-    private static final String BYPASS_PERMISSION = "multicommands.bypass.block_break";
+    private static final String BYPASS_PERMISSION = "multicommands.bypass.item_interact";
     private final String regionFlag;
 
-    public BlockBreakProtectionSystem(RegionManager regionManager) {
-        super(BreakBlockEvent.class);
+    public InteractionProtectionSystem(RegionManager regionManager) {
+        super(Pre.class);
+
         this.regionManager = regionManager;
 
-        this.regionFlag = RegionFlag.BREAK.getName();
+        this.regionFlag = RegionFlag.INTERACT.getName();
     }
 
     @Override
@@ -42,7 +45,7 @@ public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, B
             @NonNullDecl ArchetypeChunk<EntityStore> archetypeChunk,
             @NonNullDecl Store<EntityStore> store,
             @NonNullDecl CommandBuffer<EntityStore> commandBuffer,
-            @NonNullDecl BreakBlockEvent event
+            @NonNullDecl Pre event
     ) {
         if (event.isCancelled()) return;
 
@@ -51,24 +54,42 @@ public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, B
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
         if (player == null || playerRef == null || !playerRef.isValid()) return;
-        if (player.hasPermission(BYPASS_PERMISSION)) return;
+        //if (player.hasPermission(BYPASS_PERMISSION)) return;
 
         final int blockX = event.getTargetBlock().getX();
         final int blockY = event.getTargetBlock().getY();
         final int blockZ = event.getTargetBlock().getZ();
         final World world = store.getExternalData().getWorld();
-        final BlockType blockType = world.getBlockType(blockX, blockY, blockZ);
 
         final List<RegionData> regions = this.regionManager.getApplicableRegions(world.getName(), blockX, blockY, blockZ);
 
         if (regions.isEmpty()) return;
-        if (this.isBreakAllowed(regions, blockType)) return;
+        //if (this.isSeatingInteraction(event.getBlockType())) return;
+        if (this.isInteractionAllowed(regions, event.getBlockType())) return;
 
         event.setCancelled(true);
     }
 
-    private boolean isBreakAllowed(List<RegionData> regions, BlockType blockType) {
-        for (RegionData region : regions) {
+    private boolean isSeatingInteraction(BlockType blockType) {
+        if(blockType == null) return false;
+
+        final Map<InteractionType, String> interactions = blockType.getInteractions();
+
+        if(interactions == null || interactions.isEmpty()) return false;
+
+        final String useInteraction = interactions.get(InteractionType.Use);
+
+        if(useInteraction != null && useInteraction.toLowerCase().contains("seat")) {
+            return true;
+        }
+
+        final String secondaryUseInteraction = interactions.get(InteractionType.Secondary);
+
+        return secondaryUseInteraction != null && secondaryUseInteraction.toLowerCase().contains("seat");
+    }
+
+    private boolean isInteractionAllowed(List<RegionData> regions, BlockType blockType) {
+        for (final RegionData region : regions) {
             if (!region.getFlags().hasFlag(this.regionFlag)) continue;
 
             return region.getFlags().checkMappedPermission(this.regionFlag, blockType.getId());

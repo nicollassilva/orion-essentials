@@ -8,9 +8,8 @@ import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -24,16 +23,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, BreakBlockEvent> {
+public class BlockPlaceProtectionSystem extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
     private final RegionManager regionManager;
-    private static final String BYPASS_PERMISSION = "multicommands.bypass.block_break";
+    private static final String BYPASS_PERMISSION = "multicommands.bypass.block_place";
     private final String regionFlag;
 
-    public BlockBreakProtectionSystem(RegionManager regionManager) {
-        super(BreakBlockEvent.class);
+    public BlockPlaceProtectionSystem(RegionManager regionManager) {
+        super(PlaceBlockEvent.class);
+
         this.regionManager = regionManager;
 
-        this.regionFlag = RegionFlag.BREAK.getName();
+        this.regionFlag = RegionFlag.BUILD.getName();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, B
             @NonNullDecl ArchetypeChunk<EntityStore> archetypeChunk,
             @NonNullDecl Store<EntityStore> store,
             @NonNullDecl CommandBuffer<EntityStore> commandBuffer,
-            @NonNullDecl BreakBlockEvent event
+            @NonNullDecl PlaceBlockEvent event
     ) {
         if (event.isCancelled()) return;
 
@@ -51,27 +51,29 @@ public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, B
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
         if (player == null || playerRef == null || !playerRef.isValid()) return;
-        if (player.hasPermission(BYPASS_PERMISSION)) return;
+        //if (player.hasPermission(BYPASS_PERMISSION)) return;
 
         final int blockX = event.getTargetBlock().getX();
         final int blockY = event.getTargetBlock().getY();
         final int blockZ = event.getTargetBlock().getZ();
         final World world = store.getExternalData().getWorld();
-        final BlockType blockType = world.getBlockType(blockX, blockY, blockZ);
+        final String itemId = event.getItemInHand() != null && event.getItemInHand().isValid()
+                ? event.getItemInHand().getItemId()
+                : "*";
 
         final List<RegionData> regions = this.regionManager.getApplicableRegions(world.getName(), blockX, blockY, blockZ);
 
         if (regions.isEmpty()) return;
-        if (this.isBreakAllowed(regions, blockType)) return;
+        if (this.isPlaceAllowed(regions, itemId)) return;
 
         event.setCancelled(true);
     }
 
-    private boolean isBreakAllowed(List<RegionData> regions, BlockType blockType) {
+    private boolean isPlaceAllowed(List<RegionData> regions, String itemId) {
         for (RegionData region : regions) {
             if (!region.getFlags().hasFlag(this.regionFlag)) continue;
 
-            return region.getFlags().checkMappedPermission(this.regionFlag, blockType.getId());
+            return region.getFlags().checkMappedPermission(this.regionFlag, itemId);
         }
 
         return true;
@@ -87,5 +89,4 @@ public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, B
         return Collections.singleton(RootDependency.first());
     }
 }
-
 

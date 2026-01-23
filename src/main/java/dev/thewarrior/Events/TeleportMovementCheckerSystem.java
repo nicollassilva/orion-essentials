@@ -1,4 +1,4 @@
-package dev.thewarrior.Systems;
+package dev.thewarrior.Events;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;

@@ -17,8 +17,6 @@ public class RegionFlagData {
     private final Map<String, String> messageFlags = new ConcurrentHashMap<>();
     private final Map<String, Boolean> booleanFlags = new ConcurrentHashMap<>();
 
-    // ==================== MAPPED FLAGS ====================
-
     /**
      * Define um valor mapeado para uma flag.
      * @param flag Nome da flag
@@ -70,8 +68,6 @@ public class RegionFlagData {
         return this.mappedFlags.get(flag.toLowerCase());
     }
 
-    // ==================== MESSAGE FLAGS ====================
-
     /**
      * Define uma mensagem para uma flag.
      */
@@ -95,8 +91,6 @@ public class RegionFlagData {
     }
 
 
-    // ==================== BOOLEAN FLAGS ====================
-
     /**
      * Define um valor booleano para uma flag.
      */
@@ -118,8 +112,6 @@ public class RegionFlagData {
     public Boolean getBoolean(String flag) {
         return this.booleanFlags.get(flag.toLowerCase());
     }
-
-    // ==================== UTILITY METHODS ====================
 
     /**
      * Verifica se existe alguma configuração para uma flag.

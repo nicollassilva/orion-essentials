@@ -36,14 +36,11 @@ import dev.thewarrior.Commands.Warp.DelWarpCommand;
 import dev.thewarrior.Commands.Warp.SetWarpCommand;
 import dev.thewarrior.Commands.Warp.WarpsCommand;
 import dev.thewarrior.Components.PlayerCommandComponent;
-import dev.thewarrior.Events.BlockBreakProtectionSystem;
-import dev.thewarrior.Events.DamageProtectionSystem;
-import dev.thewarrior.Events.ItemDropProtectionSystem;
+import dev.thewarrior.Events.*;
 import dev.thewarrior.Handlers.PlayerEventHandler;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
 import dev.thewarrior.Managers.*;
-import dev.thewarrior.Systems.TeleportMovementCheckerSystem;
 import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -155,6 +152,9 @@ public class MultiCommands extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new ItemDropProtectionSystem(this.regionManager));
         this.getEntityStoreRegistry().registerSystem(new DamageProtectionSystem(this.regionManager));
         this.getEntityStoreRegistry().registerSystem(new BlockBreakProtectionSystem(this.regionManager));
+        this.getEntityStoreRegistry().registerSystem(new BlockPlaceProtectionSystem(this.regionManager));
+        this.getEntityStoreRegistry().registerSystem(new InteractionProtectionSystem(this.regionManager));
+        this.getEntityStoreRegistry().registerSystem(new PickupItemProtectionSystem(this.regionManager));
     }
 
     public void registerEvents() {

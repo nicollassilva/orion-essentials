@@ -140,12 +140,11 @@ public class RegionManager extends StorableManager<RegionManagerData> {
             return candidates;
         }
 
-        // Se só tem uma região, verifica e retorna
         if (candidates.size() == 1) {
             RegionData region = candidates.getFirst();
 
             if (this.containsPosition(region, x, y, z)) {
-                return candidates; // Retorna a mesma lista
+                return candidates;
             }
 
             return Collections.emptyList();
