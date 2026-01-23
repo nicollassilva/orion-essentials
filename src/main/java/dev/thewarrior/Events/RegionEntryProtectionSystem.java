@@ -108,7 +108,7 @@ public class RegionEntryProtectionSystem extends EntityTickingSystem<EntityStore
 //        }
 
         // IMPORTANTE: Verifica se entrada é bloqueada ANTES de atualizar qualquer cache
-        if (isEntryBlocked(currentRegions)) {
+        if (isEntryBlocked(player, currentRegions)) {
             // Teleporta de volta para a última posição válida
             // NÃO atualiza lastBlockPosition nem lastValidPosition - mantém a posição anterior
             teleportBack(buffer, chunk.getReferenceTo(index), playerId, player, world);
@@ -206,16 +206,13 @@ public class RegionEntryProtectionSystem extends EntityTickingSystem<EntityStore
     /**
      * Verifica se a entrada em alguma região está bloqueada para o jogador.
      */
-    private boolean isEntryBlocked(List<RegionData> regions) {
+    private boolean isEntryBlocked(Player player, List<RegionData> regions) {
         for (RegionData region : regions) {
             if (!region.getFlags().hasFlag(RegionFlag.PERMISSIONS.getName())) continue;
 
-            // Se a flag entry existe e está configurada como false, bloqueia
-            final boolean canEntry = region.getFlags().checkMappedPermission(
-                    RegionFlag.PERMISSIONS.getName(), "entry"
-            );
-
-            if (!canEntry) return true;
+            if (!region.getFlags().checkPlayerPermissions(RegionFlag.PERMISSIONS.getName(), player::hasPermission)) {
+                return true;
+            }
         }
 
         return false;

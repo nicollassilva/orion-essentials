@@ -142,6 +142,52 @@ public class RegionFlagData {
                this.booleanFlags.isEmpty();
     }
 
+    /**
+     * Verifica se um jogador tem permissão baseado nas keys de uma flag MAPPED.
+     *
+     * Lógica:
+     * - Se wildcard "*" = true: permite todos, EXCETO se tiver permissão específica = false que o jogador possua
+     * - Se wildcard "*" = false ou não definido: bloqueia todos, EXCETO se tiver permissão específica = true que o jogador possua
+     *
+     * @param flag Nome da flag (ex: "permissions")
+     * @param permissionChecker Função que verifica se o jogador tem uma permissão (ex: player::hasPermission)
+     * @return true se permitido, false se bloqueado
+     */
+    public boolean checkPlayerPermissions(String flag, java.util.function.Predicate<String> permissionChecker) {
+        Map<String, Boolean> permissions = this.mappedFlags.get(flag.toLowerCase());
+
+        if (permissions == null || permissions.isEmpty()) return true; // Sem configuração = permite
+
+        Boolean wildcardValue = permissions.get("*");
+        boolean defaultAllow = wildcardValue != null && wildcardValue;
+
+        if (defaultAllow) {
+            // Wildcard = true: permite por padrão, mas verifica se alguma permissão específica BLOQUEIA
+            for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
+                if (entry.getKey().equals("*")) continue;
+
+                // Se a permissão está marcada como FALSE e o jogador TEM essa permissão, bloqueia
+                if (!entry.getValue() && permissionChecker.test(entry.getKey())) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            // Wildcard = false ou não definido: bloqueia por padrão, mas verifica se alguma permissão específica PERMITE
+            for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
+                if (entry.getKey().equals("*")) continue;
+
+                // Se a permissão está marcada como TRUE e o jogador TEM essa permissão, permite
+                if (entry.getValue() && permissionChecker.test(entry.getKey())) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
     // ==================== GETTERS FOR SERIALIZATION ====================
 
     public Map<String, Map<String, Boolean>> getMappedFlags() {
