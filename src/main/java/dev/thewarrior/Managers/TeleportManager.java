@@ -30,10 +30,12 @@ public class TeleportManager {
     private static final double CANCEL_DISTANCE = 2.0;
 
     private final PluginConfigManager configManager;
+    private final RegionManager regionManager;
     private final ConcurrentHashMap<UUID, PendingTeleport> pendingTeleports = new ConcurrentHashMap<>();
 
-    public TeleportManager(@Nonnull PluginConfigManager configManager) {
+    public TeleportManager(@Nonnull PluginConfigManager configManager, @Nonnull RegionManager regionManager) {
         this.configManager = configManager;
+        this.regionManager = regionManager;
     }
 
     /**
@@ -81,6 +83,8 @@ public class TeleportManager {
             if (error != null) {
                 playerRef.sendMessage(error.color(Color.RED));
             } else {
+                this.regionManager.invalidatePlayerCache(playerUuid);
+
                 if (successMessage != null) playerRef.sendMessage(successMessage.color(Color.GREEN));
                 if (onSuccess != null) onSuccess.run();
             }
@@ -164,7 +168,7 @@ public class TeleportManager {
             float deltaTime,
             @Nonnull CommandBuffer<EntityStore> buffer
     ) {
-        final PendingTeleport pending = pendingTeleports.get(playerUuid);
+        final PendingTeleport pending = this.pendingTeleports.get(playerUuid);
 
         if (pending == null) return;
 
@@ -192,7 +196,7 @@ public class TeleportManager {
             @Nonnull Ref<EntityStore> currentRef,
             @Nonnull CommandBuffer<EntityStore> buffer
     ) {
-        final PendingTeleport pending = pendingTeleports.remove(playerUuid);
+        final PendingTeleport pending = this.pendingTeleports.remove(playerUuid);
 
         if (pending == null) return;
 
@@ -209,6 +213,7 @@ public class TeleportManager {
                     error = TeleportUtil.teleportToPlayerByUuid(store, currentRef, pending.getTargetPlayerUuid());
                 } else {
                     TeleportDestination dest = pending.getDestination();
+
                     error = TeleportUtil.teleportSafe(store, currentRef, dest.worldName,
                             dest.x, dest.y, dest.z, dest.yaw, dest.pitch);
                 }
@@ -216,8 +221,11 @@ public class TeleportManager {
                 if (error != null) {
                     pending.getPlayerRef().sendMessage(error.color(Color.RED));
                 } else {
+                    this.regionManager.invalidatePlayerCache(playerUuid);
+
                     if (pending.getSuccessMessage() != null) pending.getPlayerRef().sendMessage(pending.getSuccessMessage().color(Color.GREEN));
                     if (pending.getOnSuccess() != null) pending.getOnSuccess().run();
+
                 }
             } catch (Exception e) {
                 Logger.error("Failed to execute teleport for " + playerUuid + ": " + e.getMessage());

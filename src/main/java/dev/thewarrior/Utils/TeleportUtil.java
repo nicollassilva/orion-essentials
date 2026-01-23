@@ -144,6 +144,7 @@ public class TeleportUtil {
         Vector3f rotation = new Vector3f(0, roundToCardinalYaw(yaw), 0);
 
         Teleport teleport = new Teleport(targetWorld, position, rotation);
+
         store.putComponent(ref, Teleport.getComponentType(), teleport);
 
         return null;

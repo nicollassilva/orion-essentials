@@ -213,10 +213,6 @@ public class RegionManager extends StorableManager<RegionManagerData> {
         return containsPosition(region, x, y, z);
     }
 
-    /**
-     * Invalida o cache de um jogador específico.
-     * Chamar quando o jogador mudar de mundo ou teleportar.
-     */
     public void invalidatePlayerCache(@Nonnull UUID playerId) {
         this.playerCache.invalidate(playerId);
     }

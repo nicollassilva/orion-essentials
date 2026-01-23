@@ -29,7 +29,7 @@ public class TeleportMovementCheckerSystem extends EntityTickingSystem<EntitySto
     ) {
         final PlayerRef playerRef = chunk.getComponent(index, PlayerRef.getComponentType());
 
-        if (playerRef == null) return;
+        if (playerRef == null || !playerRef.isValid()) return;
         if (!this.teleportManager.hasPendingTeleport(playerRef.getUuid())) return;
 
         final Ref<EntityStore> currentRef = chunk.getReferenceTo(index);

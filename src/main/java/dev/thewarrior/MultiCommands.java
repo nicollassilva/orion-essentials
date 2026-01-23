@@ -3,6 +3,7 @@ package dev.thewarrior;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -62,6 +63,8 @@ public class MultiCommands extends JavaPlugin {
     public PermissionManager permissionManager;
     public RegionManager regionManager;
 
+    public RegionEntryProtectionSystem regionEntryProtectionSystem;
+
     public MultiCommands(@NonNullDecl JavaPluginInit init) {
         super(init);
     }
@@ -73,10 +76,10 @@ public class MultiCommands extends JavaPlugin {
 
         this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
         this.warpManager = new WarpManager(this.getDataDirectory());
-        this.teleportManager = new TeleportManager(this.pluginConfigManager);
+        this.regionManager = new RegionManager(this.getDataDirectory());
+        this.teleportManager = new TeleportManager(this.pluginConfigManager, this.regionManager);
         this.tpaManager = new TpaManager();
         this.permissionManager = new PermissionManager(this.getDataDirectory());
-        this.regionManager = new RegionManager(this.getDataDirectory());
     }
 
     @Override
@@ -155,13 +158,21 @@ public class MultiCommands extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new BlockPlaceProtectionSystem(this.regionManager));
         this.getEntityStoreRegistry().registerSystem(new InteractionProtectionSystem(this.regionManager));
         this.getEntityStoreRegistry().registerSystem(new PickupItemProtectionSystem(this.regionManager));
+
+        this.regionEntryProtectionSystem = new RegionEntryProtectionSystem(this.regionManager);
+
+        this.getEntityStoreRegistry().registerSystem(this.regionEntryProtectionSystem);
     }
 
     public void registerEvents() {
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerEventHandler::onPlayerReady);
 
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class,
-                event -> PlayerEventHandler.onPlayerDisconnect(event, this.teleportManager)
+                event -> PlayerEventHandler.onPlayerDisconnect(event, this.teleportManager, this.regionEntryProtectionSystem)
+        );
+
+        this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class,
+                event -> PlayerEventHandler.onPlayerAddedToWorld(event, this.regionManager, this.regionEntryProtectionSystem)
         );
 
         this.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());

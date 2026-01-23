@@ -1,6 +1,8 @@
 package dev.thewarrior.Handlers;
 
-import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.component.Holder;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -8,11 +10,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Tell.TellCommand;
+import dev.thewarrior.Events.RegionEntryProtectionSystem;
+import dev.thewarrior.Managers.RegionManager;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.MultiCommands;
 import dev.thewarrior.i18n.Messages;
 
-import java.awt.*;
 import java.util.UUID;
 
 public class PlayerEventHandler {
@@ -33,12 +36,23 @@ public class PlayerEventHandler {
         }
     }
 
-    public static void onPlayerDisconnect(final PlayerDisconnectEvent event, final TeleportManager teleportManager) {
+    public static void onPlayerDisconnect(final PlayerDisconnectEvent event, final TeleportManager teleportManager, final RegionEntryProtectionSystem regionEntryProtectionSystem) {
         final UUID uuid = event.getPlayerRef().getUuid();
 
         teleportManager.onPlayerQuit(uuid);
+        regionEntryProtectionSystem.clearPlayer(uuid);
 
         TellCommand.onPlayerQuit(uuid);
         FreeCameraCommand.onPlayerQuit(uuid);
+    }
+
+    public static void onPlayerAddedToWorld(final AddPlayerToWorldEvent event, final RegionManager regionManager, final RegionEntryProtectionSystem regionEntryProtectionSystem) {
+        final Holder<EntityStore> holder = event.getHolder();
+        final PlayerRef playerRef = holder.getComponent(PlayerRef.getComponentType());
+
+        if(playerRef == null || !playerRef.isValid()) return;
+
+        regionManager.invalidatePlayerCache(playerRef.getUuid());
+        FreeCameraCommand.onPlayerQuit(playerRef.getUuid());
     }
 }
