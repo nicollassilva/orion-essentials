@@ -3,10 +3,7 @@ package dev.thewarrior;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
-import com.hypixel.hytale.server.core.event.events.player.PlayerChatEvent;
-import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
-import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.event.events.player.*;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -58,6 +55,7 @@ public class MultiCommands extends JavaPlugin {
     public TpaManager tpaManager;
     public PermissionManager permissionManager;
     public RegionManager regionManager;
+    public PlayerHistoryManager playerHistoryManager;
 
     public RegionEntryProtectionSystem regionEntryProtectionSystem;
 
@@ -76,6 +74,7 @@ public class MultiCommands extends JavaPlugin {
         this.teleportManager = new TeleportManager(this.pluginConfigManager, this.regionManager);
         this.tpaManager = new TpaManager();
         this.permissionManager = new PermissionManager(this.getDataDirectory(), this.pluginConfigManager);
+        this.playerHistoryManager = new PlayerHistoryManager(this.getDataDirectory());
     }
 
     @Override
@@ -107,6 +106,10 @@ public class MultiCommands extends JavaPlugin {
 
     public RegionEntryProtectionSystem getRegionEntryProtectionSystem() {
         return this.regionEntryProtectionSystem;
+    }
+
+    public PlayerHistoryManager getPlayerHistoryManager() {
+        return this.playerHistoryManager;
     }
 
     public void registerCommands() {
@@ -177,20 +180,12 @@ public class MultiCommands extends JavaPlugin {
     }
 
     public void registerEvents() {
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerEventHandler::onPlayerReady);
+        this.getEventRegistry().registerGlobal(PlayerConnectEvent.class, event -> PlayerEventHandler.onPlayerConnect(event, this));
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> PlayerEventHandler.onPlayerReady(event, this));
+        this.getEventRegistry().registerGlobal(PlayerChatEvent.class, event -> PlayerChatEventHandler.onEvent(event, this));
+        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, event -> PlayerEventHandler.onPlayerDisconnect(event, this));
 
-        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class,
-                event -> PlayerEventHandler.onPlayerDisconnect(event, this)
-        );
-
-        this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class,
-                event -> PlayerEventHandler.onPlayerAddedToWorld(event, this)
-        );
-
-        this.getEventRegistry().registerGlobal(PlayerChatEvent.class,
-            event -> PlayerChatEventHandler.onEvent(event, this)
-        );
-
+        this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> PlayerEventHandler.onPlayerAddedToWorld(event, this));
         this.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
     }
 

@@ -1,13 +1,15 @@
 package dev.thewarrior.Managers.Data;
 
+import dev.thewarrior.Managers.Data.Config.PlayerEntryConfig;
 import dev.thewarrior.Utils.Location;
 
 public class PluginConfigData {
     private String discordLink = "";
     private int teleportDelaySeconds = 3;
     private Location spawnLocation = null;
+    private PlayerEntryConfig playerJoinConfig = new PlayerEntryConfig();
     private String broadcastFormat = "&e[&6Broadcast&e] &f{message}";
-    private String chatFormat = "{prefix}{player}{suffix}&f: &7{message}";
+    private String chatFormat = "{prefix}{player}{suffix}&r: {message}";
 
     public String getDiscordLink() {
         return discordLink;
@@ -39,5 +41,9 @@ public class PluginConfigData {
 
     public String getChatFormat() {
         return chatFormat;
+    }
+
+    public PlayerEntryConfig getPlayerJoinConfig() {
+        return playerJoinConfig;
     }
 }

@@ -21,10 +21,6 @@ public class Messages {
 
     public static final Message COMMAND_TELL_ALREADY_ON = Message.raw("[AVISO] As mensagens privadas já estão ativadas!");
 
-    public static final Message PRIMARY_TITLE_ON_LOGIN = Message.raw("Seja bem-vindo!");
-
-    public static final Message SECOND_TITLE_ON_LOGIN = Message.raw("Orion Network");
-
     public static final Message COMMAND_DISCORD_INVALID_LINK = Message.raw("[ERRO] O link do Discord fornecido é inválido. Certifique-se de que começa com 'https://'.");
 
     public static final Message COMMAND_DISCORD_LINK_UPDATED = Message.raw("O link do Discord foi atualizado com sucesso.");

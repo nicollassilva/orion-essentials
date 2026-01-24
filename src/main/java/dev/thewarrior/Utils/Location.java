@@ -1,5 +1,7 @@
 package dev.thewarrior.Utils;
 
+import com.hypixel.hytale.math.vector.Vector3d;
+
 public class Location {
     private String world;
     private double x;
@@ -8,6 +10,8 @@ public class Location {
     private float yaw;
     private float pitch;
     private float roll;
+
+    private Vector3d locationVector;
 
     public Location() {}
 
@@ -36,6 +40,8 @@ public class Location {
 
     public void setX(double x) {
         this.x = x;
+
+        this.locationVector = null;
     }
 
     public double getY() {
@@ -44,6 +50,8 @@ public class Location {
 
     public void setY(double y) {
         this.y = y;
+
+        this.locationVector = null;
     }
 
     public double getZ() {
@@ -52,6 +60,8 @@ public class Location {
 
     public void setZ(double z) {
         this.z = z;
+
+        this.locationVector = null;
     }
 
     public float getYaw() {
@@ -76,5 +86,13 @@ public class Location {
 
     public void setRoll(float roll) {
         this.roll = roll;
+    }
+
+    public Vector3d getLocationVector() {
+        if(this.locationVector == null) {
+            this.locationVector = new Vector3d(this.x, this.y, this.z);
+        }
+
+        return this.locationVector;
     }
 }
