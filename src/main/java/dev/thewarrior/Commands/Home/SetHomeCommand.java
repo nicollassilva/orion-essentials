@@ -14,7 +14,9 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Components.PlayerCommandComponent;
 import dev.thewarrior.Managers.WarpManager;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.Utils.Logger;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -24,7 +26,7 @@ public class SetHomeCommand extends AbstractPlayerCommand {
     public SetHomeCommand() {
         super("sethome", "Define uma home na sua localização atual");
 
-        requirePermission("multicommands.sethome");
+        requirePermission(PermissionUtil.getPermission("homes.set"));
         setAllowsExtraArguments(true);
     }
 
@@ -36,7 +38,7 @@ public class SetHomeCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandComponent component = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        final PlayerCommandComponent component = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
 
         if(component == null) {
             playerRef.sendMessage(Messages.CANNOT_GET_OWN_PLAYER_DATA.color(Color.RED));
@@ -59,6 +61,11 @@ public class SetHomeCommand extends AbstractPlayerCommand {
             return;
         }
 
+        if(component.getHomesCount() >= 5) {
+            playerRef.sendMessage(Messages.HOME_SET_LIMIT_REACHED.color(Color.RED));
+            return;
+        }
+
         Vector3d position = transform.getPosition();
         HeadRotation headRotation = store.getComponent(ref, HeadRotation.getComponentType());
         Vector3f rotation = (headRotation != null) ? headRotation.getRotation() : new Vector3f(0.0F, 0.0F, 0.0F);
@@ -67,7 +74,7 @@ public class SetHomeCommand extends AbstractPlayerCommand {
             component.addHome(name, world, position.clone(), rotation.clone());
         } catch (Exception e) {
             playerRef.sendMessage(Messages.COMMAND_SET_HOME_FAILED.color(Color.RED));
-            e.printStackTrace();
+            Logger.error("Erro ao criar uma nova home para o usuário " + playerRef.getUsername(), e);
             return;
         }
 

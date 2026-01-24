@@ -11,13 +11,14 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Utils.ColorUtil;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class BroadcastNotificationCommand extends AbstractPlayerCommand {
     public BroadcastNotificationCommand() {
         super("notif", "Envia uma notificação para todos os jogadores online");
 
-        requirePermission("multicommands.broadcast.notification");
+        requirePermission(PermissionUtil.getPermission("broadcast.notification"));
         setAllowsExtraArguments(true);
     }
 

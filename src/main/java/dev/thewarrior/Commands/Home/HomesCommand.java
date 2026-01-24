@@ -9,9 +9,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Components.PlayerCommandComponent;
-import dev.thewarrior.Managers.WarpManager;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
 import dev.thewarrior.Utils.NamedLocation;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -21,7 +21,7 @@ public class HomesCommand extends AbstractPlayerCommand {
     public HomesCommand() {
         super("homes", "Lista todas as suas homes definidas");
 
-        requirePermission("multicommands.home");
+        requirePermission(PermissionUtil.getPermission("homes.list"));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class HomesCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandComponent component = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        final PlayerCommandComponent component = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
 
         if(component == null) {
             playerRef.sendMessage(Messages.CANNOT_GET_OWN_PLAYER_DATA.color(Color.RED));

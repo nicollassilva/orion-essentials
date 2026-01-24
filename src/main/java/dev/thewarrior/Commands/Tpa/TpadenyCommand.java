@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Teleport.TpaRequest;
 import dev.thewarrior.Managers.TpaManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -25,7 +26,7 @@ public class TpadenyCommand extends AbstractPlayerCommand {
 
         this.tpaManager = tpaManager;
 
-        requirePermission("multicommands.tpadeny");
+        requirePermission(PermissionUtil.getPermission("tpas.deny"));
         setAllowsExtraArguments(true);
     }
 

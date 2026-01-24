@@ -5,18 +5,21 @@ import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.Managers.WarpManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.StringUtils;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
 
 public class BaseWarpCommand extends CommandBase {
+    public final String managePermission = PermissionUtil.getPermission("warps.manage");
+
     public BaseWarpCommand(final WarpManager warpManager, final TeleportManager teleportManager) {
         super("warp", "Conjunto de comandos para teleportar à warps.");
 
         addUsageVariant(new WarpCommand(warpManager, teleportManager));
 
-        requirePermission("multicommands.warp");
+        requirePermission(PermissionUtil.getPermission("warps"));
     }
 
     @Override
@@ -28,7 +31,7 @@ public class BaseWarpCommand extends CommandBase {
                 Message.raw("/warps").color(Color.WHITE).bold(true), Message.raw(StringUtils.padLeft("Veja a lista de warps disponíveis\n", 27, " "))
         );
 
-        if(commandContext.sender().hasPermission("multicommands.warp.manage")) {
+        if(commandContext.sender().hasPermission(this.managePermission)) {
             helper.insertAll(
                     Message.raw("/setwarp ").color(Color.MAGENTA).bold(true), Message.raw("<nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Define uma nova warp\n", 8, " ")),
                     Message.raw("/delwarp ").color(Color.MAGENTA).bold(true), Message.raw("<nome>").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Deleta a warp especificada\n", 8, " "))

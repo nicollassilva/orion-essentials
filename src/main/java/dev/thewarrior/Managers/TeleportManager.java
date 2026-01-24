@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Teleport.PendingTeleport;
 import dev.thewarrior.Managers.Data.Teleport.TeleportDestination;
 import dev.thewarrior.Utils.Logger;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.TeleportUtil;
 import dev.thewarrior.i18n.Messages;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Teleport destinations are stored as data and executed via buffer.run() callback.
  */
 public class TeleportManager {
-    private static final String BYPASS_PERMISSION = "multicommands.teleport.bypass";
+    private static final String BYPASS_PERMISSION = PermissionUtil.getPermission("teleport.bypass");
     private static final double CANCEL_DISTANCE = 2.0;
 
     private final PluginConfigManager configManager;

@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
 import dev.thewarrior.Managers.RegionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nullable;
@@ -25,7 +26,7 @@ import java.util.Set;
 public class ItemDropProtectionSystem extends EntityEventSystem<EntityStore, PlayerRequest> {
     private final RegionManager regionManager;
 
-    private final String bypassPermission = "multicommands.bypass.item_drop_protection";
+    private final String bypassPermission = PermissionUtil.getPermission("bypass.item_drop_protection");
     private final String regionFlag;
 
     public ItemDropProtectionSystem(RegionManager regionManager) {

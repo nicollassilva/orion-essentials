@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -22,7 +23,7 @@ public class ReplyCommand extends AbstractPlayerCommand {
         super("reply", "Responde à última mensagem privada recebida");
 
         addAliases("r");
-        requirePermission("multicommands.tell");
+        requirePermission(PermissionUtil.getPermission("tells.reply"));
         setAllowsExtraArguments(true);
     }
 

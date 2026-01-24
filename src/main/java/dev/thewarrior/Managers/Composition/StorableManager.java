@@ -1,6 +1,7 @@
 package dev.thewarrior.Managers.Composition;
 
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.Utils.Logger;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Files;
@@ -40,14 +41,14 @@ public abstract class StorableManager<T> {
 
         try {
             String json = Files.readString(this.configFile);
-            T loadedData = MultiCommands.gson.fromJson(json, dataClass);
+            T loadedData = OrionEssentials.gson.fromJson(json, dataClass);
 
             if (loadedData != null) {
                 this.data = loadedData;
             }
             this.onDataLoaded();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Falha ao carregar o arquivo de configuração: " + this.configFile);
         }
     }
 
@@ -69,9 +70,9 @@ public abstract class StorableManager<T> {
         return CompletableFuture.runAsync(() -> {
             try {
                 Files.createDirectories(configFile.getParent());
-                Files.writeString(this.configFile, MultiCommands.gson.toJson(this.data));
+                Files.writeString(this.configFile, OrionEssentials.gson.toJson(this.data));
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error("[ASYNC] Falha ao salvar o arquivo de configuração: " + this.configFile, e);
             }
         });
     }
@@ -84,9 +85,9 @@ public abstract class StorableManager<T> {
     protected void saveConfigSync() {
         try {
             Files.createDirectories(configFile.getParent());
-            Files.writeString(this.configFile, MultiCommands.gson.toJson(this.data));
+            Files.writeString(this.configFile, OrionEssentials.gson.toJson(this.data));
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("[SYNC] Falha ao salvar o arquivo de configuração: " + this.configFile, e);
         }
     }
 

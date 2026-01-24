@@ -17,6 +17,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
 import dev.thewarrior.Managers.RegionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nullable;
@@ -26,7 +27,7 @@ import java.util.Set;
 
 public class BlockBreakProtectionSystem extends EntityEventSystem<EntityStore, BreakBlockEvent> {
     private final RegionManager regionManager;
-    private static final String BYPASS_PERMISSION = "multicommands.bypass.block_break";
+    private static final String BYPASS_PERMISSION = PermissionUtil.getPermission("bypass.block_break");
     private final String regionFlag;
 
     public BlockBreakProtectionSystem(RegionManager regionManager) {

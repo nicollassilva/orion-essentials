@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.PluginConfigManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -27,7 +28,7 @@ public class SetDiscordCommand extends AbstractPlayerCommand {
         this.pluginConfigManager = pluginConfigManager;
         this.link = this.withRequiredArg("link", "Link para o Discord", ArgTypes.STRING);
 
-        requirePermission("multicommands.discord.manage");
+        requirePermission(PermissionUtil.getPermission("discord.setlink"));
     }
 
     @Override

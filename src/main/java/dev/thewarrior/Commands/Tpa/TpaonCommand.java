@@ -8,7 +8,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Components.PlayerCommandComponent;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -18,7 +19,7 @@ public class TpaonCommand extends AbstractPlayerCommand {
     public TpaonCommand() {
         super("tpaon", "Habilita receber pedidos de teleporte de outros jogadores");
 
-        requirePermission("multicommands.tpaon");
+        requirePermission(PermissionUtil.getPermission("tpas.on"));
     }
 
     @Override
@@ -29,7 +30,7 @@ public class TpaonCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandComponent playerData = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        final PlayerCommandComponent playerData = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
 
         if(playerData == null) return;
 

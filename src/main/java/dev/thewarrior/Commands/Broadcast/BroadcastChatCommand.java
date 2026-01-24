@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.PluginConfigManager;
 import dev.thewarrior.Utils.ColorUtil;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class BroadcastChatCommand extends AbstractPlayerCommand {
@@ -20,7 +21,7 @@ public class BroadcastChatCommand extends AbstractPlayerCommand {
 
         this.pluginConfigManager = pluginConfigManager;
 
-        requirePermission("multicommands.broadcast.chat");
+        requirePermission(PermissionUtil.getPermission("broadcast.chat"));
         setAllowsExtraArguments(true);
     }
 

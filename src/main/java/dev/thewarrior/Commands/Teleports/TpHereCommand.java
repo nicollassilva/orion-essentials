@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.TeleportUtil;
 import dev.thewarrior.i18n.Messages;
 
@@ -24,7 +25,7 @@ public class TpHereCommand extends AbstractPlayerCommand {
 
         this.targetArg = withRequiredArg("player", "Player à ser teleportado", ArgTypes.PLAYER_REF);
 
-        requirePermission("multicommands.tphere");
+        requirePermission(PermissionUtil.getPermission("tphere"));
     }
 
     @Override

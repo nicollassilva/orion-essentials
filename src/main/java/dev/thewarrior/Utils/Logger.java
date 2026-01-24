@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 public class Logger {
     private static HytaleLogger logger;
-    private static String prefix = "[MultiCommands] ";
+    private static String prefix = "[OrionEssentials] ";
 
     // ANSI color codes
     private static final String GREEN = "\u001B[32m";

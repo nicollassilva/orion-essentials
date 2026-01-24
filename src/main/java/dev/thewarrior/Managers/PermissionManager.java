@@ -9,9 +9,10 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Managers.Data.Permission.PermissionGroupsData;
 import dev.thewarrior.Managers.Permission.PermissionBackupManager;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
 import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.ThrottledTask;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 public class PermissionManager {
-    private static final String COLOR_PERMISSION = "multicommands.chat.colors";
+    private static final String COLOR_PERMISSION = PermissionUtil.getPermission("chat.colors");
     private static final long CACHE_INVALIDATION_INTERVAL_MS = 30_000L; // 30 seconds
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("&[0-9a-fA-F]|&#[0-9a-fA-F]{6}");
 
@@ -82,9 +83,9 @@ public class PermissionManager {
         boolean hasError = false;
 
         try (final Reader reader = Files.newBufferedReader(this.defaultConfigFile)) {
-            JsonObject defaultRootObject = MultiCommands.gson.fromJson(reader, JsonObject.class);
+            JsonObject defaultRootObject = OrionEssentials.gson.fromJson(reader, JsonObject.class);
 
-            final PermissionGroupsData data = MultiCommands.gson.fromJson(defaultRootObject, PermissionGroupsData.class);
+            final PermissionGroupsData data = OrionEssentials.gson.fromJson(defaultRootObject, PermissionGroupsData.class);
 
             if(data == null) {
                 hasError = true;
@@ -108,7 +109,7 @@ public class PermissionManager {
         }
 
         try (final Reader reader = Files.newBufferedReader(this.pluginConfigFile)) {
-            this.pluginRootObject = MultiCommands.gson.fromJson(reader, JsonObject.class);
+            this.pluginRootObject = OrionEssentials.gson.fromJson(reader, JsonObject.class);
             final JsonObject permissionsObject = this.pluginRootObject.getAsJsonObject("groups");
 
             if (permissionsObject != null) {
@@ -379,7 +380,7 @@ public class PermissionManager {
                 }
 
                 if (needsFileUpdate) {
-                    Files.writeString(this.pluginConfigFile, MultiCommands.gson.toJson(this.pluginRootObject));
+                    Files.writeString(this.pluginConfigFile, OrionEssentials.gson.toJson(this.pluginRootObject));
                 }
             } catch (Exception e) {
                 Logger.error("[CRITICAL] Failed to save permissions data: " + e.getMessage());

@@ -1,26 +1,26 @@
-package dev.thewarrior.Commands.MultiCommands;
+package dev.thewarrior.Commands.Plugin;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.Utils.PermissionUtil;
 
 import javax.annotation.Nonnull;
 
-public class PluginReloadCommand extends AbstractPlayerCommand {
-    private final MultiCommands multiCommands;
+public class ReloadCommand extends AbstractPlayerCommand {
+    private final OrionEssentials orionEssentials;
 
-    public PluginReloadCommand(MultiCommands multiCommands) {
-        super("mcreload", "Recarrega as configurações do plugin MultiCommands");
+    public ReloadCommand(OrionEssentials orionEssentials) {
+        super("essentialsreload", "Recarrega as configurações do plugin OrionEssentials");
 
-        this.multiCommands = multiCommands;
+        this.orionEssentials = orionEssentials;
 
-        requirePermission("multicommands.reload");
+        requirePermission(PermissionUtil.getPermission("plugin.reload"));
     }
 
     @Override
@@ -31,6 +31,6 @@ public class PluginReloadCommand extends AbstractPlayerCommand {
             @Nonnull PlayerRef playerRef,
             @Nonnull World world
     ) {
-        this.multiCommands.reloadConfig(playerRef);
+        this.orionEssentials.reloadConfig(playerRef);
     }
 }

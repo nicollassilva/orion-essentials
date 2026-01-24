@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.PermissionManager;
 import dev.thewarrior.Pages.Permissions.PermissionsPage;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -21,7 +22,7 @@ public class PermissionsManageCommand extends AbstractPlayerCommand {
 
         this.permissionManager = permissionManager;
 
-        requirePermission("multicommands.permissions.manage");
+        requirePermission(PermissionUtil.getPermission("permissions.manage"));
     }
 
     @Override

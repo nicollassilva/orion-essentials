@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.PluginConfigManager;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.Utils.Location;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -32,7 +33,7 @@ public class SetSpawnCommand extends AbstractPlayerCommand {
         this.pluginConfigManager = pluginConfigManager;
 
         this.addAliases("setlobby");
-        this.requirePermission("multicommands.spawn.manage");
+        this.requirePermission(PermissionUtil.getPermission("spawn.set"));
     }
 
     @Override

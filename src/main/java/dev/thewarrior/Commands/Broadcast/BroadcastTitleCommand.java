@@ -11,14 +11,14 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.thewarrior.Utils.ColorUtil;
-import io.sentry.util.StringUtils;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class BroadcastTitleCommand extends AbstractPlayerCommand {
     public BroadcastTitleCommand() {
         super("title", "Envia um titulo para todos os jogadores online");
 
-        requirePermission("multicommands.broadcast.title");
+        requirePermission(PermissionUtil.getPermission("broadcast.title"));
         setAllowsExtraArguments(true);
     }
 

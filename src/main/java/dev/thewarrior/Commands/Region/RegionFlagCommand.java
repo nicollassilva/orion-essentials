@@ -14,6 +14,7 @@ import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlagData;
 import dev.thewarrior.Managers.RegionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
@@ -30,7 +31,7 @@ public class RegionFlagCommand extends AbstractPlayerCommand {
         this.regionName = this.withRequiredArg("region", "Nome da região", ArgTypes.STRING);
 
         this.setAllowsExtraArguments(true);
-        requirePermission("multicommands.region.flag");
+        requirePermission(PermissionUtil.getPermission("regions.flag"));
     }
 
     @Override

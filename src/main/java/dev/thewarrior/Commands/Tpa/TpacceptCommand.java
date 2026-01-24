@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Teleport.TpaRequest;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.Managers.TpaManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -29,7 +30,7 @@ public class TpacceptCommand extends AbstractPlayerCommand {
         this.tpaManager = tpaManager;
         this.teleportManager = teleportManager;
 
-        requirePermission("multicommands.tpaccept");
+        requirePermission(PermissionUtil.getPermission("tpas.accept"));
         setAllowsExtraArguments(true);
     }
 

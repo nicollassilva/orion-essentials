@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.TeleportManager;
 import dev.thewarrior.Managers.WarpManager;
 import dev.thewarrior.Utils.Location;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -32,7 +33,7 @@ public class WarpCommand extends AbstractPlayerCommand {
 
         this.target = this.withRequiredArg("nome", "Nome do warp à ser teleportado", ArgTypes.STRING);
 
-        requirePermission("multicommands.warp");
+        requirePermission(PermissionUtil.getPermission("warps"));
     }
 
     @Override

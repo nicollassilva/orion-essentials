@@ -8,6 +8,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
@@ -22,7 +23,7 @@ public class FreeCameraCommand extends AbstractPlayerCommand {
     public FreeCameraCommand() {
         super("freecam", "Habilita/desabilita o modo de câmera livre.");
 
-        requirePermission("multicommands.freecam");
+        requirePermission(PermissionUtil.getPermission("freecam"));
     }
 
     @Override

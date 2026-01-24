@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
@@ -18,7 +19,7 @@ public class RegionDeselectCommand extends AbstractPlayerCommand {
     public RegionDeselectCommand() {
         super("deselect", "Remove a seleção atual do jogador.");
 
-        requirePermission("multicommands.region.deselect");
+        requirePermission(PermissionUtil.getPermission("regions.deselect"));
     }
 
     @Override

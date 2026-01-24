@@ -4,6 +4,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
 import dev.thewarrior.Managers.PluginConfigManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.StringUtils;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -18,7 +19,7 @@ public class BroadcastBaseCommand extends CommandBase {
         addSubCommand(new BroadcastTitleCommand());
         addSubCommand(new BroadcastNotificationCommand());
 
-        requirePermission("multicommands.broadcast");
+        requirePermission(PermissionUtil.getPermission("broadcast"));
     }
 
     @Override

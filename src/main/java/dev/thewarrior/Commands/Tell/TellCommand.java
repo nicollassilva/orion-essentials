@@ -8,6 +8,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.PlayerUtils;
 import dev.thewarrior.Utils.StringUtils;
 import dev.thewarrior.i18n.Messages;
@@ -26,7 +27,7 @@ public class TellCommand extends AbstractPlayerCommand {
     public TellCommand() {
         super("tell", "Envia uma mensagem privada para um jogador");
 
-        requirePermission("multicommands.tell");
+        requirePermission(PermissionUtil.getPermission("tells"));
         setAllowsExtraArguments(true);
     }
 

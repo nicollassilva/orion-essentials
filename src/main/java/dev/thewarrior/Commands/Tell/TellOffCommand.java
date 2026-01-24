@@ -8,7 +8,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Components.PlayerCommandComponent;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -18,7 +19,7 @@ public class TellOffCommand extends AbstractPlayerCommand {
     public TellOffCommand() {
         super("telloff", "Desativa as mensagens privadas enviadas por outros jogadores");
 
-        requirePermission("multicommands.tell.off");
+        requirePermission(PermissionUtil.getPermission("tells.off"));
     }
 
     @Override
@@ -29,7 +30,7 @@ public class TellOffCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        PlayerCommandComponent playerData = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        PlayerCommandComponent playerData = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
 
         if(playerData == null) return;
 

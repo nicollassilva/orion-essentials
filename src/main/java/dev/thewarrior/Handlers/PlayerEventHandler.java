@@ -19,13 +19,13 @@ import com.hypixel.hytale.server.core.util.UUIDUtil;
 import dev.thewarrior.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Commands.Tell.TellCommand;
 import dev.thewarrior.Managers.Data.Config.PlayerEntryConfig;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
 import dev.thewarrior.Utils.*;
 
 import java.util.UUID;
 
 public abstract class PlayerEventHandler {
-    public static void onPlayerConnect(final PlayerConnectEvent event, final MultiCommands plugin) {
+    public static void onPlayerConnect(final PlayerConnectEvent event, final OrionEssentials plugin) {
         final PlayerRef playerRef = event.getPlayerRef();
         final PlayerEntryConfig entryConfig = plugin.getConfig().getData().getPlayerJoinConfig();
 
@@ -54,10 +54,10 @@ public abstract class PlayerEventHandler {
         holder.ensureAndGetComponent(HeadRotation.getComponentType()).teleportRotation(bodyRotation);
     }
 
-    public static void onPlayerReady(final PlayerReadyEvent event, final MultiCommands plugin) {
+    public static void onPlayerReady(final PlayerReadyEvent event, final OrionEssentials plugin) {
         Store<EntityStore> entityStore = event.getPlayerRef().getStore();
 
-        entityStore.ensureComponent(event.getPlayerRef(), MultiCommands.PlayerDataComponent);
+        entityStore.ensureComponent(event.getPlayerRef(), OrionEssentials.PlayerDataComponent);
 
         PlayerRef playerRef = entityStore.getComponent(event.getPlayerRef(), PlayerRef.getComponentType());
 
@@ -83,7 +83,7 @@ public abstract class PlayerEventHandler {
         }
     }
 
-    private static void onFirstJoin(final PlayerRef playerRef, final MultiCommands plugin, final PlayerEntryConfig entryConfig) {
+    private static void onFirstJoin(final PlayerRef playerRef, final OrionEssentials plugin, final PlayerEntryConfig entryConfig) {
         plugin.getPlayerHistoryManager().addHistory(playerRef.getUuid());
 
         if(entryConfig.isFirstJoinMessageEnabled()) {
@@ -99,7 +99,7 @@ public abstract class PlayerEventHandler {
         }
     }
 
-    private static void onReturnJoin(final PlayerRef playerRef, final MultiCommands plugin, final PlayerEntryConfig entryConfig) {
+    private static void onReturnJoin(final PlayerRef playerRef, final OrionEssentials plugin, final PlayerEntryConfig entryConfig) {
         if(entryConfig.isReturnJoinMessageEnabled()) {
             playerRef.sendMessage(ColorUtil.colorize(
                     entryConfig.getReturnJoinMessage().replace("{player}", playerRef.getUsername())
@@ -107,7 +107,7 @@ public abstract class PlayerEventHandler {
         }
     }
 
-    public static void onPlayerDisconnect(PlayerDisconnectEvent event, final MultiCommands plugin) {
+    public static void onPlayerDisconnect(PlayerDisconnectEvent event, final OrionEssentials plugin) {
         final UUID uuid = event.getPlayerRef().getUuid();
 
         if(UUIDUtil.isEmptyOrNull(uuid)) return;
@@ -120,7 +120,7 @@ public abstract class PlayerEventHandler {
         FreeCameraCommand.onPlayerQuit(uuid);
     }
 
-    public static void onPlayerAddedToWorld(final AddPlayerToWorldEvent event, final MultiCommands plugin) {
+    public static void onPlayerAddedToWorld(final AddPlayerToWorldEvent event, final OrionEssentials plugin) {
         event.setBroadcastJoinMessage(false);
 
         final Holder<EntityStore> holder = event.getHolder();

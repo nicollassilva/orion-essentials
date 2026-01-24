@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.RegionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
@@ -24,7 +25,7 @@ public class RegionListCommand extends AbstractPlayerCommand {
 
         this.regionManager = regionManager;
 
-        requirePermission("multicommands.region.list");
+        requirePermission(PermissionUtil.getPermission("regions.list"));
     }
 
     @Override

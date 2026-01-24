@@ -17,6 +17,7 @@ import dev.thewarrior.Managers.Data.Region.Composition.RegionType;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.RegionManager;
 import dev.thewarrior.Utils.ColorUtil;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
@@ -33,7 +34,7 @@ public class RegionDetailCommand extends AbstractPlayerCommand {
         this.name = this.withRequiredArg("name", "Nome da nova região", ArgTypes.STRING);
         this.shouldShow = this.withDefaultArg("show", "Se deve mostrar a seleção da região", ArgTypes.BOOLEAN, false, "Não mostra por padrão");
 
-        requirePermission("multicommands.region.detail");
+        requirePermission(PermissionUtil.getPermission("regions.detail"));
     }
 
     @Override

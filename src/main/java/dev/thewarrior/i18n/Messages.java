@@ -124,4 +124,6 @@ public class Messages {
     public static final Message ERROR_CREATING_REGION_NAME_ALREADY_EXISTS = Message.raw("[ERRO] O nome da região já existe. Por favor, escolha um nome diferente.");
 
     public static final Message ERROR_CREATING_REGION_GLOBAL_ALREADY_EXISTS = Message.raw("[ERRO] Já existe uma região global definida para este mundo.");
+
+    public static final Message HOME_SET_LIMIT_REACHED = Message.raw("[ERRO] Você atingiu o limite máximo de homes que pode definir.");
 }

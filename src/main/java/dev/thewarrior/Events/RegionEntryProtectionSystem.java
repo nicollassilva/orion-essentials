@@ -19,6 +19,7 @@ import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
 import dev.thewarrior.Managers.RegionManager;
 import dev.thewarrior.Utils.ColorUtil;
+import dev.thewarrior.Utils.PermissionUtil;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -37,7 +38,7 @@ public class RegionEntryProtectionSystem extends EntityTickingSystem<EntityStore
     private final Object2LongOpenHashMap<UUID> lastMessageTime = new Object2LongOpenHashMap<>();
 
     private static final long MESSAGE_COOLDOWN_MS = 1750L;
-    private static final String BYPASS_PERMISSION = "multicommands.bypass.entry";
+    private static final String BYPASS_PERMISSION = PermissionUtil.getPermission("bypass.entry");
     private static final Message ENTRY_DENIED_MESSAGE = ColorUtil.colorize("&cVocê não tem permissão para entrar nessa área.");
 
     private static final String GREEDING_SECONDARY_TITLE = "Entrou em uma área protegida";

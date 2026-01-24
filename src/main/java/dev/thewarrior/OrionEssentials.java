@@ -19,7 +19,7 @@ import dev.thewarrior.Commands.Home.DelHomeCommand;
 import dev.thewarrior.Commands.Home.HomeCommand;
 import dev.thewarrior.Commands.Home.HomesCommand;
 import dev.thewarrior.Commands.Home.SetHomeCommand;
-import dev.thewarrior.Commands.MultiCommands.PluginReloadCommand;
+import dev.thewarrior.Commands.Plugin.ReloadCommand;
 import dev.thewarrior.Commands.Permissions.PermissionsCommand;
 import dev.thewarrior.Commands.Region.RegionBaseCommand;
 import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
@@ -45,7 +45,7 @@ import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-public class MultiCommands extends JavaPlugin {
+public class OrionEssentials extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
     public static Gson gson;
 
@@ -59,7 +59,7 @@ public class MultiCommands extends JavaPlugin {
 
     public RegionEntryProtectionSystem regionEntryProtectionSystem;
 
-    public MultiCommands(@NonNullDecl JavaPluginInit init) {
+    public OrionEssentials(@NonNullDecl JavaPluginInit init) {
         super(init);
     }
 
@@ -153,7 +153,7 @@ public class MultiCommands extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new TpaonCommand());
 
         // Extra
-        this.getCommandRegistry().registerCommand(new PluginReloadCommand(this));
+        this.getCommandRegistry().registerCommand(new ReloadCommand(this));
         this.getCommandRegistry().registerCommand(new FreeCameraCommand());
 
         // Permissions
@@ -194,7 +194,7 @@ public class MultiCommands extends JavaPlugin {
         this.warpManager.reload();
 
         Logger.info("Reloaded by " + requester.getUsername());
-        requester.sendMessage(ColorUtil.colorize("&a[MultiCommands] Configurações recarregadas com sucesso!"));
+        requester.sendMessage(ColorUtil.colorize("&a[OrionEssentials] Configurações recarregadas com sucesso!"));
     }
 
     static {

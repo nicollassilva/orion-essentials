@@ -17,6 +17,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.WarpManager;
 import dev.thewarrior.Utils.Enums.WarpValidationError;
 import dev.thewarrior.Utils.Location;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -33,7 +34,7 @@ public class SetWarpCommand extends AbstractPlayerCommand {
         this.warpManager = warpManager;
         this.target = this.withRequiredArg("nome", "Nome da warp a ser adicionada", ArgTypes.STRING);
 
-        requirePermission("multicommands.warps.manage");
+        requirePermission(PermissionUtil.getPermission("warps.manage"));
     }
 
     @Override

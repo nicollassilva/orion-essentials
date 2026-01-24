@@ -9,7 +9,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Components.PlayerCommandComponent;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -19,7 +20,7 @@ public class DelHomeCommand extends AbstractPlayerCommand {
     public DelHomeCommand() {
         super("delhome", "Exclui uma home previamente definida");
 
-        requirePermission("multicommands.delhome");
+        requirePermission(PermissionUtil.getPermission("homes.delete"));
         setAllowsExtraArguments(true);
     }
 
@@ -31,7 +32,7 @@ public class DelHomeCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandComponent component = store.getComponent(ref, MultiCommands.PlayerDataComponent);
+        final PlayerCommandComponent component = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
 
         if(component == null) {
             playerRef.sendMessage(Messages.CANNOT_GET_OWN_PLAYER_DATA.color(Color.RED));

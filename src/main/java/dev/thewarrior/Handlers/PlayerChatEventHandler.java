@@ -14,7 +14,7 @@ import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.Data.Region.Flag.RegionFlag;
 import dev.thewarrior.Managers.PermissionManager;
 import dev.thewarrior.Managers.RegionManager;
-import dev.thewarrior.MultiCommands;
+import dev.thewarrior.OrionEssentials;
 import dev.thewarrior.Utils.ColorUtil;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class PlayerChatEventHandler {
     public static String commandBlockFlagName = RegionFlag.COMMANDS.getName();
     public static DefaultFormatter defaultFormatter;
 
-    public static void onEvent(final PlayerChatEvent event, final MultiCommands plugin) {
+    public static void onEvent(final PlayerChatEvent event, final OrionEssentials plugin) {
         if(defaultFormatter == null) {
             defaultFormatter = new DefaultFormatter(plugin.getPermissionManager());
         }

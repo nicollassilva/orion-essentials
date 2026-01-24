@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.RegionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.*;
@@ -27,7 +28,7 @@ public class RegionDeleteCommand extends AbstractPlayerCommand {
 
         this.name = this.withRequiredArg("name", "Nome da região a ser removida", ArgTypes.STRING);
 
-        requirePermission("multicommands.region.delete");
+        requirePermission(PermissionUtil.getPermission("regions.delete"));
     }
 
     @Override

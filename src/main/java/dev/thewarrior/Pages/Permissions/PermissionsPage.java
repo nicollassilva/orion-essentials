@@ -244,16 +244,15 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
     private static List<String> getDefaultPermissions() {
         final List<String> defaultPermissions = new CopyOnWriteArrayList<>();
 
-        defaultPermissions.add("multicommands.tpaon");
-        defaultPermissions.add("multicommands.home");
-        defaultPermissions.add("multicommands.tpaoff");
-        defaultPermissions.add("multicommands.warp");
-        defaultPermissions.add("multicommands.tell.*");
-        defaultPermissions.add("multicommands.tpdeny");
-        defaultPermissions.add("multicommands.tpa");
-        defaultPermissions.add("multicommands.tpa");
-        defaultPermissions.add("multicommands.tpaccept");
-        defaultPermissions.add("multicommands.delhome");
+        defaultPermissions.add("orionessentials.tpas.on");
+        defaultPermissions.add("orionessentials.homes.use");
+        defaultPermissions.add("orionessentials.tpas.off");
+        defaultPermissions.add("orionessentials.warps");
+        defaultPermissions.add("orionessentials.tells.*");
+        defaultPermissions.add("orionessentials.tpas.deny");
+        defaultPermissions.add("orionessentials.tpas");
+        defaultPermissions.add("orionessentials.tpas.ccept");
+        defaultPermissions.add("orionessentials.homes.delete");
         return defaultPermissions;
     }
 

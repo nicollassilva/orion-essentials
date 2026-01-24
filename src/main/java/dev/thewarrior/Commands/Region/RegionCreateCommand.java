@@ -20,6 +20,7 @@ import dev.thewarrior.Managers.Data.Region.Composition.RegionType;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.RegionManager;
 import dev.thewarrior.Utils.Logger;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -41,7 +42,7 @@ public class RegionCreateCommand extends AbstractPlayerCommand {
         this.name = this.withRequiredArg("name", "Nome da nova região", ArgTypes.STRING);
         this.priority = this.withDefaultArg("priority", "Prioridade da região (0..~)", ArgTypes.INTEGER, 0, "Prioridade padrão");
 
-        requirePermission("multicommands.region.create");
+        requirePermission(PermissionUtil.getPermission("regions.create"));
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.RegionManager;
 import dev.thewarrior.Utils.ColorUtil;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.StringUtils;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -22,6 +23,8 @@ public class RegionBaseCommand extends CommandBase {
         addSubCommand(new RegionUpdateCommand(regionManager));
         addSubCommand(new RegionDeselectCommand());
         addSubCommand(new RegionFlagCommand(regionManager));
+
+        requirePermission(PermissionUtil.getPermission("regions"));
     }
 
     public boolean canGeneratePermission() {

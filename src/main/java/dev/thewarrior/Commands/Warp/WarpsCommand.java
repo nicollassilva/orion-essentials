@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.WarpManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -22,7 +23,7 @@ public class WarpsCommand extends AbstractPlayerCommand {
 
         this.warpManager = warpManager;
 
-        requirePermission("multicommands.warp");
+        requirePermission(PermissionUtil.getPermission("warps"));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
 import dev.thewarrior.Managers.PermissionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.Utils.StringUtils;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -15,7 +16,7 @@ public class PermissionsCommand extends CommandBase {
 
         addSubCommand(new PermissionsManageCommand(permissionManager));
 
-        requirePermission("multicommands.permissions");
+        requirePermission(PermissionUtil.getPermission("permissions"));
     }
 
     @Override

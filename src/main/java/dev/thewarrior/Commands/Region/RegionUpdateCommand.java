@@ -19,6 +19,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Managers.Data.Region.Composition.RegionType;
 import dev.thewarrior.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Managers.RegionManager;
+import dev.thewarrior.Utils.PermissionUtil;
 import dev.thewarrior.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -42,7 +43,7 @@ public class RegionUpdateCommand extends AbstractPlayerCommand {
         this.priority = this.withOptionalArg("priority", "Nova prioridade da região", ArgTypes.INTEGER);
         this.updateArea = this.withOptionalArg("updateArea", "Atualizar a área da região com a seleção atual", ArgTypes.BOOLEAN);
 
-        requirePermission("multicommands.region.update");
+        requirePermission(PermissionUtil.getPermission("regions.update"));
     }
 
     @Override
