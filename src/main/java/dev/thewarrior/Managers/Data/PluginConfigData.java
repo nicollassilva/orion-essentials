@@ -7,6 +7,7 @@ public class PluginConfigData {
     private int teleportDelaySeconds = 3;
     private Location spawnLocation = null;
     private String broadcastFormat = "&e[&6Broadcast&e] &f{message}";
+    private String chatFormat = "{prefix}{player}{suffix}&f: &7{message}";
 
     public String getDiscordLink() {
         return discordLink;
@@ -34,5 +35,9 @@ public class PluginConfigData {
 
     public String getBroadcastFormat() {
         return broadcastFormat;
+    }
+
+    public String getChatFormat() {
+        return chatFormat;
     }
 }

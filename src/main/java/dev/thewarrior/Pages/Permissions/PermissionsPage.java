@@ -158,13 +158,12 @@ public class PermissionsPage extends InteractiveCustomUIPage<PermissionsPageData
                 }
 
                 this.permissionManager.save(data.target);
-                this.onClose(ref, store);
 
                 if(refIsValid) {
-                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&2Permissão marcada para ser salva!"), data.target);
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&2Permissão marcada para ser salva: &6" + this.selectedPermission));
                 }
 
-                this.sendUpdate(new UICommandBuilder().set("#PermissionTitle.Text", ""));
+                this.onClose(ref, store);
             }
             case "DeletePermission" -> {
                 final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());

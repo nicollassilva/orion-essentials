@@ -53,6 +53,10 @@ public class PluginConfigManager extends StorableManager<PluginConfigData> {
         return this.data.getBroadcastFormat();
     }
 
+    public String getChatFormat() {
+        return this.data.getChatFormat();
+    }
+
     /**
      * Syncs the saved spawn with the world's native spawn provider.
      * This updates the spawn marker on the map.

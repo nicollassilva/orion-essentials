@@ -2,12 +2,15 @@ package dev.thewarrior.Managers;
 
 import com.google.gson.JsonObject;
 import com.hypixel.hytale.server.core.HytaleServer;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ShutdownReason;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Managers.Data.Permission.PermissionGroupsData;
 import dev.thewarrior.Managers.Permission.PermissionBackupManager;
 import dev.thewarrior.MultiCommands;
+import dev.thewarrior.Utils.ColorUtil;
 import dev.thewarrior.Utils.Logger;
 import dev.thewarrior.Utils.ThrottledTask;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
@@ -16,14 +19,23 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 public class PermissionManager {
+    private static final String COLOR_PERMISSION = "multicommands.chat.colors";
+    private static final long CACHE_INVALIDATION_INTERVAL_MS = 30_000L; // 30 seconds
+    private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("&[0-9a-fA-F]|&#[0-9a-fA-F]{6}");
+
     private final AtomicBoolean isLoaded = new AtomicBoolean(false);
+
+    private PluginConfigManager pluginConfigManager;
 
     private final Path defaultConfigFile;
 
@@ -37,9 +49,13 @@ public class PermissionManager {
 
     private final PermissionBackupManager backupManager;
 
-    public PermissionManager(final Path dataPath) {
+    // Cache for player prefix/suffix (UUID -> [prefix, suffix])
+    private final Map<UUID, String[]> playerFormatCache = new ConcurrentHashMap<>();
+
+    public PermissionManager(final Path dataPath, PluginConfigManager pluginConfigManager) {
         this.defaultConfigFile = Paths.get("permissions.json");
         this.pluginConfigFile = dataPath.resolve("permissions.json");
+        this.pluginConfigManager = pluginConfigManager;
 
         this.backupManager = new PermissionBackupManager(
                 this.defaultConfigFile,
@@ -48,6 +64,14 @@ public class PermissionManager {
         );
 
         this.saveTask = new ThrottledTask(HytaleServer.SCHEDULED_EXECUTOR, this::saveAsync, 1000);
+
+        // Schedule cache invalidation every 30 seconds
+        HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
+                this::invalidateFormatCache,
+                CACHE_INVALIDATION_INTERVAL_MS,
+                CACHE_INVALIDATION_INTERVAL_MS,
+                java.util.concurrent.TimeUnit.MILLISECONDS
+        );
 
         this.syncLoad();
     }
@@ -121,6 +145,118 @@ public class PermissionManager {
         return this.groupsData.hasGroup(groupName);
     }
 
+    /**
+     * Formats a chat message for a player based on their permission groups.
+     * The player's name is formatted with prefix/suffix from their highest priority group.
+     *
+     * @param playerRef The player reference
+     * @param content   The message content
+     * @return Formatted message with player name decorated with prefix/suffix
+     */
+    public Message formatChatMessage(PlayerRef playerRef, String content) {
+        if (playerRef == null || !playerRef.isValid()) return Message.raw(content);
+
+        UUID playerUuid = playerRef.getUuid();
+        String playerName = playerRef.getUsername();
+
+        // Get cached or compute the player's prefix and suffix
+        String[] prefixSuffix = playerFormatCache.computeIfAbsent(playerUuid, this::computePrefixSuffix);
+
+        // Strip color codes from message if player doesn't have permission
+        String sanitizedContent = content;
+
+        if (!PermissionsModule.get().hasPermission(playerUuid, COLOR_PERMISSION)) {
+            sanitizedContent = stripColorCodes(content).trim();
+        }
+
+        String formatted = this.pluginConfigManager.getChatFormat()
+                .replace("{prefix}", prefixSuffix[0])
+                .replace("{player}", playerName)
+                .replace("{suffix}", prefixSuffix[1])
+                .replace("{message}", sanitizedContent);
+
+        return ColorUtil.colorize(formatted);
+    }
+
+    /**
+     * Computes the prefix and suffix for a player from their permission groups.
+     * Uses the highest priority group that has a prefix or suffix defined.
+     *
+     * @param playerUuid The player's UUID
+     * @return Array with [prefix, suffix]
+     */
+    private String[] computePrefixSuffix(UUID playerUuid) {
+        Set<String> playerGroups = PermissionsModule.get().getGroupsForUser(playerUuid);
+
+        if (playerGroups.isEmpty()) {
+            return new String[]{"", ""};
+        }
+
+        // Find the highest priority group with prefix or suffix
+        PermissionData highestPriorityGroup = null;
+        int highestPriority = Integer.MIN_VALUE;
+
+        for (String groupName : playerGroups) {
+            final PermissionData data = this.groupsData.getGroupData(groupName);
+
+            if (data == null) continue;
+            if (!hasContent(data.getPrefix()) && !hasContent(data.getSuffix())) continue;
+
+            int priority = data.getPriority();
+
+            if (priority > highestPriority) {
+                highestPriority = priority;
+                highestPriorityGroup = data;
+            }
+        }
+
+        if (highestPriorityGroup == null) {
+            return new String[]{"", ""};
+        }
+
+        String prefix = highestPriorityGroup.getPrefix();
+        String suffix = highestPriorityGroup.getSuffix();
+
+        return new String[]{
+                hasContent(prefix) ? prefix : "",
+                hasContent(suffix) ? suffix : ""
+        };
+    }
+
+    /**
+     * Strips color codes (&0-&f and &#RRGGBB) from a string.
+     *
+     * @param text The input string
+     * @return String without color codes
+     */
+    private String stripColorCodes(String text) {
+        if (text == null || text.isEmpty()) return text;
+
+        return COLOR_CODE_PATTERN.matcher(text).replaceAll("");
+    }
+
+    /**
+     * Invalidates the player name format cache for a specific player.
+     *
+     * @param playerUuid The player's UUID
+     */
+    public void invalidatePlayerCache(UUID playerUuid) {
+        this.playerFormatCache.remove(playerUuid);
+    }
+
+    /**
+     * Clears the entire format cache. Called automatically every 30 seconds.
+     */
+    public void invalidateFormatCache() {
+        Logger.info("Clearing player chat format cache.");
+
+        this.playerFormatCache.clear();
+    }
+
+    private static boolean hasContent(String str) {
+        return str != null && !str.isEmpty();
+    }
+
     public void swapPermission(final String currentPermissionName) {
         final PermissionData currentData = this.getGroupData(currentPermissionName);
 
@@ -186,6 +322,8 @@ public class PermissionManager {
 
             return true;
         });
+
+        this.invalidateFormatCache();
 
         CompletableFuture.runAsync(() -> {
             try {

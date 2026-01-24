@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerChatEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -38,6 +39,7 @@ import dev.thewarrior.Commands.Warp.SetWarpCommand;
 import dev.thewarrior.Commands.Warp.WarpsCommand;
 import dev.thewarrior.Components.PlayerCommandComponent;
 import dev.thewarrior.Events.*;
+import dev.thewarrior.Handlers.PlayerChatEventHandler;
 import dev.thewarrior.Handlers.PlayerEventHandler;
 import dev.thewarrior.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
@@ -48,13 +50,7 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class MultiCommands extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
-
-    public static Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .disableHtmlEscaping()
-            .registerTypeAdapter(PermissionData.class, new PermissionDataAdapter())
-            .registerTypeAdapter(RegionArea.class, new RegionAreaAdapter())
-            .create();
+    public static Gson gson;
 
     public PluginConfigManager pluginConfigManager;
     public WarpManager warpManager;
@@ -79,7 +75,7 @@ public class MultiCommands extends JavaPlugin {
         this.regionManager = new RegionManager(this.getDataDirectory());
         this.teleportManager = new TeleportManager(this.pluginConfigManager, this.regionManager);
         this.tpaManager = new TpaManager();
-        this.permissionManager = new PermissionManager(this.getDataDirectory());
+        this.permissionManager = new PermissionManager(this.getDataDirectory(), this.pluginConfigManager);
     }
 
     @Override
@@ -95,6 +91,22 @@ public class MultiCommands extends JavaPlugin {
 
     public PluginConfigManager getConfig() {
         return this.pluginConfigManager;
+    }
+
+    public PermissionManager getPermissionManager() {
+        return this.permissionManager;
+    }
+
+    public RegionManager getRegionManager() {
+        return this.regionManager;
+    }
+
+    public TeleportManager getTeleportManager() {
+        return this.teleportManager;
+    }
+
+    public RegionEntryProtectionSystem getRegionEntryProtectionSystem() {
+        return this.regionEntryProtectionSystem;
     }
 
     public void registerCommands() {
@@ -168,11 +180,15 @@ public class MultiCommands extends JavaPlugin {
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerEventHandler::onPlayerReady);
 
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class,
-                event -> PlayerEventHandler.onPlayerDisconnect(event, this.teleportManager, this.regionEntryProtectionSystem)
+                event -> PlayerEventHandler.onPlayerDisconnect(event, this)
         );
 
         this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class,
-                event -> PlayerEventHandler.onPlayerAddedToWorld(event, this.regionManager, this.regionEntryProtectionSystem)
+                event -> PlayerEventHandler.onPlayerAddedToWorld(event, this)
+        );
+
+        this.getEventRegistry().registerGlobal(PlayerChatEvent.class,
+            event -> PlayerChatEventHandler.onEvent(event, this)
         );
 
         this.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
@@ -184,5 +200,14 @@ public class MultiCommands extends JavaPlugin {
 
         Logger.info("Reloaded by " + requester.getUsername());
         requester.sendMessage(ColorUtil.colorize("&a[MultiCommands] Configurações recarregadas com sucesso!"));
+    }
+
+    static {
+        gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(PermissionData.class, new PermissionDataAdapter())
+                .registerTypeAdapter(RegionArea.class, new RegionAreaAdapter())
+                .create();
     }
 }
