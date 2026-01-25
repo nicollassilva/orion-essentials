@@ -3,195 +3,82 @@ package dev.thewarrior;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.server.core.event.events.player.*;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.thewarrior.Adapters.PermissionDataAdapter;
-import dev.thewarrior.Adapters.RegionAreaAdapter;
-import dev.thewarrior.Commands.Broadcast.BroadcastBaseCommand;
-import dev.thewarrior.Commands.Camera.FreeCameraCommand;
-import dev.thewarrior.Commands.Discord.DiscordCommand;
-import dev.thewarrior.Commands.Discord.SetDiscordCommand;
-import dev.thewarrior.Commands.Home.DelHomeCommand;
-import dev.thewarrior.Commands.Home.HomeCommand;
-import dev.thewarrior.Commands.Home.HomesCommand;
-import dev.thewarrior.Commands.Home.SetHomeCommand;
-import dev.thewarrior.Commands.Plugin.ReloadCommand;
-import dev.thewarrior.Commands.Permissions.PermissionsCommand;
-import dev.thewarrior.Commands.Region.RegionBaseCommand;
-import dev.thewarrior.Commands.Spawn.SetSpawnCommand;
-import dev.thewarrior.Commands.Spawn.SpawnCommand;
-import dev.thewarrior.Commands.Teleports.TpHereCommand;
-import dev.thewarrior.Commands.Tell.ReplyCommand;
-import dev.thewarrior.Commands.Tell.TellCommand;
-import dev.thewarrior.Commands.Tell.TellOffCommand;
-import dev.thewarrior.Commands.Tell.TellOnCommand;
-import dev.thewarrior.Commands.Tpa.*;
-import dev.thewarrior.Commands.Warp.BaseWarpCommand;
-import dev.thewarrior.Commands.Warp.DelWarpCommand;
-import dev.thewarrior.Commands.Warp.SetWarpCommand;
-import dev.thewarrior.Commands.Warp.WarpsCommand;
-import dev.thewarrior.Components.PlayerCommandComponent;
-import dev.thewarrior.Events.*;
-import dev.thewarrior.Handlers.PlayerChatEventHandler;
-import dev.thewarrior.Handlers.PlayerEventHandler;
-import dev.thewarrior.Managers.Data.Permission.PermissionData;
-import dev.thewarrior.Managers.Data.Region.Data.RegionArea;
-import dev.thewarrior.Managers.*;
-import dev.thewarrior.Utils.ColorUtil;
-import dev.thewarrior.Utils.Logger;
+import dev.thewarrior.Essentials.Adapters.PermissionDataAdapter;
+import dev.thewarrior.Essentials.Adapters.RegionAreaAdapter;
+import dev.thewarrior.Essentials.Components.PlayerCommandComponent;
+import dev.thewarrior.Essentials.EssentialsBootstrap;
+import dev.thewarrior.Essentials.Events.RegionEntryProtectionSystem;
+import dev.thewarrior.Essentials.Managers.Data.Permission.PermissionData;
+import dev.thewarrior.Essentials.Managers.Data.Region.Data.RegionArea;
+import dev.thewarrior.Essentials.Managers.*;
+import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.Essentials.Utils.Logger;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class OrionEssentials extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
     public static Gson gson;
 
-    public PluginConfigManager pluginConfigManager;
-    public WarpManager warpManager;
-    public TeleportManager teleportManager;
-    public TpaManager tpaManager;
-    public PermissionManager permissionManager;
-    public RegionManager regionManager;
-    public PlayerHistoryManager playerHistoryManager;
-
-    public RegionEntryProtectionSystem regionEntryProtectionSystem;
+    private final EssentialsBootstrap essentialsBootstrap;
 
     public OrionEssentials(@NonNullDecl JavaPluginInit init) {
         super(init);
+
+        this.essentialsBootstrap = new EssentialsBootstrap(this);
     }
 
     @Override
     protected void setup() {
-        Logger.init(getLogger());
-        Logger.info("Setting up...");
+        super.setup();
 
-        this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
-        this.warpManager = new WarpManager(this.getDataDirectory());
-        this.regionManager = new RegionManager(this.getDataDirectory());
-        this.teleportManager = new TeleportManager(this.pluginConfigManager, this.regionManager);
-        this.tpaManager = new TpaManager();
-        this.permissionManager = new PermissionManager(this.getDataDirectory(), this.pluginConfigManager);
-        this.playerHistoryManager = new PlayerHistoryManager(this.getDataDirectory());
+        Logger.init(getLogger());
+        Logger.info("~=~=~= Iniciando Orion Network ~=~=~=");
+
+        this.essentialsBootstrap.setup();
     }
 
     @Override
     public void start() {
+        super.start();
+
         PlayerDataComponent = getEntityStoreRegistry().registerComponent(PlayerCommandComponent.class, "PlayerCommandData", PlayerCommandComponent.CODEC);
 
-        this.registerCommands();
-        this.registerSystems();
-        this.registerEvents();
+        this.essentialsBootstrap.start();
 
-        Logger.info("Has been started!");
+        Logger.info("~=~=~= Orion Network iniciado com sucesso! ~=~=~=");
     }
 
     public PluginConfigManager getConfig() {
-        return this.pluginConfigManager;
+        return this.essentialsBootstrap.pluginConfigManager;
     }
 
     public PermissionManager getPermissionManager() {
-        return this.permissionManager;
+        return this.essentialsBootstrap.permissionManager;
     }
 
     public RegionManager getRegionManager() {
-        return this.regionManager;
+        return this.essentialsBootstrap.regionManager;
     }
 
     public TeleportManager getTeleportManager() {
-        return this.teleportManager;
+        return this.essentialsBootstrap.teleportManager;
     }
 
     public RegionEntryProtectionSystem getRegionEntryProtectionSystem() {
-        return this.regionEntryProtectionSystem;
+        return this.essentialsBootstrap.regionEntryProtectionSystem;
     }
 
     public PlayerHistoryManager getPlayerHistoryManager() {
-        return this.playerHistoryManager;
-    }
-
-    public void registerCommands() {
-        // Discord
-        this.getCommandRegistry().registerCommand(new DiscordCommand(this.pluginConfigManager));
-        this.getCommandRegistry().registerCommand(new SetDiscordCommand(this.pluginConfigManager));
-
-        // Tell
-        this.getCommandRegistry().registerCommand(new TellCommand());
-        this.getCommandRegistry().registerCommand(new TellOnCommand());
-        this.getCommandRegistry().registerCommand(new TellOffCommand());
-        this.getCommandRegistry().registerCommand(new ReplyCommand());
-
-        // Warps
-        this.getCommandRegistry().registerCommand(new BaseWarpCommand(this.warpManager, this.teleportManager));
-        this.getCommandRegistry().registerCommand(new WarpsCommand(this.warpManager));
-        this.getCommandRegistry().registerCommand(new SetWarpCommand(this.warpManager));
-        this.getCommandRegistry().registerCommand(new DelWarpCommand(this.warpManager));
-
-        // Teleports
-        this.getCommandRegistry().registerCommand(new TpHereCommand());
-
-        // Spawn
-        this.getCommandRegistry().registerCommand(new SpawnCommand(this.pluginConfigManager, this.teleportManager));
-        this.getCommandRegistry().registerCommand(new SetSpawnCommand(this.pluginConfigManager, this.teleportManager));
-
-        // Broadcast
-        this.getCommandRegistry().registerCommand(new BroadcastBaseCommand(this.pluginConfigManager));
-
-        // Home
-        this.getCommandRegistry().registerCommand(new SetHomeCommand());
-        this.getCommandRegistry().registerCommand(new DelHomeCommand());
-        this.getCommandRegistry().registerCommand(new HomeCommand(this.teleportManager));
-        this.getCommandRegistry().registerCommand(new HomesCommand());
-
-        // TPA
-        this.getCommandRegistry().registerCommand(new TpaCommand(this.tpaManager));
-        this.getCommandRegistry().registerCommand(new TpacceptCommand(this.tpaManager, this.teleportManager));
-        this.getCommandRegistry().registerCommand(new TpadenyCommand(this.tpaManager));
-        this.getCommandRegistry().registerCommand(new TpaoffCommand());
-        this.getCommandRegistry().registerCommand(new TpaonCommand());
-
-        // Extra
-        this.getCommandRegistry().registerCommand(new ReloadCommand(this));
-        this.getCommandRegistry().registerCommand(new FreeCameraCommand());
-
-        // Permissions
-        this.getCommandRegistry().registerCommand(new PermissionsCommand(this.permissionManager));
-
-        // Regions
-        this.getCommandRegistry().registerCommand(new RegionBaseCommand(this.regionManager));
-    }
-
-    public void registerSystems() {
-        this.getEntityStoreRegistry().registerSystem(new TeleportMovementCheckerSystem(this.teleportManager));
-
-        // Regions Systems
-        this.getEntityStoreRegistry().registerSystem(new ItemDropProtectionSystem(this.regionManager));
-        this.getEntityStoreRegistry().registerSystem(new DamageProtectionSystem(this.regionManager));
-        this.getEntityStoreRegistry().registerSystem(new BlockBreakProtectionSystem(this.regionManager));
-        this.getEntityStoreRegistry().registerSystem(new BlockPlaceProtectionSystem(this.regionManager));
-        this.getEntityStoreRegistry().registerSystem(new InteractionProtectionSystem(this.regionManager));
-        this.getEntityStoreRegistry().registerSystem(new PickupItemProtectionSystem(this.regionManager));
-
-        this.regionEntryProtectionSystem = new RegionEntryProtectionSystem(this.regionManager);
-
-        this.getEntityStoreRegistry().registerSystem(this.regionEntryProtectionSystem);
-    }
-
-    public void registerEvents() {
-        this.getEventRegistry().registerGlobal(PlayerConnectEvent.class, event -> PlayerEventHandler.onPlayerConnect(event, this));
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> PlayerEventHandler.onPlayerReady(event, this));
-        this.getEventRegistry().registerGlobal(PlayerChatEvent.class, event -> PlayerChatEventHandler.onEvent(event, this));
-        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, event -> PlayerEventHandler.onPlayerDisconnect(event, this));
-
-        this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> PlayerEventHandler.onPlayerAddedToWorld(event, this));
-        this.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
+        return this.essentialsBootstrap.playerHistoryManager;
     }
 
     public void reloadConfig(PlayerRef requester) {
-        this.pluginConfigManager.reload();
-        this.warpManager.reload();
+        this.essentialsBootstrap.pluginConfigManager.reload();
+        this.essentialsBootstrap.warpManager.reload();
 
         Logger.info("Reloaded by " + requester.getUsername());
         requester.sendMessage(ColorUtil.colorize("&a[OrionEssentials] Configurações recarregadas com sucesso!"));
