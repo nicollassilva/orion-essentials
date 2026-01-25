@@ -17,6 +17,7 @@ import dev.thewarrior.Essentials.Managers.Data.Region.Data.RegionArea;
 import dev.thewarrior.Essentials.Managers.*;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.Essentials.Utils.Logger;
+import dev.thewarrior.MiniGames.MiniGamesBootstrap;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class OrionBootstrap extends JavaPlugin {
@@ -24,11 +25,13 @@ public class OrionBootstrap extends JavaPlugin {
     public static Gson gson;
 
     private final EssentialsBootstrap essentialsBootstrap;
+    private final MiniGamesBootstrap miniGamesBootstrap;
 
     public OrionBootstrap(@NonNullDecl JavaPluginInit init) {
         super(init);
 
         this.essentialsBootstrap = new EssentialsBootstrap(this);
+        this.miniGamesBootstrap = new MiniGamesBootstrap(this);
     }
 
     @Override
@@ -39,6 +42,7 @@ public class OrionBootstrap extends JavaPlugin {
         Logger.info("~=~=~= Iniciando Orion Network ~=~=~=");
 
         this.essentialsBootstrap.setup();
+        this.miniGamesBootstrap.setup();
     }
 
     @Override
@@ -48,6 +52,7 @@ public class OrionBootstrap extends JavaPlugin {
         PlayerDataComponent = getEntityStoreRegistry().registerComponent(PlayerCommandComponent.class, "PlayerCommandData", PlayerCommandComponent.CODEC);
 
         this.essentialsBootstrap.start();
+        this.miniGamesBootstrap.start();
 
         Logger.info("~=~=~= Orion Network iniciado com sucesso! ~=~=~=");
     }

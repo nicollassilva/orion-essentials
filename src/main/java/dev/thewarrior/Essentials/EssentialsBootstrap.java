@@ -2,6 +2,7 @@ package dev.thewarrior.Essentials;
 
 import com.hypixel.hytale.server.core.event.events.player.*;
 import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
+import dev.thewarrior.BasePluginModule;
 import dev.thewarrior.Essentials.Commands.Broadcast.BroadcastBaseCommand;
 import dev.thewarrior.Essentials.Commands.Camera.FreeCameraCommand;
 import dev.thewarrior.Essentials.Commands.Discord.DiscordCommand;
@@ -31,13 +32,7 @@ import dev.thewarrior.Essentials.Handlers.PlayerEventHandler;
 import dev.thewarrior.Essentials.Managers.*;
 import dev.thewarrior.OrionBootstrap;
 
-import java.nio.file.Path;
-
-public class EssentialsBootstrap {
-    private final Path essentialsPath;
-
-    private final OrionBootstrap plugin;
-
+public class EssentialsBootstrap extends BasePluginModule {
     public PluginConfigManager pluginConfigManager;
     public WarpManager warpManager;
     public TeleportManager teleportManager;
@@ -49,12 +44,12 @@ public class EssentialsBootstrap {
     public RegionEntryProtectionSystem regionEntryProtectionSystem;
 
     public EssentialsBootstrap(OrionBootstrap plugin) {
-        this.plugin = plugin;
-
-        this.essentialsPath = Path.of("Essentials");
+        super(plugin, "Essentials");
     }
 
     public void setup() {
+        super.setup();
+
         this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
         this.warpManager = new WarpManager(this.getDataDirectory());
         this.regionManager = new RegionManager(this.getDataDirectory());
@@ -62,6 +57,14 @@ public class EssentialsBootstrap {
         this.tpaManager = new TpaManager();
         this.permissionManager = new PermissionManager(this.getDataDirectory(), this.pluginConfigManager);
         this.playerHistoryManager = new PlayerHistoryManager(this.getDataDirectory());
+    }
+
+    public void start() {
+        super.start();
+
+        this.registerCommands();
+        this.registerSystems();
+        this.registerEvents();
     }
 
     public void registerCommands() {
@@ -139,15 +142,5 @@ public class EssentialsBootstrap {
 
         this.plugin.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> PlayerEventHandler.onPlayerAddedToWorld(event, this.plugin));
         this.plugin.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
-    }
-
-    private Path getDataDirectory() {
-        return this.plugin.getDataDirectory().resolve(this.essentialsPath);
-    }
-
-    public void start() {
-        this.registerCommands();
-        this.registerSystems();
-        this.registerEvents();
     }
 }

@@ -45,4 +45,5 @@ logs/
 *.enc
 mods/
 *.json
+*.json.lpf
 *.bak
