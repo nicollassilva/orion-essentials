@@ -8,7 +8,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Components.PlayerCommandComponent;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.Essentials.i18n.Messages;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -30,7 +30,7 @@ public class TpaonCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandComponent playerData = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
+        final PlayerCommandComponent playerData = store.getComponent(ref, OrionBootstrap.PlayerDataComponent);
 
         if(playerData == null) return;
 

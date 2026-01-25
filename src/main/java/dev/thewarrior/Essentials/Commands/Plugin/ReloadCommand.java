@@ -7,18 +7,18 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.PermissionUtil;
 
 import javax.annotation.Nonnull;
 
 public class ReloadCommand extends AbstractPlayerCommand {
-    private final OrionEssentials orionEssentials;
+    private final OrionBootstrap plugin;
 
-    public ReloadCommand(OrionEssentials orionEssentials) {
+    public ReloadCommand(OrionBootstrap plugin) {
         super("essentialsreload", "Recarrega as configurações do plugin OrionEssentials");
 
-        this.orionEssentials = orionEssentials;
+        this.plugin = plugin;
 
         requirePermission(PermissionUtil.getPermission("plugin.reload"));
     }
@@ -31,6 +31,6 @@ public class ReloadCommand extends AbstractPlayerCommand {
             @Nonnull PlayerRef playerRef,
             @Nonnull World world
     ) {
-        this.orionEssentials.reloadConfig(playerRef);
+        this.plugin.reloadConfig(playerRef);
     }
 }

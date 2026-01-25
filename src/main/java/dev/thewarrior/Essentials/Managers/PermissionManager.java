@@ -9,7 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.thewarrior.Essentials.Managers.Data.Permission.PermissionData;
 import dev.thewarrior.Essentials.Managers.Data.Permission.PermissionGroupsData;
 import dev.thewarrior.Essentials.Managers.Permission.PermissionBackupManager;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.Essentials.Utils.Logger;
 import dev.thewarrior.Essentials.Utils.PermissionUtil;
@@ -83,9 +83,9 @@ public class PermissionManager {
         boolean hasError = false;
 
         try (final Reader reader = Files.newBufferedReader(this.defaultConfigFile)) {
-            JsonObject defaultRootObject = OrionEssentials.gson.fromJson(reader, JsonObject.class);
+            JsonObject defaultRootObject = OrionBootstrap.gson.fromJson(reader, JsonObject.class);
 
-            final PermissionGroupsData data = OrionEssentials.gson.fromJson(defaultRootObject, PermissionGroupsData.class);
+            final PermissionGroupsData data = OrionBootstrap.gson.fromJson(defaultRootObject, PermissionGroupsData.class);
 
             if(data == null) {
                 hasError = true;
@@ -109,7 +109,7 @@ public class PermissionManager {
         }
 
         try (final Reader reader = Files.newBufferedReader(this.pluginConfigFile)) {
-            this.pluginRootObject = OrionEssentials.gson.fromJson(reader, JsonObject.class);
+            this.pluginRootObject = OrionBootstrap.gson.fromJson(reader, JsonObject.class);
             final JsonObject permissionsObject = this.pluginRootObject.getAsJsonObject("groups");
 
             if (permissionsObject != null) {
@@ -125,6 +125,8 @@ public class PermissionManager {
         if (hasError) {
             Logger.error("Critical error occurred while loading permissions data. Shutting down the server.");
             HytaleServer.get().shutdownServer(ShutdownReason.CRASH);
+        } else {
+            Logger.info("Permissions data loaded successfully. Loaded " + this.groupsData.getGroups().size() + " permission groups.");
         }
     }
 
@@ -380,7 +382,7 @@ public class PermissionManager {
                 }
 
                 if (needsFileUpdate) {
-                    Files.writeString(this.pluginConfigFile, OrionEssentials.gson.toJson(this.pluginRootObject));
+                    Files.writeString(this.pluginConfigFile, OrionBootstrap.gson.toJson(this.pluginRootObject));
                 }
             } catch (Exception e) {
                 Logger.error("[CRITICAL] Failed to save permissions data: " + e.getMessage());

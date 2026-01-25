@@ -14,7 +14,7 @@ import dev.thewarrior.Essentials.Managers.Data.Region.Data.RegionData;
 import dev.thewarrior.Essentials.Managers.Data.Region.Flag.RegionFlag;
 import dev.thewarrior.Essentials.Managers.PermissionManager;
 import dev.thewarrior.Essentials.Managers.RegionManager;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class PlayerChatEventHandler {
     public static String commandBlockFlagName = RegionFlag.COMMANDS.getName();
     public static DefaultFormatter defaultFormatter;
 
-    public static void onEvent(final PlayerChatEvent event, final OrionEssentials plugin) {
+    public static void onEvent(final PlayerChatEvent event, final OrionBootstrap plugin) {
         if(defaultFormatter == null) {
             defaultFormatter = new DefaultFormatter(plugin.getPermissionManager());
         }

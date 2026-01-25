@@ -4,6 +4,7 @@ import dev.thewarrior.Essentials.Managers.Composition.StorableManager;
 import dev.thewarrior.Essentials.Managers.Data.Warp.WarpData;
 import dev.thewarrior.Essentials.Utils.Enums.WarpValidationError;
 import dev.thewarrior.Essentials.Utils.Location;
+import dev.thewarrior.Essentials.Utils.Logger;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
@@ -21,6 +22,10 @@ public class WarpManager extends StorableManager<WarpData> {
     @Override
     protected WarpData createDefaultData() {
         return new WarpData();
+    }
+
+    protected void onDataLoaded() {
+        Logger.info("Loaded " + this.data.getWarps().size() + " warps.");
     }
 
     public CompletableFuture<WarpValidationError> setWarp(String name, Location location) {

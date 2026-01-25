@@ -1,6 +1,6 @@
 package dev.thewarrior.Essentials.Managers.Composition;
 
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.Logger;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,7 @@ public abstract class StorableManager<T> {
 
         try {
             String json = Files.readString(this.configFile);
-            T loadedData = OrionEssentials.gson.fromJson(json, dataClass);
+            T loadedData = OrionBootstrap.gson.fromJson(json, dataClass);
 
             if (loadedData != null) {
                 this.data = loadedData;
@@ -70,7 +70,7 @@ public abstract class StorableManager<T> {
         return CompletableFuture.runAsync(() -> {
             try {
                 Files.createDirectories(configFile.getParent());
-                Files.writeString(this.configFile, OrionEssentials.gson.toJson(this.data));
+                Files.writeString(this.configFile, OrionBootstrap.gson.toJson(this.data));
             } catch (Exception e) {
                 Logger.error("[ASYNC] Falha ao salvar o arquivo de configuração: " + this.configFile, e);
             }
@@ -85,7 +85,7 @@ public abstract class StorableManager<T> {
     protected void saveConfigSync() {
         try {
             Files.createDirectories(configFile.getParent());
-            Files.writeString(this.configFile, OrionEssentials.gson.toJson(this.data));
+            Files.writeString(this.configFile, OrionBootstrap.gson.toJson(this.data));
         } catch (Exception e) {
             Logger.error("[SYNC] Falha ao salvar o arquivo de configuração: " + this.configFile, e);
         }

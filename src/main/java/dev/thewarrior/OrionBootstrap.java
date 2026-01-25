@@ -19,13 +19,13 @@ import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.Essentials.Utils.Logger;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-public class OrionEssentials extends JavaPlugin {
+public class OrionBootstrap extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
     public static Gson gson;
 
     private final EssentialsBootstrap essentialsBootstrap;
 
-    public OrionEssentials(@NonNullDecl JavaPluginInit init) {
+    public OrionBootstrap(@NonNullDecl JavaPluginInit init) {
         super(init);
 
         this.essentialsBootstrap = new EssentialsBootstrap(this);

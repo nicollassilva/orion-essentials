@@ -11,7 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Components.PlayerCommandComponent;
 import dev.thewarrior.Essentials.Managers.TeleportManager;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.NamedLocation;
 import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.Essentials.Utils.StringUtils;
@@ -40,7 +40,7 @@ public class HomeCommand extends AbstractPlayerCommand {
             @NonNullDecl PlayerRef playerRef,
             @NonNullDecl World world
     ) {
-        final PlayerCommandComponent component = store.getComponent(ref, OrionEssentials.PlayerDataComponent);
+        final PlayerCommandComponent component = store.getComponent(ref, OrionBootstrap.PlayerDataComponent);
 
         if(component == null) {
             playerRef.sendMessage(Messages.CANNOT_GET_OWN_PLAYER_DATA.color(Color.RED));

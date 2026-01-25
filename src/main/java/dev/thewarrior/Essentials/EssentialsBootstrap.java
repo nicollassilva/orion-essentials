@@ -29,10 +29,14 @@ import dev.thewarrior.Essentials.Events.*;
 import dev.thewarrior.Essentials.Handlers.PlayerChatEventHandler;
 import dev.thewarrior.Essentials.Handlers.PlayerEventHandler;
 import dev.thewarrior.Essentials.Managers.*;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
+
+import java.nio.file.Path;
 
 public class EssentialsBootstrap {
-    private final OrionEssentials plugin;
+    private final Path essentialsPath;
+
+    private final OrionBootstrap plugin;
 
     public PluginConfigManager pluginConfigManager;
     public WarpManager warpManager;
@@ -44,18 +48,20 @@ public class EssentialsBootstrap {
 
     public RegionEntryProtectionSystem regionEntryProtectionSystem;
 
-    public EssentialsBootstrap(OrionEssentials plugin) {
+    public EssentialsBootstrap(OrionBootstrap plugin) {
         this.plugin = plugin;
+
+        this.essentialsPath = Path.of("Essentials");
     }
 
     public void setup() {
-        this.pluginConfigManager = new PluginConfigManager(this.plugin.getDataDirectory());
-        this.warpManager = new WarpManager(this.plugin.getDataDirectory());
-        this.regionManager = new RegionManager(this.plugin.getDataDirectory());
+        this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
+        this.warpManager = new WarpManager(this.getDataDirectory());
+        this.regionManager = new RegionManager(this.getDataDirectory());
         this.teleportManager = new TeleportManager(this.pluginConfigManager, this.regionManager);
         this.tpaManager = new TpaManager();
-        this.permissionManager = new PermissionManager(this.plugin.getDataDirectory(), this.pluginConfigManager);
-        this.playerHistoryManager = new PlayerHistoryManager(this.plugin.getDataDirectory());
+        this.permissionManager = new PermissionManager(this.getDataDirectory(), this.pluginConfigManager);
+        this.playerHistoryManager = new PlayerHistoryManager(this.getDataDirectory());
     }
 
     public void registerCommands() {
@@ -133,6 +139,10 @@ public class EssentialsBootstrap {
 
         this.plugin.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> PlayerEventHandler.onPlayerAddedToWorld(event, this.plugin));
         this.plugin.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
+    }
+
+    private Path getDataDirectory() {
+        return this.plugin.getDataDirectory().resolve(this.essentialsPath);
     }
 
     public void start() {

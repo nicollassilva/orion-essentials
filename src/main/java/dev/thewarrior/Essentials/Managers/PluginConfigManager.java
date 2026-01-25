@@ -25,6 +25,10 @@ public class PluginConfigManager extends StorableManager<PluginConfigData> {
         return new PluginConfigData();
     }
 
+    protected void onDataLoaded() {
+        Logger.info("Plugin configuration loaded");
+    }
+
     public String getDiscordLink() {
         return this.data.getDiscordLink();
     }

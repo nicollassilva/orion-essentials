@@ -12,6 +12,7 @@ import dev.thewarrior.Essentials.Managers.Data.Region.Factory.RegionAreaFactory;
 import dev.thewarrior.Essentials.Managers.Data.Region.RegionManagerData;
 import dev.thewarrior.Essentials.Managers.Data.Region.RegionPlayerCache;
 import dev.thewarrior.Essentials.Managers.Data.Region.RegionSpatialIndex;
+import dev.thewarrior.Essentials.Utils.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,6 +47,8 @@ public class RegionManager extends StorableManager<RegionManagerData> {
         rebuildSpatialIndex();
 
         HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(this::cleanupCache, 0, 60, TimeUnit.SECONDS);
+
+        Logger.info("RegionManager loaded with " + this.data.getRegions().size() + " regions.");
     }
 
     /**

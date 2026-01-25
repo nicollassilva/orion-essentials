@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Components.PlayerCommandComponent;
 import dev.thewarrior.Essentials.Managers.TpaManager;
-import dev.thewarrior.OrionEssentials;
+import dev.thewarrior.OrionBootstrap;
 import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.Essentials.Utils.SoundsUtil;
 import dev.thewarrior.Essentials.Utils.StringUtils;
@@ -71,7 +71,7 @@ public class TpaCommand extends AbstractPlayerCommand {
         }
 
         Store<EntityStore> targetStore = targetRef.getStore();
-        PlayerCommandComponent targetData = targetStore.getComponent(targetRef, OrionEssentials.PlayerDataComponent);
+        PlayerCommandComponent targetData = targetStore.getComponent(targetRef, OrionBootstrap.PlayerDataComponent);
 
         if (targetData == null) {
             playerRef.sendMessage(Messages.PLAYER_NOT_FOUND.color(Color.RED));
