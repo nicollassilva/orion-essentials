@@ -18,10 +18,6 @@ public class GamesSettingsStorage extends StorableManager<GamesSettingsData> {
         return new GamesSettingsData();
     }
 
-    protected void onDataLoaded() {
-
-    }
-
     public GameSettings getByType(final GameType gameType) {
         return this.data.getByType(gameType);
     }

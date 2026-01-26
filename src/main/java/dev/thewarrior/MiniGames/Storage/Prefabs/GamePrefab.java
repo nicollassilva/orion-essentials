@@ -12,7 +12,7 @@ public class GamePrefab {
     private boolean isEnabled;
     private GamePrefabSpawnData lobbySpawnData;
     private List<GamePrefabSpawnData> gameSpawnsData;
-    private BlockSelection gameBuild;
+    private transient BlockSelection gameBuild;
 
     public String getName() {
         return name;

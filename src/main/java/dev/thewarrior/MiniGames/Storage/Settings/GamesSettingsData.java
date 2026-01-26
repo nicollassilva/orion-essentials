@@ -26,4 +26,12 @@ public class GamesSettingsData {
     public GameSettings getByName(final String name) {
         return this.getGameSettings(setting -> setting.getName().equalsIgnoreCase(name));
     }
+
+    public List<GameSettings> getSettings() {
+        return this.settings;
+    }
+
+    public boolean isEmpty() {
+        return this.settings.isEmpty();
+    }
 }

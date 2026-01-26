@@ -63,6 +63,10 @@ public class MiniGamesBootstrap extends BasePluginModule {
         return this.gameManager;
     }
 
+    public GamesPrefabsStorage getPrefabsStorage() {
+        return this.prefabsStorage;
+    }
+
     public static class ReloadWorldCommand extends AbstractPlayerCommand {
         private WorldManager worldManager;
         public ReloadWorldCommand(WorldManager worldManager) {
