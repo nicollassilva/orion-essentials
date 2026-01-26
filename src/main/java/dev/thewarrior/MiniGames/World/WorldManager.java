@@ -1,72 +1,67 @@
 package dev.thewarrior.MiniGames.World;
 
-import com.hypixel.hytale.common.util.CompletableFutureUtil;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.Color;
-import com.hypixel.hytale.server.core.HytaleServer;
-import com.hypixel.hytale.server.core.ShutdownReason;
-import com.hypixel.hytale.server.core.prefab.PrefabStore;
-import com.hypixel.hytale.server.core.prefab.selection.standard.BlockSelection;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.ClientEffectWorldSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.WorldConfig;
 import com.hypixel.hytale.server.core.universe.world.spawn.GlobalSpawnProvider;
+import com.hypixel.hytale.server.core.universe.world.worldgen.provider.FlatWorldGenProvider;
 import com.hypixel.hytale.server.core.universe.world.worldgen.provider.VoidWorldGenProvider;
 import dev.thewarrior.Essentials.Utils.Logger;
+import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldManager {
-    private Instant defaultWorldTime = LocalDate.now(ZoneId.of("America/Sao_Paulo"))
+    private final Instant defaultWorldTime = LocalDate.now(ZoneId.of("America/Sao_Paulo"))
             .atTime(12, 0)
             .atZone(ZoneId.of("America/Sao_Paulo"))
             .toInstant();
 
-    public void start() {
-        this.checkCommonMinigamesWorldExistence();
+    private final Map<String, World> minigameWorlds;
+
+    private final WorldTerrainManager worldTerrainManager;
+
+    public WorldManager() {
+        this.minigameWorlds = new ConcurrentHashMap<>();
+        this.worldTerrainManager = new WorldTerrainManager();
     }
 
-    private void checkCommonMinigamesWorldExistence() {
-        World worldExists = Universe.get().getWorld("minigames_common");
+    public void start() {
 
-        if(worldExists != null) {
-            Logger.info("The world 'minigames_common' exists. Deleting and recreating...");
-            World fallback = Universe.get().getWorld("default");
-            if(fallback != null)  worldExists.drainPlayersTo(fallback);
-            Universe.get().removeWorld("minigames_common");
-        } else {
-            Logger.info("The world 'minigames_common' does not exist. Creating...");
+    }
+
+    public CompletableFuture<World> getWorldForGame(GameSettings gameSettings) {
+        if(gameSettings == null || gameSettings.getWorldName() == null) {
+            Logger.error("GameSettings or WorldName is null. Cannot retrieve world.");
+            return null;
         }
 
-        CompletableFutureUtil._catch(
-                Universe.get().makeWorld("minigames_common", Universe.getWorldGenPath(), this.setupWorldConfig())
-                        .thenRun(() -> {
-                            World createdWorld = Universe.get().getWorld("minigames_common");
+        final String worldName = gameSettings.getWorldName();
 
-                            if (createdWorld == null) {
-                                Logger.error("Failed to create 'minigames_common' world: World is null after creation.");
-                                HytaleServer.get().shutdownServer(ShutdownReason.CRASH);
-                                return;
-                            }
+        if(worldName.isEmpty()) {
+            Logger.error("WorldName is empty in GameSettings. Cannot retrieve world.");
+            return null;
+        }
 
-                            createdWorld.execute(() -> {
-                                BlockSelection prefab = PrefabStore.get().getServerPrefab("TntRun_V1.prefab.json");
+        final World world = this.minigameWorlds.getOrDefault(worldName, null);
 
-                                prefab.place(null, createdWorld, new Vector3i(0, 1, 0), null);
-                            });
-                        })
-                        .exceptionally(
-                                throwable -> {
-                                    Logger.error("Failed to add 'minigames_common' world", throwable);
-                                    return null;
-                                }
-                        )
-        );
+        if(world == null) {
+            Logger.error(String.format("World '%s' is not loaded. Trying to create or fetch it.", worldName));
+        }
+
+        return Universe.get().makeWorld(worldName, Universe.getWorldGenPath(), this.setupWorldConfig());
+    }
+
+    public WorldTerrainManager getWorldTerrainManager() {
+        return this.worldTerrainManager;
     }
 
     private WorldConfig setupWorldConfig() {
@@ -88,7 +83,7 @@ public class WorldManager {
 
         config.setClientEffects(ClientEffectWorldSettings.CODEC.getDefaultValue());
 
-        config.setWorldGenProvider(new VoidWorldGenProvider(new Color((byte) 91, (byte) -98, (byte) 40), "Env_Zone1_Plains"));
+        config.setWorldGenProvider(new VoidWorldGenProvider(FlatWorldGenProvider.DEFAULT_TINT, "Env_Zone1_Plains"));
 
         return config;
     }

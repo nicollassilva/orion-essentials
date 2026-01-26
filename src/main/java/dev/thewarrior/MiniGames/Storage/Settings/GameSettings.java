@@ -1,10 +1,15 @@
 package dev.thewarrior.MiniGames.Storage.Settings;
 
+import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+
 import java.util.List;
 
 public class GameSettings {
     private String name;
+    private String type;
     private String description;
+    private String worldName;
+
     private boolean isEnabled;
 
     private int maxPlayersPerGame;
@@ -16,9 +21,9 @@ public class GameSettings {
     private int countdownBeforeStart;
     private int countdownAfterEnd;
 
-    private List<String> permissionsRequired;
+    private int maxInstances;
 
-    public GameSettings() {}
+    private List<String> permissionsRequired;
 
     public String getName() {
         return name;
@@ -28,8 +33,12 @@ public class GameSettings {
         return description;
     }
 
-    public boolean isEnabled() {
-        return isEnabled;
+    public String getWorldName() {
+        return worldName;
+    }
+
+    public boolean isDisabled() {
+        return !this.isEnabled;
     }
 
     public int getMaxPlayersPerGame() {
@@ -48,6 +57,10 @@ public class GameSettings {
         return countdownAfterEnd;
     }
 
+    public int getMaxInstances() {
+        return maxInstances;
+    }
+
     public int getMinDuration() {
         return minDuration;
     }
@@ -58,5 +71,9 @@ public class GameSettings {
 
     public List<String> getPermissionsRequired() {
         return permissionsRequired;
+    }
+
+    public boolean isType(final GameType gameType) {
+        return this.type.equalsIgnoreCase(gameType.name());
     }
 }

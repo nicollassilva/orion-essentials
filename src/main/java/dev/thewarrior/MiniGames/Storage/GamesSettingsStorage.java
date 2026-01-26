@@ -1,6 +1,8 @@
 package dev.thewarrior.MiniGames.Storage;
 
 import dev.thewarrior.Essentials.Managers.Composition.StorableManager;
+import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 import dev.thewarrior.MiniGames.Storage.Settings.GamesSettingsData;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -14,5 +16,13 @@ public class GamesSettingsStorage extends StorableManager<GamesSettingsData> {
     @Override
     protected GamesSettingsData createDefaultData() {
         return new GamesSettingsData();
+    }
+
+    protected void onDataLoaded() {
+
+    }
+
+    public GameSettings getByType(final GameType gameType) {
+        return this.data.getByType(gameType);
     }
 }

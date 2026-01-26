@@ -25,6 +25,10 @@ public class BasePluginModule {
         Logger.info(moduleName + " - Iniciando sistemas");
     }
 
+    public void stop() {
+        Logger.info(moduleName + " - Desligando sistemas");
+    }
+
     protected Path getDataDirectory() {
         return this.plugin.getDataDirectory().resolve(this.dataPath);
     }

@@ -67,6 +67,14 @@ public class EssentialsBootstrap extends BasePluginModule {
         this.registerEvents();
     }
 
+    public void stop() {
+        super.stop();
+
+        this.tpaManager.shutdown();
+        this.regionManager.cleanupCache();
+        this.teleportManager.shutdown();
+    }
+
     public void registerCommands() {
         // Discord
         this.plugin.getCommandRegistry().registerCommand(new DiscordCommand(this.pluginConfigManager));

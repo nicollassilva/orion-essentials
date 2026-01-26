@@ -46,9 +46,11 @@ public abstract class StorableManager<T> {
             if (loadedData != null) {
                 this.data = loadedData;
             }
+
             this.onDataLoaded();
         } catch (Exception e) {
             Logger.error("Falha ao carregar o arquivo de configuração: " + this.configFile);
+            e.printStackTrace();
         }
     }
 
