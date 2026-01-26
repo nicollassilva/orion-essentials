@@ -22,6 +22,7 @@ public class GameSettings {
     private int countdownAfterEnd;
 
     private int maxInstances;
+    private int maxArenaSize;
 
     private List<String> permissionsRequired;
 
@@ -59,6 +60,10 @@ public class GameSettings {
 
     public int getMaxInstances() {
         return maxInstances;
+    }
+
+    public int getMaxArenaSize() {
+        return maxArenaSize;
     }
 
     public int getMinDuration() {

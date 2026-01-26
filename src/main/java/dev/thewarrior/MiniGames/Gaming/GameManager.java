@@ -6,14 +6,20 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Utils.Logger;
-import dev.thewarrior.MiniGames.Gaming.Arena.GameArenaManager;
+import dev.thewarrior.MiniGames.Gaming.Container.GameContainerManager;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameJoinResult;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+import dev.thewarrior.MiniGames.Gaming.Model.Game;
+import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSession;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSessionManager;
+import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSessionState;
 import dev.thewarrior.MiniGames.Storage.GamesSettingsStorage;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 import dev.thewarrior.MiniGames.World.WorldManager;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +32,7 @@ public class GameManager {
 
     private final GamesSettingsStorage settingsStorage;
 
-    private final GameArenaManager arenaManager;
+    private final GameContainerManager containerManager;
     private final WorldManager worldManager;
 
     private final PlayerGameSessionManager playerSessionManager;
@@ -34,13 +40,17 @@ public class GameManager {
     private final ScheduledExecutorService scheduler;
     private final AtomicBoolean running = new AtomicBoolean(false);
 
+    private final Map<UUID, GameType> playerQueues;
+
     public GameManager(final GamesSettingsStorage settingsStorage, final WorldManager worldManager) {
         this.settingsStorage = settingsStorage;
 
         this.worldManager = worldManager;
-        this.arenaManager = new GameArenaManager(settingsStorage);
+        this.containerManager = new GameContainerManager(settingsStorage, worldManager);
 
         this.playerSessionManager = new PlayerGameSessionManager();
+
+        this.playerQueues = new ConcurrentHashMap<>();
 
         this.scheduler = Executors.newScheduledThreadPool(
                 Math.max(2, Runtime.getRuntime().availableProcessors() / 2)
@@ -86,6 +96,7 @@ public class GameManager {
 
             if(ref == null || !ref.isValid()) {
                 Logger.warning("Failed to get player store for permission check.");
+
                 return GameJoinResult.FAILED;
             }
 
@@ -94,6 +105,7 @@ public class GameManager {
 
             if(player == null || player.wasRemoved()) {
                 Logger.warning("Failed to get player component for permission check.");
+
                 return GameJoinResult.FAILED;
             }
 
@@ -104,7 +116,7 @@ public class GameManager {
             }
         }
 
-        // TODO: Add player to the game queue
+        this.playerQueues.put(playerRef.getUuid(), type);
 
         return GameJoinResult.SUCCESS;
     }
@@ -114,6 +126,29 @@ public class GameManager {
     }
 
     private void onQueuesTick() {
-        // Logic to check player queues and start countdowns
+        if(this.playerQueues.isEmpty()) return;
+
+        for (Map.Entry<UUID, GameType> entry : this.playerQueues.entrySet()) {
+            final UUID playerId = entry.getKey();
+            final GameType gameType = entry.getValue();
+
+            final GameJoinResult result = this.attemptToStartGameForPlayer(playerId, gameType);
+
+            if(result == GameJoinResult.SUCCESS || result == GameJoinResult.FAILED) {
+                this.playerQueues.remove(playerId);
+            }
+        }
+    }
+
+    private GameJoinResult attemptToStartGameForPlayer(final UUID playerId, final GameType gameType) {
+        final PlayerGameSession sessionStarted = this.playerSessionManager.getOrCreateSession(playerId);
+
+        if(sessionStarted == null || sessionStarted.getCurrentState() != PlayerGameSessionState.LOBBY) return GameJoinResult.FAILED;
+
+        final Game game = this.containerManager.acquireGame(gameType);
+
+        if(game == null) return GameJoinResult.GAME_FULL;
+
+        return GameJoinResult.SUCCESS;
     }
 }

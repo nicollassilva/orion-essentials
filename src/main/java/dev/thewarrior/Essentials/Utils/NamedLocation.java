@@ -8,29 +8,29 @@ import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 public class NamedLocation {
     public static final BuilderCodec<NamedLocation> CODEC = BuilderCodec.builder(NamedLocation.class, NamedLocation::new)
             .append(new KeyedCodec<>("Name", Codec.STRING),
-                    (p, v, extraInfo) -> p.name = v,
-                    (p, extraInfo) -> p.name).add()
+                    (p, v) -> p.name = v,
+                    (p) -> p.name).add()
             .append(new KeyedCodec<>("World", Codec.STRING),
-                    (p, v, extraInfo) -> p.world = v,
-                    (p, extraInfo) -> p.world).add()
+                    (p, v) -> p.world = v,
+                    (p) -> p.world).add()
             .append(new KeyedCodec<>("X", Codec.DOUBLE),
-                    (p, v, extraInfo) -> p.x = v,
-                    (p, extraInfo) -> p.x).add()
+                    (p, v) -> p.x = v,
+                    (p) -> p.x).add()
             .append(new KeyedCodec<>("Y", Codec.DOUBLE),
-                    (p, v, extraInfo) -> p.y = v,
-                    (p, extraInfo) -> p.y).add()
+                    (p, v) -> p.y = v,
+                    (p) -> p.y).add()
             .append(new KeyedCodec<>("Z", Codec.DOUBLE),
-                    (p, v, extraInfo) -> p.z = v,
-                    (p, extraInfo) -> p.z).add()
+                    (p, v) -> p.z = v,
+                    (p) -> p.z).add()
             .append(new KeyedCodec<>("Yaw", Codec.FLOAT),
-                    (p, v, extraInfo) -> p.yaw = v,
-                    (p, extraInfo) -> p.yaw).add()
+                    (p, v) -> p.yaw = v,
+                    (p) -> p.yaw).add()
             .append(new KeyedCodec<>("Pitch", Codec.FLOAT),
-                    (p, v, extraInfo) -> p.pitch = v,
-                    (p, extraInfo) -> p.pitch).add()
+                    (p, v) -> p.pitch = v,
+                    (p) -> p.pitch).add()
             .append(new KeyedCodec<>("Roll", Codec.FLOAT),
-                    (p, v, extraInfo) -> p.roll = v,
-                    (p, extraInfo) -> p.roll).add()
+                    (p, v) -> p.roll = v,
+                    (p) -> p.roll).add()
             .build();
 
     public static final ArrayCodec<NamedLocation> ARRAY_CODEC = new ArrayCodec<>(CODEC, NamedLocation[]::new, NamedLocation::new);

@@ -251,8 +251,6 @@ public class PermissionManager {
      * Clears the entire format cache. Called automatically every 30 seconds.
      */
     public void invalidateFormatCache() {
-        Logger.info("Clearing player chat format cache.");
-
         this.playerFormatCache.clear();
     }
 

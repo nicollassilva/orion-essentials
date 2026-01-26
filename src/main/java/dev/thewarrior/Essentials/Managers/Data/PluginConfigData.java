@@ -9,7 +9,7 @@ public class PluginConfigData {
     private Location spawnLocation = null;
     private PlayerEntryConfig playerJoinConfig = new PlayerEntryConfig();
     private String broadcastFormat = "&e[&6Broadcast&e] &f{message}";
-    private String chatFormat = "{prefix}{player}{suffix}&r: {message}";
+    private String chatFormat = "{prefix}{player}{suffix}&x: {message}";
 
     public String getDiscordLink() {
         return discordLink;

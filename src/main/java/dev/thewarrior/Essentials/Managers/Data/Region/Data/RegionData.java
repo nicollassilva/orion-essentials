@@ -93,13 +93,13 @@ public class RegionData {
 
     public String getBounds() {
         if(this.area == null) {
-            return "&4[ALERTA] &rÁrea não definida! Isso não deveria acontecer.";
+            return "&4[ALERTA] &xÁrea não definida! Isso não deveria acontecer.";
         }
 
         if(this.area.hasEmptyBounds()) return "N/A";
 
-        return "&6Min: &r" + this.area.getMinString(this.type) + "\n" +
-               "&6Max: &r" + this.area.getMaxString(this.type) +
-                (this.area.getCenter() != null ? "\n&6Center: &r" + this.area.getCenterString() : "");
+        return "&6Min: &x" + this.area.getMinString(this.type) + "\n" +
+               "&6Max: &x" + this.area.getMaxString(this.type) +
+                (this.area.getCenter() != null ? "\n&6Center: &x" + this.area.getCenterString() : "");
     }
 }

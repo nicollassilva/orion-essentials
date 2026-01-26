@@ -1,6 +1,7 @@
 package dev.thewarrior.MiniGames.World;
 
 import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.ClientEffectWorldSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -9,6 +10,7 @@ import com.hypixel.hytale.server.core.universe.world.spawn.GlobalSpawnProvider;
 import com.hypixel.hytale.server.core.universe.world.worldgen.provider.FlatWorldGenProvider;
 import com.hypixel.hytale.server.core.universe.world.worldgen.provider.VoidWorldGenProvider;
 import dev.thewarrior.Essentials.Utils.Logger;
+import dev.thewarrior.MiniGames.Storage.GamesSettingsStorage;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 
 import java.time.Instant;
@@ -28,14 +30,57 @@ public class WorldManager {
     private final Map<String, World> minigameWorlds;
 
     private final WorldTerrainManager worldTerrainManager;
+    private final GamesSettingsStorage settingsStorage;
 
-    public WorldManager() {
+    public WorldManager(GamesSettingsStorage settingsStorage) {
+        this.settingsStorage = settingsStorage;
+
         this.minigameWorlds = new ConcurrentHashMap<>();
         this.worldTerrainManager = new WorldTerrainManager();
     }
 
     public void start() {
+        if(this.settingsStorage.isEmpty()) return;
 
+        for (final GameSettings settings : this.settingsStorage.getAllSettings()) {
+            if(settings.isDisabled()) continue;
+
+            this.getWorldForGame(settings).thenAccept(world -> {
+                if(world != null) {
+                    this.minigameWorlds.put(settings.getWorldName(), world);
+
+                    Logger.info(String.format("World '%s' loaded successfully for minigames.", settings.getWorldName()));
+                } else {
+                    Logger.error(String.format("Failed to load world '%s' for minigames.", settings.getWorldName()));
+                }
+            }).exceptionally(throwable -> {
+                Logger.error(String.format("Exception while loading world '%s': %s", settings.getWorldName(), throwable.getMessage()));
+                return null;
+            });
+        }
+    }
+
+    public Vector3i generateCenterPositionForGame(GameSettings gameSettings) {
+        if(gameSettings == null || gameSettings.getWorldName() == null) {
+            Logger.error("GameSettings or WorldName is null. Cannot generate center position.");
+            return Vector3i.ZERO;
+        }
+
+        final String worldName = gameSettings.getWorldName();
+
+        if(worldName.isEmpty()) {
+            Logger.error("WorldName is empty in GameSettings. Cannot generate center position.");
+            return Vector3i.ZERO;
+        }
+
+        final World world = this.minigameWorlds.getOrDefault(worldName, null);
+
+        if(world == null) {
+            Logger.error(String.format("World '%s' is not loaded. Cannot generate center position.", worldName));
+            return Vector3i.ZERO;
+        }
+
+        return this.worldTerrainManager.generateCenterPosition(world, gameSettings);
     }
 
     public CompletableFuture<World> getWorldForGame(GameSettings gameSettings) {

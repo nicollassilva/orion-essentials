@@ -1,4 +1,4 @@
-package dev.thewarrior.MiniGames.Gaming.Arena;
+package dev.thewarrior.MiniGames.Gaming.Container;
 
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
@@ -8,23 +8,23 @@ import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class GameArenaManager {
-    private final Map<GameType, GameArenaPool> pools;
+public class GameContainerManager {
+    private final Map<GameType, GameContainer> games;
 
-    public GameArenaManager(final GamesSettingsStorage settingsStorage) {
-        this.pools = new EnumMap<>(GameType.class);
+    public GameContainerManager(final GamesSettingsStorage settingsStorage) {
+        this.games = new EnumMap<>(GameType.class);
 
         for (GameType type : GameType.values()) {
             final GameSettings settings = settingsStorage.getByType(type);
 
             if(settings == null || settings.isDisabled()) continue;
 
-            this.pools.put(type, new GameArenaPool(type, settings));
+            this.games.put(type, new GameContainer(type, settings));
         }
     }
 
-    public Game acquireArena(GameType type) {
-        GameArenaPool pool = this.pools.get(type);
+    public Game acquireGame(GameType type) {
+        GameContainer pool = this.games.get(type);
 
         return pool != null ? pool.acquire() : null;
     }

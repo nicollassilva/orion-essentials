@@ -7,6 +7,7 @@ import dev.thewarrior.MiniGames.Storage.Settings.GamesSettingsData;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class GamesSettingsStorage extends StorableManager<GamesSettingsData> {
     public GamesSettingsStorage(@NonNullDecl Path dataFolder) {
@@ -20,5 +21,13 @@ public class GamesSettingsStorage extends StorableManager<GamesSettingsData> {
 
     public GameSettings getByType(final GameType gameType) {
         return this.data.getByType(gameType);
+    }
+
+    public List<GameSettings> getAllSettings() {
+        return this.data.getSettings();
+    }
+
+    public boolean isEmpty() {
+        return this.data.isEmpty();
     }
 }

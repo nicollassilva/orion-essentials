@@ -2,12 +2,15 @@ package dev.thewarrior.MiniGames;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.BasePluginModule;
+import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
 import dev.thewarrior.MiniGames.Gaming.GameManager;
 import dev.thewarrior.MiniGames.Storage.GamesPrefabsStorage;
 import dev.thewarrior.MiniGames.Storage.GamesSettingsStorage;
@@ -32,7 +35,7 @@ public class MiniGamesBootstrap extends BasePluginModule {
         this.prefabsStorage = new GamesPrefabsStorage(this.getDataDirectory());
         this.settingsStorage = new GamesSettingsStorage(this.getDataDirectory());
 
-        this.worldManager = new WorldManager();
+        this.worldManager = new WorldManager(this.settingsStorage);
         this.gameManager = new GameManager(this.settingsStorage, this.worldManager);
     }
 
@@ -43,6 +46,7 @@ public class MiniGamesBootstrap extends BasePluginModule {
         this.gameManager.start();
 
         this.plugin.getCommandRegistry().registerCommand(new ReloadWorldCommand(this.worldManager));
+        this.plugin.getCommandRegistry().registerCommand(new GenerateTerrainCommand(this.worldManager, this.settingsStorage));
     }
 
     public void stop() {
@@ -77,6 +81,25 @@ public class MiniGamesBootstrap extends BasePluginModule {
         @Override
         protected void execute(@NonNullDecl CommandContext commandContext, @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref, @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
             this.worldManager.start();
+        }
+    }
+
+    public static class GenerateTerrainCommand extends AbstractPlayerCommand {
+        private WorldManager worldManager;
+        private GamesSettingsStorage settingsStorage;
+        public GenerateTerrainCommand(WorldManager worldManager, GamesSettingsStorage settingsStorage) {
+            super("gt", "gt");
+            this.worldManager = worldManager;
+            this.settingsStorage = settingsStorage;
+        }
+
+        @Override
+        protected void execute(@NonNullDecl CommandContext commandContext, @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref, @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
+            Vector3i generatedPosition = this.worldManager.getWorldTerrainManager().generateCenterPosition(world, this.settingsStorage.getByType(GameType.TNT_RUN));
+
+            commandContext.sendMessage(ColorUtil.colorize("&a Generated Position: " + generatedPosition.toString()));
+
+            world.setBlock(generatedPosition.getX(), generatedPosition.getY(), generatedPosition.getZ(), "Rock_Stone");
         }
     }
 }
