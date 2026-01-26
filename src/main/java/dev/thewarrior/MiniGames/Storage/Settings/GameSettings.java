@@ -5,6 +5,8 @@ import java.util.List;
 public class GameSettings {
     private String name;
     private String description;
+    private String worldName;
+
     private boolean isEnabled;
 
     private int maxPlayersPerGame;
@@ -26,6 +28,10 @@ public class GameSettings {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getWorldName() {
+        return worldName;
     }
 
     public boolean isEnabled() {
