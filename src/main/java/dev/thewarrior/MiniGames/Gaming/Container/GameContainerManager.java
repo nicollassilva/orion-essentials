@@ -2,6 +2,7 @@ package dev.thewarrior.MiniGames.Gaming.Container;
 
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
+import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerCurrentGame;
 import dev.thewarrior.MiniGames.Storage.GamesSettingsStorage;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 
@@ -23,9 +24,33 @@ public class GameContainerManager {
         }
     }
 
+    // Tick games that are currently active/in-progress
+    public void tickActiveGames() {
+        for (GameContainer pool : this.games.values()) {
+            pool.tickActiveGames();
+        }
+    }
+
+    // Tick games that are in the queue/waiting state
+    public void tickQueuedGames() {
+        for (GameContainer pool : this.games.values()) {
+            pool.tickQueuedGames();
+        }
+    }
+
     public Game acquireGame(GameType type) {
         GameContainer pool = this.games.get(type);
 
-        return pool != null ? pool.acquire() : null;
+        return pool != null ? pool.acquire(false) : null;
+    }
+
+    public Game getGame(final PlayerCurrentGame currentGame) {
+        if(currentGame == null) return null;
+
+        final GameContainer pool = this.games.get(currentGame.type());
+
+        if(pool == null) return null;
+
+        return pool.getGame(currentGame.gameId());
     }
 }

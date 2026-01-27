@@ -1,5 +1,6 @@
 package dev.thewarrior.MiniGames.Gaming.Container;
 
+import dev.thewarrior.MiniGames.Gaming.Enums.GameState;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
@@ -18,29 +19,67 @@ public class GameContainer {
     private final Queue<Game> availableGames;
     private final Map<UUID, Game> activeGames;
 
+    private final GameSettings settings;
+
     public GameContainer(GameType type, GameSettings settings) {
         this.type = type;
+        this.settings = settings;
         this.availableGames = new ConcurrentLinkedQueue<>();
         this.activeGames = new ConcurrentHashMap<>();
         this.maxInstances = settings.getMaxInstances();
     }
 
-    public Game acquire() {
-        Game arena = this.availableGames.poll();
+    public void tickActiveGames() {
+        for (Game game : this.activeGames.values()) {
+            if(game.getState().canJoin() || game.getState() == GameState.COUNTDOWN) continue;
 
-        if (arena == null && this.canBeCreated()) {
-            arena = this.createGame();
+            game.onGameTick();
+        }
+    }
+
+    public void tickQueuedGames() {
+        for (Game game : this.activeGames.values()) {
+            if(!game.getState().isQueuedTick()) continue;
+
+            game.onCountdownTick();
+        }
+    }
+
+    public Game acquire(boolean isRetry) {
+        Game game = this.availableGames.poll();
+
+        if (game == null && this.canBeCreated()) {
+            game = this.createGame();
         }
 
-        if (arena != null) {
-            this.activeGames.put(arena.getId(), arena);
+        if(game != null) {
+            if((!game.getState().canJoin() || game.getPlayers().size() >= this.settings.getMaxPlayersPerGame())) {
+                if(isRetry) return null;
+                else return this.acquire(true);
+            }
+
+            this.activeGames.put(game.getId(), game);
         }
 
-        return arena;
+        return game;
     }
 
     private Game createGame() {
-        return null;
+        final GameArena arena = GameArenaFactory.get().createArena(this.type);
+
+        if (arena == null) return null;
+
+        final Game game = new Game(this.type, arena, settings);
+
+        game.onGameCreated();
+
+        this.activeGames.put(game.getId(), game);
+
+        return game;
+    }
+
+    public Game getGame(final UUID gameId) {
+        return this.activeGames.get(gameId);
     }
 
     protected boolean canBeCreated() {

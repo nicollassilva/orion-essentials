@@ -22,4 +22,16 @@ public enum GameState {
     public String getDescription() {
         return description;
     }
+
+    public boolean canJoin() {
+        return this == CREATING || this == FREE || this == WAITING || this == STARTING;
+    }
+
+    public boolean isQueuedTick() {
+        return this.canJoin() || this == COUNTDOWN;
+    }
+
+    public boolean isInGame() {
+        return this == COUNTDOWN || this == RUNNING;
+    }
 }

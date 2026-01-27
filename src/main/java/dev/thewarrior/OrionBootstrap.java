@@ -20,9 +20,12 @@ import dev.thewarrior.Essentials.Utils.Logger;
 import dev.thewarrior.MiniGames.MiniGamesBootstrap;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
+import java.util.Random;
+
 public class OrionBootstrap extends JavaPlugin {
     public static ComponentType<EntityStore, PlayerCommandComponent> PlayerDataComponent;
     public static Gson gson;
+    public static Random random;
 
     private final EssentialsBootstrap essentialsBootstrap;
     private final MiniGamesBootstrap miniGamesBootstrap;
@@ -96,5 +99,7 @@ public class OrionBootstrap extends JavaPlugin {
                 .registerTypeAdapter(PermissionData.class, new PermissionDataAdapter())
                 .registerTypeAdapter(RegionArea.class, new RegionAreaAdapter())
                 .create();
+
+        random = new Random();
     }
 }

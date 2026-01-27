@@ -96,20 +96,26 @@ public class TeleportUtil {
      * @return null if successful, error message if failed
      */
     @Nullable
-    public static String teleport(@Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref,
+    public static String teleport(@Nonnull PlayerRef playerRef, @Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref,
                                   @Nonnull String worldName, double x, double y, double z,
                                   float yaw, float pitch) {
-        World targetWorld = Universe.get().getWorld(worldName);
+        final World targetWorld = Universe.get().getWorld(worldName);
+
         if (targetWorld == null) {
             return "World '" + worldName + "' is not loaded.";
         }
 
-        Vector3d position = new Vector3d(x, y, z);
-        // Round yaw to cardinal direction and zero pitch to avoid Hytale model bug
-        Vector3f rotation = new Vector3f(0, roundToCardinalYaw(yaw), 0);
+        final EntityStore playerEntityStore = ref.getStore().getExternalData();
+        final World currentWorld = playerEntityStore.getWorld();
 
-        Teleport teleport = new Teleport(targetWorld, position, rotation);
-        store.putComponent(ref, Teleport.getComponentType(), teleport);
+        currentWorld.execute(() -> {
+            Vector3d position = new Vector3d(x, y, z);
+            // Round yaw to cardinal direction and zero pitch to avoid Hytale model bug
+            Vector3f rotation = new Vector3f(0, roundToCardinalYaw(yaw), 0);
+
+            Teleport teleport = new Teleport(targetWorld, position, rotation);
+            store.putComponent(ref, Teleport.getComponentType(), teleport);
+        });
 
         return null;
     }

@@ -1,5 +1,8 @@
 package dev.thewarrior.MiniGames.Gaming.Player.Session;
 
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
+
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,5 +41,9 @@ public class PlayerGameSession {
 
     public long getJoinedAt() {
         return joinedAt;
+    }
+
+    public PlayerRef getPlayer() {
+        return Universe.get().getPlayer(this.playerId);
     }
 }

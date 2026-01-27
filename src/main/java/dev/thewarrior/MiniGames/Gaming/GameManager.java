@@ -10,6 +10,7 @@ import dev.thewarrior.MiniGames.Gaming.Container.GameContainerManager;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameJoinResult;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
+import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerCurrentGame;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSession;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSessionManager;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSessionState;
@@ -26,9 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameManager {
-    private static final long TICK_RATE_MS = 50; // 20 TPS
-    private static final long QUEUE_CHECK_MS = 1000;
-    private static final int COUNTDOWN_SECONDS = 10;
+    public static final long TICK_RATE_MS = 50; // 20 TPS
+    public static final long QUEUE_CHECK_MS = 1000;
+    public static final int PLAYER_QUEUES_TRIES = 3;
+    public static final int COUNTDOWN_SECONDS = 10;
 
     private final GamesSettingsStorage settingsStorage;
 
@@ -41,16 +43,18 @@ public class GameManager {
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     private final Map<UUID, GameType> playerQueues;
+    private final Map<UUID, Integer> playerQueueTries;
 
     public GameManager(final GamesSettingsStorage settingsStorage, final WorldManager worldManager) {
         this.settingsStorage = settingsStorage;
 
         this.worldManager = worldManager;
-        this.containerManager = new GameContainerManager(settingsStorage, worldManager);
+        this.containerManager = new GameContainerManager(settingsStorage);
 
         this.playerSessionManager = new PlayerGameSessionManager();
 
         this.playerQueues = new ConcurrentHashMap<>();
+        this.playerQueueTries = new ConcurrentHashMap<>();
 
         this.scheduler = Executors.newScheduledThreadPool(
                 Math.max(2, Runtime.getRuntime().availableProcessors() / 2)
@@ -122,33 +126,80 @@ public class GameManager {
     }
 
     private void onGamesTick() {
-        // Logic to update active games
+        this.containerManager.tickActiveGames();
     }
 
     private void onQueuesTick() {
-        if(this.playerQueues.isEmpty()) return;
+        System.out.println("Checking player queues...");
 
-        for (Map.Entry<UUID, GameType> entry : this.playerQueues.entrySet()) {
-            final UUID playerId = entry.getKey();
-            final GameType gameType = entry.getValue();
+        if(!this.playerQueues.isEmpty()) {
+            for (Map.Entry<UUID, GameType> entry : this.playerQueues.entrySet()) {
+                final UUID playerId = entry.getKey();
+                final GameType gameType = entry.getValue();
 
-            final GameJoinResult result = this.attemptToStartGameForPlayer(playerId, gameType);
+                final Game gameInstance = this.attemptToStartGameForPlayer(playerId, gameType);
 
-            if(result == GameJoinResult.SUCCESS || result == GameJoinResult.FAILED) {
-                this.playerQueues.remove(playerId);
+                if(gameInstance != null) continue;
+
+                if (!this.playerQueueTries.containsKey(playerId)) {
+                    this.playerQueueTries.put(playerId, 1);
+                    continue;
+                }
+
+                final int currentTries = this.playerQueueTries.get(playerId);
+
+                if (currentTries >= PLAYER_QUEUES_TRIES) {
+                    this.removePlayerData(playerId);
+
+                    Logger.info("Removed player " + playerId + " from queue for game type " + gameType + " due to timeout.");
+                } else {
+                    this.playerQueueTries.put(playerId, currentTries + 1);
+                }
+
+                Logger.info("Failed to start game for player " + playerId + " of type " + gameType);
+            }
+        }
+
+        this.containerManager.tickQueuedGames();
+    }
+
+    public void removePlayerData(final UUID playerId) {
+        this.playerQueues.remove(playerId);
+        this.playerQueueTries.remove(playerId);
+
+        final PlayerGameSession session = this.playerSessionManager.getSession(playerId);
+
+        if(session == null) return;
+
+        this.playerSessionManager.removeSession(playerId);
+
+        final PlayerCurrentGame currentGame = session.getCurrentGame();
+
+        if(currentGame != null) {
+            final Game playerGame = this.containerManager.getGame(currentGame);
+
+            if(playerGame != null) {
+                playerGame.onPlayerLeave(playerId);
             }
         }
     }
 
-    private GameJoinResult attemptToStartGameForPlayer(final UUID playerId, final GameType gameType) {
+    private Game attemptToStartGameForPlayer(final UUID playerId, final GameType gameType) {
         final PlayerGameSession sessionStarted = this.playerSessionManager.getOrCreateSession(playerId);
 
-        if(sessionStarted == null || sessionStarted.getCurrentState() != PlayerGameSessionState.LOBBY) return GameJoinResult.FAILED;
+        if(sessionStarted == null || sessionStarted.getCurrentState() != PlayerGameSessionState.LOBBY) return null;
 
         final Game game = this.containerManager.acquireGame(gameType);
 
-        if(game == null) return GameJoinResult.GAME_FULL;
+        if(game == null) return null;
 
-        return GameJoinResult.SUCCESS;
+        //sessionStarted.setCurrentGame(new PlayerCurrentGame(playerId, gameType));
+
+        game.onPlayerJoin(sessionStarted);
+
+        this.playerQueues.remove(playerId);
+        this.playerQueueTries.remove(playerId);
+
+        return game;
     }
 }

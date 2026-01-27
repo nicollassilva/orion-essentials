@@ -52,18 +52,6 @@ public abstract class PlayerEventHandler {
 
         holder.putComponent(TransformComponent.getComponentType(), new TransformComponent(spawn.getLocationVector(), bodyRotation));
         holder.ensureAndGetComponent(HeadRotation.getComponentType()).teleportRotation(bodyRotation);
-    }
-
-    public static void onPlayerReady(final PlayerReadyEvent event, final OrionBootstrap plugin) {
-        Store<EntityStore> entityStore = event.getPlayerRef().getStore();
-
-        entityStore.ensureComponent(event.getPlayerRef(), OrionBootstrap.PlayerDataComponent);
-
-        PlayerRef playerRef = entityStore.getComponent(event.getPlayerRef(), PlayerRef.getComponentType());
-
-        if(playerRef == null || !playerRef.isValid()) return;
-
-        final PlayerEntryConfig entryConfig = plugin.getConfig().getData().getPlayerJoinConfig();
 
         if(entryConfig.isEveryJoinTitleEnabled()) {
             EventTitleUtil.showEventTitleToPlayer(
@@ -74,13 +62,17 @@ public abstract class PlayerEventHandler {
             );
         }
 
-        boolean hasJoined = plugin.getPlayerHistoryManager().hasHistory(playerRef.getUuid());
-
         if (!hasJoined) {
             onFirstJoin(playerRef, plugin, entryConfig);
         } else {
             onReturnJoin(playerRef, plugin, entryConfig);
         }
+    }
+
+    public static void onPlayerReady(final PlayerReadyEvent event, final OrionBootstrap plugin) {
+        Store<EntityStore> entityStore = event.getPlayerRef().getStore();
+
+        entityStore.ensureComponent(event.getPlayerRef(), OrionBootstrap.PlayerDataComponent);
     }
 
     private static void onFirstJoin(final PlayerRef playerRef, final OrionBootstrap plugin, final PlayerEntryConfig entryConfig) {

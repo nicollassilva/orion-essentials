@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class GamePrefab {
     private String name;
-    private Set<GameType> types;
+    private Set<String> types;
     private boolean isEnabled;
     private GamePrefabSpawnData lobbySpawnData;
     private List<GamePrefabSpawnData> gameSpawnsData;
@@ -23,7 +23,7 @@ public class GamePrefab {
     }
 
     public boolean isType(final GameType type) {
-        return this.types.contains(type);
+        return this.types.contains(type.name().toLowerCase());
     }
 
     public GamePrefabSpawnData getLobbySpawnData() {

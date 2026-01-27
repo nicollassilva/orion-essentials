@@ -18,8 +18,8 @@ public class GameSettings {
     private int minDuration;
     private int maxDuration;
 
-    private int countdownBeforeStart;
-    private int countdownAfterEnd;
+    private int countdownBeforeStart = -1;
+    private int countdownAfterEnd = -1;
 
     private int maxInstances;
     private int maxArenaSize;
@@ -80,5 +80,9 @@ public class GameSettings {
 
     public boolean isType(final GameType gameType) {
         return this.type.equalsIgnoreCase(gameType.name());
+    }
+
+    public GameType getType() {
+        return GameType.valueOf(this.type.toUpperCase());
     }
 }

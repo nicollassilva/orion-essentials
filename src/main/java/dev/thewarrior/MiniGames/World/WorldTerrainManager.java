@@ -22,7 +22,7 @@ public class WorldTerrainManager {
     private static final int BASE_Y = 150;
 
     /** Default spacing between arenas in blocks */
-    private static final int DEFAULT_SPACING = 10;
+    private static final int DEFAULT_SPACING = 400;
 
     /** Map of world name to list of generated positions (thread-safe) */
     private final Map<String, List<Vector3i>> generatedPositionsByWorld;
