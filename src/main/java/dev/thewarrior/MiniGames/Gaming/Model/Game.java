@@ -34,22 +34,26 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Game {
-    private final UUID id;
+    protected final UUID id;
 
-    private Spawn lobbySpawn;
-    private List<Spawn> gameSpawns;
+    protected Spawn lobbySpawn;
+    protected List<Spawn> gameSpawns;
 
-    private final GameType type;
-    private final GameArena arena;
-    private final GameSettings settings;
+    protected World world;
 
-    private final Map<UUID, GamePlayer> players;
-    private final AtomicReference<GameState> state;
+    protected final GameType type;
+    protected final GameArena arena;
+    protected final GameSettings settings;
 
-    private final AtomicLong lastVisitTimestamp;
+    protected final Map<UUID, GamePlayer> players;
+    protected final AtomicReference<GameState> state;
 
-    private final AtomicInteger lobbyCountdown = new AtomicInteger(-1);
-    private final AtomicInteger countdownBeforeStart = new AtomicInteger(-1);
+    protected final AtomicLong lastVisitTimestamp;
+
+    protected final AtomicInteger lobbyCountdown = new AtomicInteger(-1);
+    protected final AtomicInteger countdownBeforeStart = new AtomicInteger(-1);
+
+    protected final AtomicInteger gameTick = new AtomicInteger(0);
 
     public Game(GameType type, GameArena arena, GameSettings settings) {
         this.id = UUID.randomUUID();
@@ -65,6 +69,8 @@ public class Game {
         if(settings.getCountdownBeforeStart() > 0) {
             this.countdownBeforeStart.set(settings.getCountdownBeforeStart());
         }
+
+        this.world = Universe.get().getWorld(settings.getWorldName());
     }
 
     public UUID getId() {
@@ -88,7 +94,9 @@ public class Game {
     }
 
     public void onGameTick() {
-        System.out.println("running");
+        this.gameTick.incrementAndGet();
+
+        // Override in subclasses
     }
 
     public void onCountdownTick() {
@@ -126,11 +134,11 @@ public class Game {
     }
 
     public void onGameReady() {
-
+        // Override in subclasses
     }
 
     public void onGameStart() {
-        System.out.println("Started");
+        // Override in subclasses
     }
 
     public void onGameStartCountdownTick() {
@@ -153,6 +161,7 @@ public class Game {
     public void onGameEnd() {
         this.setState(GameState.RUNNING, GameState.ENDING);
 
+        // Override in subclasses
     }
 
     public void onPlayerJoin(final PlayerGameSession session) {
@@ -261,15 +270,15 @@ public class Game {
     }
 
     public void onStateChanged(final GameState previous, final GameState current) {
-
+        // Override in subclasses
     }
 
     public void onStateNotChanged(final GameState previous, final GameState current) {
-
+        // Override in subclasses
     }
 
     public Map<UUID, GamePlayer> getPlayers() {
-        return players;
+        return this.players;
     }
 
     protected void teleportToLobby(final PlayerRef playerRef) {

@@ -2,6 +2,8 @@ package dev.thewarrior.MiniGames.Gaming.Container;
 
 import dev.thewarrior.MiniGames.Gaming.Enums.GameState;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+import dev.thewarrior.MiniGames.Gaming.Games.TNTRunGame;
+import dev.thewarrior.MiniGames.Gaming.Games.TNTTagGame;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 
@@ -33,7 +35,11 @@ public class GameContainer {
         for (Game game : this.activeGames.values()) {
             if(game.getState().canJoin() || game.getState() == GameState.COUNTDOWN) continue;
 
-            game.onGameTick();
+            try {
+                game.onGameTick();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -69,7 +75,13 @@ public class GameContainer {
 
         if (arena == null) return null;
 
-        final Game game = new Game(this.type, arena, settings);
+        final Game game = switch (this.type) {
+            case TNT_RUN -> new TNTRunGame(this.type, arena, this.settings);
+            case TNT_TAG -> new TNTTagGame(this.type, arena, this.settings);
+            default -> null;
+        };
+
+        if(game == null) return null;
 
         game.onGameCreated();
 

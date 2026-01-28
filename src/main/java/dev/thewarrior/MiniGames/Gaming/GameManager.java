@@ -30,7 +30,7 @@ public class GameManager {
     public static final long TICK_RATE_MS = 50; // 20 TPS
     public static final long QUEUE_CHECK_MS = 1000;
     public static final int PLAYER_QUEUES_TRIES = 3;
-    public static final int COUNTDOWN_SECONDS = 10;
+    public static final int COUNTDOWN_SECONDS = 2;
 
     private final GamesSettingsStorage settingsStorage;
 
