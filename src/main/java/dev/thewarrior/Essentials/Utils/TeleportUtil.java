@@ -22,6 +22,7 @@ import dev.thewarrior.Essentials.i18n.Messages;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -105,8 +106,13 @@ public class TeleportUtil {
             return "World '" + worldName + "' is not loaded.";
         }
 
-        final EntityStore playerEntityStore = ref.getStore().getExternalData();
-        final World currentWorld = playerEntityStore.getWorld();
+        final UUID worldId = playerRef.getWorldUuid();
+
+        assert worldId != null;
+
+        final World currentWorld = Universe.get().getWorld(worldId);
+
+        assert currentWorld != null;
 
         currentWorld.execute(() -> {
             Vector3d position = new Vector3d(x, y, z);

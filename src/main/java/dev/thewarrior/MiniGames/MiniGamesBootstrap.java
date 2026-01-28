@@ -20,7 +20,9 @@ import dev.thewarrior.Essentials.Utils.Logger;
 import dev.thewarrior.MiniGames.Gaming.Container.GameArenaFactory;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameJoinResult;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+import dev.thewarrior.MiniGames.Gaming.Enums.PlayerGameLeaveCause;
 import dev.thewarrior.MiniGames.Gaming.GameManager;
+import dev.thewarrior.MiniGames.Gaming.Systems.PlayerDeathSystem;
 import dev.thewarrior.MiniGames.Storage.GamesPrefabsStorage;
 import dev.thewarrior.MiniGames.Storage.GamesSettingsStorage;
 import dev.thewarrior.MiniGames.World.WorldManager;
@@ -58,12 +60,14 @@ public class MiniGamesBootstrap extends BasePluginModule {
         this.worldManager.start();
         this.gameManager.start();
 
+        this.plugin.getEntityStoreRegistry().registerSystem(new PlayerDeathSystem(this.gameManager));
+
         this.plugin.getCommandRegistry().registerCommand(new ReloadWorldCommand(this.worldManager));
         this.plugin.getCommandRegistry().registerCommand(new GenerateTerrainCommand(this.worldManager, this.settingsStorage));
         this.plugin.getCommandRegistry().registerCommand(new JoinGameCommand(this.gameManager));
 
         this.plugin.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, event -> {
-            this.gameManager.removePlayerData(event.getPlayerRef().getUuid());
+            this.gameManager.removePlayerData(event.getPlayerRef().getUuid(), PlayerGameLeaveCause.DISCONNECTED);
         });
     }
 

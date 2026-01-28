@@ -3,6 +3,7 @@ package dev.thewarrior.MiniGames.Gaming.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,7 @@ public class GamePlayer {
         return this.id;
     }
 
+    @Nullable
     public PlayerRef getPlayer() {
         return Universe.get().getPlayer(this.id);
     }

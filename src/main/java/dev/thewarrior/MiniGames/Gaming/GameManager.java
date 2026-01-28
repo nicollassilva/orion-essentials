@@ -1,14 +1,18 @@
 package dev.thewarrior.MiniGames.Gaming;
 
+import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Utils.Logger;
 import dev.thewarrior.MiniGames.Gaming.Container.GameContainerManager;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameJoinResult;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+import dev.thewarrior.MiniGames.Gaming.Enums.PlayerGameLeaveCause;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerCurrentGame;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSession;
@@ -17,6 +21,7 @@ import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSessionState;
 import dev.thewarrior.MiniGames.Storage.GamesSettingsStorage;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 import dev.thewarrior.MiniGames.World.WorldManager;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.util.Map;
 import java.util.UUID;
@@ -45,6 +50,8 @@ public class GameManager {
     private final Map<UUID, GameType> playerQueues;
     private final Map<UUID, Integer> playerQueueTries;
 
+    private final AtomicBoolean isAlive = new AtomicBoolean(true);
+
     public GameManager(final GamesSettingsStorage settingsStorage, final WorldManager worldManager) {
         this.settingsStorage = settingsStorage;
 
@@ -71,16 +78,8 @@ public class GameManager {
     public void shutdown() {
         if(!this.running.compareAndSet(true, false)) return;
 
-        this.scheduler.shutdown();
-
-        try {
-            if(!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
-                scheduler.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            scheduler.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+        this.isAlive.set(false);
+        this.scheduler.shutdownNow();
     }
 
     public GameJoinResult joinGameQueue(final PlayerRef playerRef, final GameType type) {
@@ -126,6 +125,8 @@ public class GameManager {
     }
 
     private void onGamesTick() {
+        if(!this.isAlive.get()) return;
+
         this.containerManager.tickActiveGames();
     }
 
@@ -134,6 +135,8 @@ public class GameManager {
 
         if(!this.playerQueues.isEmpty()) {
             for (Map.Entry<UUID, GameType> entry : this.playerQueues.entrySet()) {
+                if(!this.isAlive.get()) return;
+
                 final UUID playerId = entry.getKey();
                 final GameType gameType = entry.getValue();
 
@@ -149,7 +152,7 @@ public class GameManager {
                 final int currentTries = this.playerQueueTries.get(playerId);
 
                 if (currentTries >= PLAYER_QUEUES_TRIES) {
-                    this.removePlayerData(playerId);
+                    this.removePlayerData(playerId, PlayerGameLeaveCause.KICKED_BY_SYSTEM);
 
                     Logger.info("Removed player " + playerId + " from queue for game type " + gameType + " due to timeout.");
                 } else {
@@ -160,10 +163,12 @@ public class GameManager {
             }
         }
 
+        if(!this.isAlive.get()) return;
+
         this.containerManager.tickQueuedGames();
     }
 
-    public void removePlayerData(final UUID playerId) {
+    public void removePlayerData(final UUID playerId, final PlayerGameLeaveCause leaveCause) {
         this.playerQueues.remove(playerId);
         this.playerQueueTries.remove(playerId);
 
@@ -179,10 +184,45 @@ public class GameManager {
             final Game playerGame = this.containerManager.getGame(currentGame);
 
             if(playerGame != null) {
-                playerGame.onPlayerLeave(playerId);
+                playerGame.onPlayerLeave(playerId, leaveCause);
             }
         }
     }
+
+    public boolean handlePlayerDeath(
+            @NonNullDecl Ref<EntityStore> ref,
+            @NonNullDecl DeathComponent deathComponent,
+            @NonNullDecl Store<EntityStore> store,
+            @NonNullDecl CommandBuffer<EntityStore> commandBuffer
+    ) {
+        final UUIDComponent uuidComponent = store.getComponent(ref, UUIDComponent.getComponentType());
+
+        if(uuidComponent == null) return false;
+
+        final UUID playerId = uuidComponent.getUuid();
+        final PlayerGameSession session = this.playerSessionManager.getSession(playerId);
+
+        if(session == null) return false;
+
+        final PlayerCurrentGame currentGame = session.getCurrentGame();
+
+        if(currentGame == null) return false;
+
+        final Game game = this.containerManager.getGame(currentGame);
+
+        if(game == null) return false;
+
+        // Ask the game if the player should be eliminated
+        final boolean shouldEliminate = game.onPlayerDeath(playerId);
+
+        // If game says to eliminate, remove player data
+        if(shouldEliminate) {
+            this.removePlayerData(playerId, PlayerGameLeaveCause.LOST_GAME);
+        }
+
+        return true;
+    }
+
 
     private Game attemptToStartGameForPlayer(final UUID playerId, final GameType gameType) {
         final PlayerGameSession sessionStarted = this.playerSessionManager.getOrCreateSession(playerId);
@@ -193,7 +233,7 @@ public class GameManager {
 
         if(game == null) return null;
 
-        //sessionStarted.setCurrentGame(new PlayerCurrentGame(playerId, gameType));
+        sessionStarted.setCurrentGame(new PlayerCurrentGame(game.getId(), gameType));
 
         game.onPlayerJoin(sessionStarted);
 

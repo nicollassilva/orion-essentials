@@ -1,5 +1,14 @@
 package dev.thewarrior.MiniGames.Utils;
 
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Essentials.Managers.PluginConfigManager;
+import dev.thewarrior.Essentials.Utils.Location;
+import dev.thewarrior.Essentials.Utils.Logger;
+import dev.thewarrior.Essentials.Utils.TeleportUtil;
+import dev.thewarrior.MiniGames.Gaming.Player.GamePlayer;
+
 public class GameUtil {
     public static int[] calculateBalancedDistribution(final int toBeBalanced, final int baseCount) {
         final int[] distribution = new int[baseCount];
@@ -21,5 +30,29 @@ public class GameUtil {
         }
 
         return distribution;
+    }
+
+    public static void teleportPlayerToServerSpawn(final GamePlayer player) {
+        final Location spawnLocation = PluginConfigManager.SPAWN_LOCATION;
+
+        if(spawnLocation == null) {
+            Logger.warning("Spawn location is not set in the config. Cannot teleport player to spawn.");
+            return;
+        }
+
+        final PlayerRef playerRef = player.getPlayer();
+
+        if(playerRef == null || !playerRef.isValid()) return;
+
+        final Ref<EntityStore> ref = playerRef.getReference();
+
+        if(ref == null || !ref.isValid()) return;
+
+        TeleportUtil.teleport(
+                playerRef, ref.getStore(), ref,
+                spawnLocation.getWorld(),
+                spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ(),
+                spawnLocation.getYaw(), spawnLocation.getPitch()
+        );
     }
 }

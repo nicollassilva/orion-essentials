@@ -16,6 +16,8 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class PluginConfigManager extends StorableManager<PluginConfigData> {
+    public static Location SPAWN_LOCATION = null;
+
     public PluginConfigManager(@Nonnull Path dataFolder) {
         super(dataFolder, "config.json", PluginConfigData.class);
     }
@@ -27,6 +29,8 @@ public class PluginConfigManager extends StorableManager<PluginConfigData> {
 
     protected void onDataLoaded() {
         Logger.info("Plugin configuration loaded");
+
+        SPAWN_LOCATION = this.getSpawnLocation();
     }
 
     public String getDiscordLink() {
@@ -49,6 +53,7 @@ public class PluginConfigManager extends StorableManager<PluginConfigData> {
 
     public CompletableFuture<Void> setSpawnLocation(Location location) {
         this.data.setSpawnLocation(location);
+        SPAWN_LOCATION = location;
 
         return this.saveConfig();
     }

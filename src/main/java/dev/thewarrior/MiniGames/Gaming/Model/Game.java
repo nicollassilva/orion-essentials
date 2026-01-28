@@ -12,11 +12,13 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
-import dev.thewarrior.Essentials.Utils.Data.Spawn;
+import dev.thewarrior.Essentials.Utils.Logger;
 import dev.thewarrior.Essentials.Utils.TeleportUtil;
 import dev.thewarrior.MiniGames.Gaming.Container.GameArena;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameState;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
+import dev.thewarrior.MiniGames.Gaming.Enums.GameWinnerCondition;
+import dev.thewarrior.MiniGames.Gaming.Enums.PlayerGameLeaveCause;
 import dev.thewarrior.MiniGames.Gaming.GameManager;
 import dev.thewarrior.MiniGames.Gaming.Player.GamePlayer;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSession;
@@ -36,9 +38,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Game {
     protected final UUID id;
 
-    protected Spawn lobbySpawn;
-    protected List<Spawn> gameSpawns;
-
     protected World world;
 
     protected final GameType type;
@@ -48,15 +47,20 @@ public class Game {
     protected final Map<UUID, GamePlayer> players;
     protected final AtomicReference<GameState> state;
 
+    protected final int maxDuration;
     protected final AtomicLong lastVisitTimestamp;
 
     protected final AtomicInteger lobbyCountdown = new AtomicInteger(-1);
     protected final AtomicInteger countdownBeforeStart = new AtomicInteger(-1);
 
     protected final AtomicInteger gameTick = new AtomicInteger(0);
+    protected final AtomicInteger gameElapsedSeconds = new AtomicInteger(0);
+
+    protected GameWinnerCondition winnerCondition;
 
     public Game(GameType type, GameArena arena, GameSettings settings) {
         this.id = UUID.randomUUID();
+        this.winnerCondition = GameWinnerCondition.NONE;
 
         this.type = type;
         this.arena = arena;
@@ -69,6 +73,8 @@ public class Game {
         if(settings.getCountdownBeforeStart() > 0) {
             this.countdownBeforeStart.set(settings.getCountdownBeforeStart());
         }
+
+        this.maxDuration = settings.getMaxDuration();
 
         this.world = Universe.get().getWorld(settings.getWorldName());
     }
@@ -93,8 +99,31 @@ public class Game {
         });
     }
 
+    public void onGameReady() {
+        // Override in subclasses
+    }
+
     public void onGameTick() {
         this.gameTick.incrementAndGet();
+
+        // Calculate elapsed seconds based on tick rate
+        // TICK_RATE_MS = 50ms = 0.05s, so we need 20 ticks to make 1 second
+        final int ticksPerSecond = (int) (1000 / GameManager.TICK_RATE_MS);
+
+        if (this.gameTick.get() % ticksPerSecond == 0) {
+            this.gameElapsedSeconds.incrementAndGet();
+
+            final int remainingSeconds = this.getGameRemainingSeconds();
+
+            // Check if game duration has been exceeded
+            if (remainingSeconds <= 0 && this.state.get().isInGame()) {
+                this.broadcastMessageWithPrefix("&cTempo da partida expirou! Encerrando jogo...");
+                this.onGameEnd();
+            }
+
+            // Send warning messages at specific time intervals
+            this.checkTimeWarnings(remainingSeconds);
+        }
 
         // Override in subclasses
     }
@@ -115,9 +144,9 @@ public class Game {
                 || this.lobbyCountdown.get() <= 10;
 
         if(this.lobbyCountdown.get() > 0 && needsSendMessage) {
-            this.broadcastMessage(ColorUtil.colorize(
+            this.broadcastMessageWithPrefix(
                     "&eVocê será teleportado para a &6&larena&x&e em &6&l" + this.lobbyCountdown.get() + " segundos&x&e!"
-            ));
+            );
         }
 
         if(this.lobbyCountdown.get() <= 5) {
@@ -133,37 +162,6 @@ public class Game {
         }
     }
 
-    public void onGameReady() {
-        // Override in subclasses
-    }
-
-    public void onGameStart() {
-        // Override in subclasses
-    }
-
-    public void onGameStartCountdownTick() {
-        if(this.state.get().canJoin()) return;
-
-        if(this.countdownBeforeStart.get() > 0) {
-            this.broadcastMessage(ColorUtil.colorize("&eA partida começará em &6&l" + this.countdownBeforeStart.get() + " segundos&x&e!"));
-        } else {
-            this.setState(GameState.COUNTDOWN, GameState.RUNNING);
-            this.countdownBeforeStart.set(-1);
-            this.broadcastMessage(ColorUtil.colorize("&aA partida começou! Boa sorte a todos!"));
-            this.onGameStart();
-        }
-
-        if(this.countdownBeforeStart.get() > 0) {
-            this.countdownBeforeStart.decrementAndGet();
-        }
-    }
-
-    public void onGameEnd() {
-        this.setState(GameState.RUNNING, GameState.ENDING);
-
-        // Override in subclasses
-    }
-
     public void onPlayerJoin(final PlayerGameSession session) {
         if(this.players.containsKey(session.getPlayerId())) return;
 
@@ -177,16 +175,89 @@ public class Game {
 
         this.lastVisitTimestamp.set(System.currentTimeMillis());
 
-        this.broadcastMessage(ColorUtil.colorize(
+        this.broadcastMessageWithPrefix(
                 "&6> " + playerRef.getUsername() + "&f entrou na partida! " + "&e(" + this.players.size() + "/" + this.settings.getMaxPlayersPerGame() + ")"
-        ));
+        );
 
         if(this.state.get().canJoin()) {
             this.updateLobbyCountdown();
         }
+    }
 
-        System.out.println(this.state.get().name());
-        System.out.println(this.lobbyCountdown.get() + " segundos");
+    public void onGameStartCountdownTick() {
+        if(this.state.get().canJoin()) return;
+
+        if(this.countdownBeforeStart.get() > 0) {
+            this.broadcastMessageWithPrefix("&eA partida começará em &6&l" + this.countdownBeforeStart.get() + " segundos&x&e!");
+        } else {
+            this.setState(GameState.COUNTDOWN, GameState.RUNNING);
+            this.countdownBeforeStart.set(-1);
+            this.broadcastMessageWithPrefix("&aA partida começou! Boa sorte a todos!");
+            this.onGameStart();
+        }
+
+        if(this.countdownBeforeStart.get() > 0) {
+            this.countdownBeforeStart.decrementAndGet();
+        }
+    }
+
+    public void onGameStart() {
+        // Override in subclasses
+    }
+
+    public void onGameEnd() {
+        this.setState(GameState.RUNNING, GameState.ENDING);
+
+        if(this.winnerCondition != GameWinnerCondition.NONE) {
+            this.onGameRewardWinners();
+        } else {
+            this.broadcastMessageWithPrefix("&eNenhuma condição de vitória foi atribuída à esse jogo.");
+        }
+    }
+
+    public void onGameRewardWinners() {
+        // Override in subclasses
+    }
+
+    public void onStateChanged(final GameState previous, final GameState current) {
+        // Override in subclasses
+    }
+
+    public void onStateNotChanged(final GameState previous, final GameState current) {
+        // Override in subclasses
+    }
+
+    private void checkTimeWarnings(final int remainingSeconds) {
+        if (!this.state.get().isInGame()) return;
+
+        switch (remainingSeconds) {
+            case 300: // 5 minutes
+                this.broadcastMessageWithPrefix("&fA partida terminará em &6&l5 minutos&f!");
+                break;
+            case 180: // 3 minutes
+                this.broadcastMessageWithPrefix("&fA partida terminará em &6&l3 minutos&f!");
+                break;
+            case 90: // 1 minute 30 seconds
+                this.broadcastMessageWithPrefix("&fA partida terminará em &6&l1 minuto e 30 segundos&f!");
+                break;
+            case 60: // 1 minute
+                this.broadcastMessageWithPrefix("&fA partida terminará em &c&l1 minuto&f!");
+                break;
+            case 30: // 30 seconds
+                this.broadcastMessageWithPrefix("&fA partida terminará em &c&l30 segundos&f!");
+                break;
+            case 10: // 10 seconds
+                this.broadcastMessageWithPrefix("&cA partida terminará em &4&l10 segundos&c!");
+                break;
+        }
+    }
+
+    public int getGameElapsedSeconds() {
+        return this.gameElapsedSeconds.get();
+    }
+
+    public int getGameRemainingSeconds() {
+        return Math.max(0, this.maxDuration - this.gameElapsedSeconds.get());
     }
 
     private void updateLobbyCountdown() {
@@ -225,27 +296,131 @@ public class Game {
         }
     }
 
-    public void onPlayerLeave(final UUID playerId) {
+    /**
+     * Called when a player leaves the game for any reason
+     * Handles both lobby and in-game scenarios
+     *
+     * @param playerId The ID of the player leaving
+     * @param cause The reason why the player is leaving
+     */
+    public void onPlayerLeave(final UUID playerId, final PlayerGameLeaveCause cause) {
+        // Remove player from game
         final GamePlayer gamePlayer = this.players.remove(playerId);
 
         if(gamePlayer == null) return;
 
+        final PlayerRef playerRef = gamePlayer.getPlayer();
+
+        // Validate player reference
+        if(playerRef == null || !playerRef.isValid()) {
+            return;
+        }
+
+        // Build appropriate message based on cause and game state
+        String messageToBroadcast = this.buildLeaveMessage(playerRef.getUsername(), cause);
+
+        if(!messageToBroadcast.isEmpty()) {
+            this.broadcastMessageWithPrefix(messageToBroadcast);
+        }
+
+        // Teleport player back to server spawn
+        GameUtil.teleportPlayerToServerSpawn(gamePlayer);
+
+        // Handle game state updates
+        this.handleGameStateAfterPlayerLeave(cause);
+    }
+
+    /**
+     * Builds the message to broadcast when a player leaves
+     */
+    private String buildLeaveMessage(final String playerName, final PlayerGameLeaveCause cause) {
+        return switch (cause) {
+            case DISCONNECTED -> {
+                String msg = "&6< " + playerName + "&f deixou a partida!";
+                if(!this.state.get().canJoin()) {
+                    msg += " &c Ele possui 1 minuto para retornar ao jogo.";
+                } else {
+                    msg += " &e(" + this.players.size() + "/" + this.settings.getMaxPlayersPerGame() + ")";
+                }
+                yield msg;
+            }
+            case KICKED_BY_STAFF -> "&c< " + playerName + "&f foi expulso da partida por um membro da equipe!";
+            case KICKED_BY_SYSTEM -> "&c< " + playerName + "&f foi removido do jogo pelo sistema.";
+            case LEFT_GAME -> "&6< " + playerName + "&f saiu da partida de forma voluntária! Se essa partida já estiver em andamento, ele receberá uma penalidade.";
+            case LOST_GAME -> "&c< " + playerName + "&f foi eliminado da partida!";
+            default -> "";
+        };
+    }
+
+    /**
+     * Handles game state updates when a player leaves
+     */
+    private void handleGameStateAfterPlayerLeave(final PlayerGameLeaveCause cause) {
+        // If no players left and game is active, end the game
         if(this.players.isEmpty() && this.state.get().isInGame()) {
             this.onGameEnd();
             return;
         }
 
-        final PlayerRef playerRef = gamePlayer.getPlayer();
+        // Reset lobby countdown if players leave during lobby phase
+        if(this.state.get().canJoin() && this.lobbyCountdown.get() > 0) {
+            this.updateLobbyCountdown();
+        }
+    }
 
-        String message = "&6< " + playerRef.getUsername() + "&f deixou a partida!";
-
-        if(!this.state.get().canJoin()) {
-            message += " &c Ele possui 1 minuto para retornar ao jogo.";
-        } else {
-            message += " &e(" + this.players.size() + "/" + this.settings.getMaxPlayersPerGame() + ")";
+    /**
+     * Called when a player dies during the game
+     * Determines if the player should be eliminated from the game
+     *
+     * @param playerId The ID of the player who died
+     * @return true if the player should be removed from the game, false otherwise
+     */
+    public boolean onPlayerDeath(final UUID playerId) {
+        // Validate game state
+        if(!this.state.get().isInGame()) {
+            return false;
         }
 
-        this.broadcastMessage(ColorUtil.colorize(message));
+        // Validate winner condition is set
+        if(this.winnerCondition == GameWinnerCondition.NONE) {
+            Logger.error("[Critical] onPlayerDeath called but no winner condition is set!");
+            return false;
+        }
+
+        // Determine if player should be eliminated based on winner condition
+        final boolean shouldRemovePlayer = this.shouldPlayerBeEliminated();
+
+        if(shouldRemovePlayer) {
+            // Only broadcast if player is still in game (not already removed)
+            if(this.players.containsKey(playerId)) {
+                final GamePlayer gamePlayer = this.players.get(playerId);
+                final PlayerRef playerRef = gamePlayer.getPlayer();
+
+                if(playerRef != null && playerRef.isValid()) {
+                    this.broadcastMessageWithPrefix("&c< " + playerRef.getUsername() + "&f foi eliminado da partida!");
+                }
+            }
+        }
+
+        return shouldRemovePlayer;
+    }
+
+    /**
+     * Determines if a player should be eliminated based on the winner condition
+     */
+    private boolean shouldPlayerBeEliminated() {
+        return switch (this.winnerCondition) {
+            case LAST_PLAYER_STANDING -> true;  // Death eliminates player
+            case HIGHEST_SCORE -> false;         // Death doesn't eliminate
+            case TIME_LIMIT_REACHED -> false;    // Death doesn't eliminate
+            case NONE -> false;                  // Should not happen
+        };
+    }
+
+    public void broadcastMessageWithPrefix(final String message) {
+        final String prefix = "&4&l[" + this.type.name() + "] &x";
+
+        this.broadcastMessage(ColorUtil.colorize(prefix + message));
     }
 
     public void broadcastMessage(final Message message) {
@@ -267,14 +442,6 @@ public class Game {
 
         if(updated) this.onStateChanged(expected, state);
         else this.onStateNotChanged(expected, state);
-    }
-
-    public void onStateChanged(final GameState previous, final GameState current) {
-        // Override in subclasses
-    }
-
-    public void onStateNotChanged(final GameState previous, final GameState current) {
-        // Override in subclasses
     }
 
     public Map<UUID, GamePlayer> getPlayers() {
@@ -326,7 +493,7 @@ public class Game {
                 final PlayerRef playerRef = gamePlayer.getPlayer();
 
                 if (playerRef != null && playerRef.isValid()) {
-                    teleportPlayerToSpawn(playerRef, spawnData);
+                    teleportPlayerToGameSpawn(playerRef, spawnData);
                 }
 
                 playerIndex++;
@@ -334,7 +501,7 @@ public class Game {
         }
     }
 
-    private void teleportPlayerToSpawn(final PlayerRef playerRef, final GamePrefabSpawnData spawnData) {
+    private void teleportPlayerToGameSpawn(final PlayerRef playerRef, final GamePrefabSpawnData spawnData) {
         final Ref<EntityStore> ref = playerRef.getReference();
 
         if (ref == null || !ref.isValid()) return;
