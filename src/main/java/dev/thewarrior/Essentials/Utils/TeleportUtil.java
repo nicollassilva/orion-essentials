@@ -100,6 +100,12 @@ public class TeleportUtil {
     public static String teleport(@Nonnull PlayerRef playerRef, @Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref,
                                   @Nonnull String worldName, double x, double y, double z,
                                   float yaw, float pitch) {
+        // Validate reference is still valid
+        if (!ref.isValid()) {
+            Logger.warning("Teleport failed: Entity reference is no longer valid for player " + playerRef.getUuid());
+            return "Entity reference is no longer valid. Player may have been removed from the world.";
+        }
+
         final World targetWorld = Universe.get().getWorld(worldName);
 
         if (targetWorld == null) {
@@ -108,19 +114,37 @@ public class TeleportUtil {
 
         final UUID worldId = playerRef.getWorldUuid();
 
-        assert worldId != null;
+        if (worldId == null) {
+            return "Player world UUID is null.";
+        }
 
         final World currentWorld = Universe.get().getWorld(worldId);
 
-        assert currentWorld != null;
+        if (currentWorld == null) {
+            return "Current world is not loaded.";
+        }
 
         currentWorld.execute(() -> {
+            final Ref<EntityStore> realRef = playerRef.getReference();
+
+            if (realRef == null || !realRef.isValid()) {
+                Logger.warning("Teleport execution cancelled: Reference became invalid for player " + playerRef.getUuid());
+                return;
+            }
+
+            final Store<EntityStore> realStore = realRef.getStore();
+
             Vector3d position = new Vector3d(x, y, z);
             // Round yaw to cardinal direction and zero pitch to avoid Hytale model bug
             Vector3f rotation = new Vector3f(0, roundToCardinalYaw(yaw), 0);
 
             Teleport teleport = new Teleport(targetWorld, position, rotation);
-            store.putComponent(ref, Teleport.getComponentType(), teleport);
+
+            try {
+                realStore.putComponent(realRef, Teleport.getComponentType(), teleport);
+            } catch (IllegalStateException e) {
+                Logger.error("Failed to put teleport component for player " + playerRef.getUuid() + ": " + e.getMessage());
+            }
         });
 
         return null;

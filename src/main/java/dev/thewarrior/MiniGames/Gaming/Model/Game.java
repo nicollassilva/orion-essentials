@@ -47,14 +47,15 @@ public class Game {
     protected final Map<UUID, GamePlayer> players;
     protected final AtomicReference<GameState> state;
 
-    protected final int maxDuration;
     protected final AtomicLong lastVisitTimestamp;
 
     protected final AtomicInteger lobbyCountdown = new AtomicInteger(-1);
     protected final AtomicInteger countdownBeforeStart = new AtomicInteger(-1);
+    protected final AtomicInteger countdownAfterEnd = new AtomicInteger(-1);
 
     protected final AtomicInteger gameTick = new AtomicInteger(0);
     protected final AtomicInteger gameElapsedSeconds = new AtomicInteger(0);
+    protected final AtomicInteger gameEndTick = new AtomicInteger(-1);
 
     protected GameWinnerCondition winnerCondition;
 
@@ -74,7 +75,9 @@ public class Game {
             this.countdownBeforeStart.set(settings.getCountdownBeforeStart());
         }
 
-        this.maxDuration = settings.getMaxDuration();
+        if(settings.getCountdownAfterEnd() > 0) {
+            this.countdownAfterEnd.set(settings.getCountdownAfterEnd());
+        }
 
         this.world = Universe.get().getWorld(settings.getWorldName());
     }
@@ -92,6 +95,14 @@ public class Game {
         this.gameElapsedSeconds.set(0);
         this.winnerCondition = GameWinnerCondition.NONE;
         this.lastVisitTimestamp.set(System.currentTimeMillis());
+
+        if(settings.getCountdownBeforeStart() > 0) {
+            this.countdownBeforeStart.set(settings.getCountdownBeforeStart());
+        }
+
+        if(settings.getCountdownAfterEnd() > 0) {
+            this.countdownAfterEnd.set(settings.getCountdownAfterEnd());
+        }
     }
 
     public UUID getId() {
@@ -119,6 +130,7 @@ public class Game {
     }
 
     public void onGameTick() {
+        System.out.println("Game Tick: " + this.gameTick.get() + " | State: " + this.state.get().name());
         this.gameTick.incrementAndGet();
 
         // Calculate elapsed seconds based on tick rate
@@ -126,21 +138,75 @@ public class Game {
         final int ticksPerSecond = (int) (1000 / GameManager.TICK_RATE_MS);
 
         if (this.gameTick.get() % ticksPerSecond == 0) {
-            this.gameElapsedSeconds.incrementAndGet();
-
-            final int remainingSeconds = this.getGameRemainingSeconds();
-
-            // Check if game duration has been exceeded
-            if (remainingSeconds <= 0 && this.state.get().isInGame()) {
-                this.broadcastMessageWithPrefix("&cTempo da partida expirou! Encerrando jogo...");
-                this.onGameEnd();
-            }
-
-            // Send warning messages at specific time intervals
-            this.checkTimeWarnings(remainingSeconds);
+            // Handle state-specific tick logic
+            handleStateTick();
         }
 
         // Override in subclasses
+    }
+
+    /**
+     * Handles tick logic based on current game state
+     * Each state has its own responsibilities
+     */
+    private void handleStateTick() {
+        final GameState currentState = this.state.get();
+
+        // ENDING state: Countdown to return players to server
+        if (currentState == GameState.ENDING) {
+            handleEndingStateTick();
+        }
+        // RUNNING state: Update game time and check warnings
+        else if (currentState == GameState.RUNNING) {
+            handleRunningStateTick();
+        }
+        // Other states don't need per-second tick handling
+    }
+
+    /**
+     * Handles ENDING state: Shows countdown and teleports players when done
+     * Description: "Time to send rewards and send all to lobby"
+     */
+    private void handleEndingStateTick() {
+        this.broadcastMessageWithPrefix("&eRetornando ao spawn do servidor em &6&l" + this.gameEndTick.get() + " segundos&x&e...");
+
+        if (this.gameEndTick.get() <= 0) {
+            this.broadcastMessageWithPrefix("&eA partida terminou! Retornando ao spawn do servidor...");
+
+            // Teleport all remaining players to server spawn
+            for (final GamePlayer gamePlayer : this.players.values()) {
+                final PlayerRef playerRef = gamePlayer.getPlayer();
+
+                if (playerRef == null || !playerRef.isValid()) continue;
+
+                GameUtil.teleportPlayerToServerSpawn(gamePlayer);
+            }
+
+            // Transition to ENDED state
+            this.setState(GameState.ENDING, GameState.ENDED);
+        }
+
+        this.gameEndTick.decrementAndGet();
+    }
+
+    /**
+     * Handles RUNNING state: Updates elapsed time and checks for max duration
+     * Description: "Game is running"
+     */
+    private void handleRunningStateTick() {
+        this.gameElapsedSeconds.incrementAndGet();
+
+        final int remainingSeconds = this.getGameRemainingSeconds();
+
+        // Check if game duration has been exceeded
+        if (remainingSeconds <= 0) {
+            this.broadcastMessageWithPrefix("&cTempo da partida expirou! Encerrando jogo...");
+            this.onGameEnd();
+            return;
+        }
+
+        // Send warning messages at specific time intervals
+        this.checkTimeWarnings(remainingSeconds);
     }
 
     public void onCountdownTick() {
@@ -182,7 +248,17 @@ public class Game {
 
         final PlayerRef playerRef = session.getPlayer();
 
-        if(playerRef == null || !playerRef.isValid()) return;
+        if(playerRef == null || !playerRef.isValid()) {
+            Logger.warning("Player " + session.getPlayerId() + " has invalid reference, cannot join game");
+            return;
+        }
+
+        // Validate entity reference before teleporting
+        final Ref<EntityStore> ref = playerRef.getReference();
+        if(ref == null || !ref.isValid()) {
+            Logger.warning("Player " + playerRef.getUuid() + " entity reference is invalid, cannot join game");
+            return;
+        }
 
         this.teleportToLobby(playerRef);
 
@@ -224,13 +300,21 @@ public class Game {
         if (!this.state.compareAndSet(GameState.RUNNING, GameState.ENDING)) return;
 
         if(this.winnerCondition != GameWinnerCondition.NONE) {
-            this.onGameRewardWinners();
+            if(this.getGameElapsedSeconds() >= this.settings.getMinDuration()) {
+                this.onGameRewardWinners();
+            } else {
+                this.broadcastMessageWithPrefix("&eA partida terminou, mas o tempo mínimo de jogo não foi atingido. Nenhum vencedor será recompensado.");
+            }
         } else {
             this.broadcastMessageWithPrefix("&eNenhuma condição de vitória foi atribuída à esse jogo.");
         }
 
         // Dispatch event
         this.onStateChanged(GameState.RUNNING, GameState.ENDING);
+
+        if(this.settings.getCountdownAfterEnd() > 0) {
+            this.gameEndTick.set(this.settings.getCountdownAfterEnd());
+        }
     }
 
     public void onGameRewardWinners() {
@@ -275,7 +359,7 @@ public class Game {
     }
 
     public int getGameRemainingSeconds() {
-        return Math.max(0, this.maxDuration - this.gameElapsedSeconds.get());
+        return Math.max(0, this.settings.getMaxDuration() - this.gameElapsedSeconds.get());
     }
 
     private void updateLobbyCountdown() {
@@ -472,7 +556,10 @@ public class Game {
     protected void teleportToLobby(final PlayerRef playerRef) {
         final Ref<EntityStore> ref = playerRef.getReference();
 
-        if(ref == null || !ref.isValid()) return;
+        if(ref == null || !ref.isValid()) {
+            Logger.error("Cannot teleport player " + playerRef.getUuid() + " to lobby: invalid reference");
+            return;
+        }
 
         final Store<EntityStore> store = ref.getStore();
 
@@ -488,6 +575,7 @@ public class Game {
                     spawnRotation.getX(), spawnRotation.getZ()
             );
         } catch (Exception e) {
+            Logger.error("Failed to teleport player " + playerRef.getUuid() + " to lobby: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -525,13 +613,17 @@ public class Game {
     private void teleportPlayerToGameSpawn(final PlayerRef playerRef, final GamePrefabSpawnData spawnData) {
         final Ref<EntityStore> ref = playerRef.getReference();
 
-        if (ref == null || !ref.isValid()) return;
+        if (ref == null || !ref.isValid()) {
+            Logger.error("Cannot teleport player " + playerRef.getUuid() + " to game spawn: invalid reference");
+            return;
+        }
 
         final Store<EntityStore> store = ref.getStore();
 
         final Vector3f spawnRotation = spawnData.getRotation();
         final Vector3d spawnPosition = this.arena.getRespawnPosition(spawnData.getPosition().clone());
 
+        System.out.println("Teleporting player " + playerRef.getUuid());
         try {
             TeleportUtil.teleport(
                     playerRef, store, ref, this.settings.getWorldName(),
@@ -539,6 +631,7 @@ public class Game {
                     spawnRotation.getX(), spawnRotation.getZ()
             );
         } catch (Exception e) {
+            Logger.error("Failed to teleport player " + playerRef.getUuid() + " to game spawn: " + e.getMessage());
             e.printStackTrace();
         }
     }

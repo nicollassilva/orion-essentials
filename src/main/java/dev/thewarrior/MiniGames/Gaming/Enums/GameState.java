@@ -32,6 +32,6 @@ public enum GameState {
     }
 
     public boolean isInGame() {
-        return this == COUNTDOWN || this == RUNNING;
+        return this == COUNTDOWN || this == RUNNING || this == ENDING;
     }
 }
