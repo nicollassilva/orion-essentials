@@ -79,6 +79,21 @@ public class Game {
         this.world = Universe.get().getWorld(settings.getWorldName());
     }
 
+    /**
+     * Reset the game state to initial state for reuse in the pool
+     * Called when game is returned to available games queue
+     */
+    public void reset() {
+        this.players.clear();
+        this.state.set(GameState.CREATING);
+        this.lobbyCountdown.set(-1);
+        this.countdownBeforeStart.set(-1);
+        this.gameTick.set(0);
+        this.gameElapsedSeconds.set(0);
+        this.winnerCondition = GameWinnerCondition.NONE;
+        this.lastVisitTimestamp.set(System.currentTimeMillis());
+    }
+
     public UUID getId() {
         return id;
     }
@@ -206,13 +221,16 @@ public class Game {
     }
 
     public void onGameEnd() {
-        this.setState(GameState.RUNNING, GameState.ENDING);
+        if (!this.state.compareAndSet(GameState.RUNNING, GameState.ENDING)) return;
 
         if(this.winnerCondition != GameWinnerCondition.NONE) {
             this.onGameRewardWinners();
         } else {
             this.broadcastMessageWithPrefix("&eNenhuma condição de vitória foi atribuída à esse jogo.");
         }
+
+        // Dispatch event
+        this.onStateChanged(GameState.RUNNING, GameState.ENDING);
     }
 
     public void onGameRewardWinners() {
@@ -311,20 +329,20 @@ public class Game {
 
         final PlayerRef playerRef = gamePlayer.getPlayer();
 
-        // Validate player reference
-        if(playerRef == null || !playerRef.isValid()) {
-            return;
-        }
-
         // Build appropriate message based on cause and game state
-        String messageToBroadcast = this.buildLeaveMessage(playerRef.getUsername(), cause);
+        String messageToBroadcast = this.buildLeaveMessage(
+            playerRef != null && playerRef.isValid() ? playerRef.getUsername() : "Unknown",
+            cause
+        );
 
         if(!messageToBroadcast.isEmpty()) {
             this.broadcastMessageWithPrefix(messageToBroadcast);
         }
 
-        // Teleport player back to server spawn
-        GameUtil.teleportPlayerToServerSpawn(gamePlayer);
+        // Teleport player back to server spawn (if possible)
+        if(playerRef != null && playerRef.isValid()) {
+            GameUtil.teleportPlayerToServerSpawn(gamePlayer);
+        }
 
         // Handle game state updates
         this.handleGameStateAfterPlayerLeave(cause);
@@ -394,10 +412,13 @@ public class Game {
             // Only broadcast if player is still in game (not already removed)
             if(this.players.containsKey(playerId)) {
                 final GamePlayer gamePlayer = this.players.get(playerId);
-                final PlayerRef playerRef = gamePlayer.getPlayer();
 
-                if(playerRef != null && playerRef.isValid()) {
-                    this.broadcastMessageWithPrefix("&c< " + playerRef.getUsername() + "&f foi eliminado da partida!");
+                if (gamePlayer != null) {
+                    final PlayerRef playerRef = gamePlayer.getPlayer();
+
+                    if(playerRef != null && playerRef.isValid()) {
+                        this.broadcastMessageWithPrefix("&c< " + playerRef.getUsername() + "&f foi eliminado da partida!");
+                    }
                 }
             }
         }

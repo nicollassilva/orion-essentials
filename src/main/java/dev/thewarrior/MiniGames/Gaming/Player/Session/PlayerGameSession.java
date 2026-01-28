@@ -27,8 +27,12 @@ public class PlayerGameSession {
         return currentGame.get();
     }
 
-    public void setCurrentGame(final PlayerCurrentGame game) {
-        this.currentGame.compareAndSet(null, game);
+    public boolean trySetCurrentGame(final PlayerCurrentGame game) {
+        if (game == null) {
+            return false;
+        }
+
+        return this.currentGame.compareAndSet(null, game);
     }
 
     public PlayerGameSessionState getCurrentState() {

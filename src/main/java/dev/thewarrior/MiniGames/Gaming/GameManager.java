@@ -174,7 +174,10 @@ public class GameManager {
 
         final PlayerGameSession session = this.playerSessionManager.getSession(playerId);
 
-        if(session == null) return;
+        if(session == null) {
+            Logger.warning("Tried to remove player " + playerId + " but session not found");
+            return;
+        }
 
         this.playerSessionManager.removeSession(playerId);
 
@@ -185,7 +188,11 @@ public class GameManager {
 
             if(playerGame != null) {
                 playerGame.onPlayerLeave(playerId, leaveCause);
+            } else {
+                Logger.warning("Player " + playerId + " was in game " + currentGame.gameId() + " but game not found in container");
             }
+        } else {
+            Logger.warning("Player " + playerId + " session had no current game set");
         }
     }
 
@@ -233,7 +240,14 @@ public class GameManager {
 
         if(game == null) return null;
 
-        sessionStarted.setCurrentGame(new PlayerCurrentGame(game.getId(), gameType));
+        // Try to set current game - if fails, player is already in a game
+        final boolean gameSet = sessionStarted.trySetCurrentGame(new PlayerCurrentGame(game.getId(), gameType));
+
+        if (!gameSet) {
+            // Player is already in another game, return game to pool
+            Logger.warning("Failed to set game for player " + playerId + ": already in game");
+            return null;
+        }
 
         game.onPlayerJoin(sessionStarted);
 

@@ -7,6 +7,8 @@ import dev.thewarrior.MiniGames.Gaming.Games.TNTTagGame;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
@@ -41,6 +43,9 @@ public class GameContainer {
                 e.printStackTrace();
             }
         }
+
+        // Limpar games terminados
+        this.cleanupFinishedGames();
     }
 
     public void tickQueuedGames() {
@@ -48,6 +53,29 @@ public class GameContainer {
             if(!game.getState().isQueuedTick()) continue;
 
             game.onCountdownTick();
+        }
+    }
+
+    /**
+     * Remove games que já terminaram (estado ENDING) e retorna para o pool
+     */
+    private void cleanupFinishedGames() {
+        final List<UUID> finishedGameIds = new ArrayList<>();
+
+        for (final Game game : this.activeGames.values()) {
+            if (game.getState() == GameState.ENDED) {
+                finishedGameIds.add(game.getId());
+            }
+        }
+
+        for (final UUID gameId : finishedGameIds) {
+            final Game game = this.activeGames.remove(gameId);
+
+            if (game != null) {
+                game.reset();
+
+                this.availableGames.offer(game);
+            }
         }
     }
 
@@ -60,8 +88,13 @@ public class GameContainer {
 
         if(game != null) {
             if((!game.getState().canJoin() || game.getPlayers().size() >= this.settings.getMaxPlayersPerGame())) {
-                if(isRetry) return null;
-                else return this.acquire(true);
+                if(isRetry) {
+                    game.reset();
+                    this.availableGames.offer(game);
+                    return null;
+                } else {
+                    return this.acquire(true);
+                }
             }
 
             this.activeGames.put(game.getId(), game);
