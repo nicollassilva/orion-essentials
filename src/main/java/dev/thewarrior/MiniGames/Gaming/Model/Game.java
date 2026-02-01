@@ -88,13 +88,14 @@ public class Game {
      */
     public void reset() {
         this.players.clear();
-        this.state.set(GameState.CREATING);
+        this.state.set(GameState.FREE);
         this.lobbyCountdown.set(-1);
         this.countdownBeforeStart.set(-1);
         this.gameTick.set(0);
         this.gameElapsedSeconds.set(0);
-        this.winnerCondition = GameWinnerCondition.NONE;
         this.lastVisitTimestamp.set(System.currentTimeMillis());
+        this.countdownAfterEnd.set(-1);
+        this.countdownBeforeStart.set(-1);
 
         if(settings.getCountdownBeforeStart() > 0) {
             this.countdownBeforeStart.set(settings.getCountdownBeforeStart());
@@ -103,6 +104,8 @@ public class Game {
         if(settings.getCountdownAfterEnd() > 0) {
             this.countdownAfterEnd.set(settings.getCountdownAfterEnd());
         }
+
+        this.onGameReset();
     }
 
     public UUID getId() {
@@ -122,6 +125,18 @@ public class Game {
             this.setState(GameState.CREATING, GameState.WAITING);
 
             this.onGameReady();
+        });
+    }
+
+    public void onGameReset() {
+        final World world = Universe.get().getWorld(this.settings.getWorldName());
+
+        if(world == null) return;
+
+        world.execute(() -> {
+            final BlockSelection prefab = PrefabStore.get().getServerPrefab("tntrun_arena1.prefab.json");
+
+            prefab.place(null, world, this.arena.position(), null);
         });
     }
 

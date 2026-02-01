@@ -98,6 +98,10 @@ public class GameContainer {
             }
 
             this.activeGames.put(game.getId(), game);
+
+            if(game.getState() == GameState.FREE) {
+                game.setState(GameState.FREE, GameState.WAITING);
+            }
         }
 
         return game;
