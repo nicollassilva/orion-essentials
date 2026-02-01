@@ -130,7 +130,6 @@ public class Game {
     }
 
     public void onGameTick() {
-        System.out.println("Game Tick: " + this.gameTick.get() + " | State: " + this.state.get().name());
         this.gameTick.incrementAndGet();
 
         // Calculate elapsed seconds based on tick rate

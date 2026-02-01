@@ -19,9 +19,6 @@ import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 public final class TNTRunGame extends Game {
     private static final double THRESHOLD = 0.3;
 
-    private int bestX, bestY, bestZ;
-    private double bestDist;
-
     public TNTRunGame(GameType type, GameArena arena, GameSettings settings) {
         super(type, arena, settings);
 
@@ -88,24 +85,24 @@ public final class TNTRunGame extends Game {
         final boolean back  = fracZ < THRESHOLD;
 
         boolean found = false;
-        bestDist = Double.MAX_VALUE;
+        final CandidateResult result = new CandidateResult(-1, -1, -1, Double.MAX_VALUE);
 
         // ===== candidatos no nível do pé =====
-        found |= tryCandidate(px, pz, baseX, footY, baseZ);
+        found |= tryCandidate(px, pz, baseX, footY, baseZ, result);
 
-        if (right) found |= tryCandidate(px, pz, baseX + 1, footY, baseZ);
-        if (left)  found |= tryCandidate(px, pz, baseX - 1, footY, baseZ);
-        if (front) found |= tryCandidate(px, pz, baseX, footY, baseZ + 1);
-        if (back)  found |= tryCandidate(px, pz, baseX, footY, baseZ - 1);
+        if (right) found |= tryCandidate(px, pz, baseX + 1, footY, baseZ, result);
+        if (left)  found |= tryCandidate(px, pz, baseX - 1, footY, baseZ, result);
+        if (front) found |= tryCandidate(px, pz, baseX, footY, baseZ + 1, result);
+        if (back)  found |= tryCandidate(px, pz, baseX, footY, baseZ - 1, result);
 
-        if (right && front) found |= tryCandidate(px, pz, baseX + 1, footY, baseZ + 1);
-        if (right && back)  found |= tryCandidate(px, pz, baseX + 1, footY, baseZ - 1);
-        if (left && front)  found |= tryCandidate(px, pz, baseX - 1, footY, baseZ + 1);
-        if (left && back)   found |= tryCandidate(px, pz, baseX - 1, footY, baseZ - 1);
+        if (right && front) found |= tryCandidate(px, pz, baseX + 1, footY, baseZ + 1, result);
+        if (right && back)  found |= tryCandidate(px, pz, baseX + 1, footY, baseZ - 1, result);
+        if (left && front)  found |= tryCandidate(px, pz, baseX - 1, footY, baseZ + 1, result);
+        if (left && back)   found |= tryCandidate(px, pz, baseX - 1, footY, baseZ - 1, result);
 
         // achou → quebra APENAS UM bloco
         if (found) {
-            this.world.setBlock(bestX, bestY, bestZ, BlockType.EMPTY.getId());
+            this.world.setBlock(result.x, result.y, result.z, BlockType.EMPTY.getId());
             return;
         }
 
@@ -121,7 +118,7 @@ public final class TNTRunGame extends Game {
      *  - menor distância ao centro do player
      *  - se empatar, prioriza o bloco central (baseX/baseZ)
      */
-    private boolean tryCandidate(double px, double pz, int x, int y, int z) {
+    private boolean tryCandidate(double px, double pz, int x, int y, int z, CandidateResult result) {
 
         if (this.world.getBlock(x, y, z) == BlockType.EMPTY_ID) {
             return false;
@@ -131,16 +128,30 @@ public final class TNTRunGame extends Game {
         final double dz = pz - (z + 0.5);
         final double dist = dx * dx + dz * dz;
 
-        if (dist < bestDist
-                || (dist == bestDist && x == (int) Math.floor(px) && z == (int) Math.floor(pz))) {
+        if (dist < result.dist || (
+                dist == result.dist && x == (int) Math.floor(px) && z == (int) Math.floor(pz)
+        )) {
 
-            bestDist = dist;
-            bestX = x;
-            bestY = y;
-            bestZ = z;
+            result.x = x;
+            result.y = y;
+            result.z = z;
+            result.dist = dist;
+
             return true;
         }
 
         return false;
+    }
+
+    public static class CandidateResult {
+        public int x, y, z;
+        public double dist;
+
+        public CandidateResult(int x, int y, int z, double dist) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.dist = dist;
+        }
     }
 }
