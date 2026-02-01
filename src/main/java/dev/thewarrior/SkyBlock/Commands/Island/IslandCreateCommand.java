@@ -1,4 +1,4 @@
-package dev.thewarrior.SkyBlock.Commands;
+package dev.thewarrior.SkyBlock.Commands.Island;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;

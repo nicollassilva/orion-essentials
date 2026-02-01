@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class CobblestoneGeneratorHandler extends EntityEventSystem<EntityStore, BreakBlockEvent> {
     private static final String STONE_MATCHING = "_Stone";
     private static final String STONE_FALLBACK = "Rock_Stone_Cobble";
+
     private static final Random RANDOM = new Random();
 
     protected static final Vector2i[] ORTO_OFFSETS = new Vector2i[] {

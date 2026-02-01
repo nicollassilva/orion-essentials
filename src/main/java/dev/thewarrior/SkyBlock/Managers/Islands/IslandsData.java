@@ -25,6 +25,16 @@ public class IslandsData {
         return null;
     }
 
+    public IslandData getIslandByNameAndOwner(final String islandName, final UUID ownerId) {
+        for (final IslandData island : this.islands.values()) {
+            if(island.getIslandName().equalsIgnoreCase(islandName) && island.getOwnerId().equals(ownerId)) {
+                return island;
+            }
+        }
+
+        return null;
+    }
+
     public List<IslandData> getIslandsForPlayer(final PlayerRef ref) {
         final List<IslandData> list = new ObjectArrayList<>();
 
