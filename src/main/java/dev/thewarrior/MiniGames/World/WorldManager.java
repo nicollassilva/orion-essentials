@@ -2,6 +2,7 @@ package dev.thewarrior.MiniGames.World;
 
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.Constants;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.ClientEffectWorldSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -40,6 +41,8 @@ public class WorldManager {
     }
 
     public void start() {
+        this.createSpawnWorld();
+
         if(this.settingsStorage.isEmpty()) return;
 
         for (final GameSettings settings : this.settingsStorage.getAllSettings()) {
@@ -103,6 +106,38 @@ public class WorldManager {
         }
 
         return Universe.get().makeWorld(worldName, Universe.getWorldGenPath(), this.setupWorldConfig());
+    }
+
+    public void createSpawnWorld() {
+        World world = Universe.get().getWorld("spawn");
+
+        if(world != null) {
+            Logger.info(String.format("World '%s' loaded successfully.", world.getName()));
+            return;
+        }
+
+        WorldConfig config = new WorldConfig();
+
+        config.setIsSpawnMarkersEnabled(false);
+        config.setObjectiveMarkersEnabled(false);
+        config.setUuid(UUID.randomUUID());
+        config.setGameTimePaused(true);
+        config.setSpawningNPC(false);
+        config.setForcedWeather("Zone1_Sunny");
+        config.setSpawnProvider(new GlobalSpawnProvider(new Transform(0, 5, 0)));
+        config.setGameTime(this.defaultWorldTime);
+
+        config.setClientEffects(ClientEffectWorldSettings.CODEC.getDefaultValue());
+
+        config.setWorldGenProvider(new VoidWorldGenProvider(FlatWorldGenProvider.DEFAULT_TINT, "Env_Zone1_Plains"));
+
+        Universe.get().makeWorld("spawn", Constants.UNIVERSE_PATH.resolve("worlds").resolve("spawn"), config)
+                .thenAccept(_ -> {
+                    Logger.info("Spawn world created successfully.");
+                }).exceptionally(_ -> {
+                    Logger.error("Failed to create spawn world.");
+                    return null;
+                });
     }
 
     public WorldTerrainManager getWorldTerrainManager() {

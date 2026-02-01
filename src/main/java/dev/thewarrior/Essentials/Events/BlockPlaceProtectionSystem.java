@@ -52,7 +52,7 @@ public class BlockPlaceProtectionSystem extends EntityEventSystem<EntityStore, P
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
         if (player == null || playerRef == null || !playerRef.isValid()) return;
-        //if (player.hasPermission(BYPASS_PERMISSION)) return;
+        if (player.hasPermission(BYPASS_PERMISSION)) return;
 
         final int blockX = event.getTargetBlock().getX();
         final int blockY = event.getTargetBlock().getY();

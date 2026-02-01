@@ -17,7 +17,7 @@ import dev.thewarrior.Essentials.Managers.Data.Region.Data.RegionArea;
 import dev.thewarrior.Essentials.Managers.*;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.Essentials.Utils.Logger;
-import dev.thewarrior.MiniGames.MiniGamesBootstrap;
+import dev.thewarrior.SkyBlock.SkyBlockBootstrap;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.util.Random;
@@ -28,13 +28,15 @@ public class OrionBootstrap extends JavaPlugin {
     public static Random random;
 
     private final EssentialsBootstrap essentialsBootstrap;
-    private final MiniGamesBootstrap miniGamesBootstrap;
+    //private final MiniGamesBootstrap miniGamesBootstrap;
+    private final SkyBlockBootstrap skyBlockBootstrap;
 
     public OrionBootstrap(@NonNullDecl JavaPluginInit init) {
         super(init);
 
         this.essentialsBootstrap = new EssentialsBootstrap(this);
-        this.miniGamesBootstrap = new MiniGamesBootstrap(this);
+        //this.miniGamesBootstrap = new MiniGamesBootstrap(this);
+        this.skyBlockBootstrap = new SkyBlockBootstrap(this);
     }
 
     @Override
@@ -45,7 +47,8 @@ public class OrionBootstrap extends JavaPlugin {
         Logger.info("~=~=~= Iniciando Orion Network ~=~=~=");
 
         this.essentialsBootstrap.setup();
-        this.miniGamesBootstrap.setup();
+        //this.miniGamesBootstrap.setup();
+        this.skyBlockBootstrap.setup();
     }
 
     @Override
@@ -55,7 +58,8 @@ public class OrionBootstrap extends JavaPlugin {
         PlayerDataComponent = getEntityStoreRegistry().registerComponent(PlayerCommandComponent.class, "PlayerCommandData", PlayerCommandComponent.CODEC);
 
         this.essentialsBootstrap.start();
-        this.miniGamesBootstrap.start();
+        //this.miniGamesBootstrap.start();
+        this.skyBlockBootstrap.start();
 
         Logger.info("~=~=~= Orion Network iniciado com sucesso! ~=~=~=");
     }

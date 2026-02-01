@@ -24,7 +24,7 @@ import dev.thewarrior.OrionBootstrap;
 
 import java.util.UUID;
 
-public abstract class PlayerEventHandler {
+public abstract class EssentialsPlayerEventHandler {
     public static void onPlayerConnect(final PlayerConnectEvent event, final OrionBootstrap plugin) {
         final PlayerRef playerRef = event.getPlayerRef();
         final PlayerEntryConfig entryConfig = plugin.getConfig().getData().getPlayerJoinConfig();

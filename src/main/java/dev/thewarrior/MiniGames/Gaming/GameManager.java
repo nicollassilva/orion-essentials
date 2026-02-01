@@ -131,7 +131,7 @@ public class GameManager {
     }
 
     private void onQueuesTick() {
-        System.out.println("Checking player queues...");
+        //System.out.println("Checking player queues...");
 
         if(!this.playerQueues.isEmpty()) {
             for (Map.Entry<UUID, GameType> entry : this.playerQueues.entrySet()) {

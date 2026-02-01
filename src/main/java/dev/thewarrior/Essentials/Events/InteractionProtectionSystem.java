@@ -55,7 +55,7 @@ public class InteractionProtectionSystem extends EntityEventSystem<EntityStore, 
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
         if (player == null || playerRef == null || !playerRef.isValid()) return;
-        //if (player.hasPermission(BYPASS_PERMISSION)) return;
+        if (player.hasPermission(BYPASS_PERMISSION)) return;
 
         final int blockX = event.getTargetBlock().getX();
         final int blockY = event.getTargetBlock().getY();
@@ -65,7 +65,7 @@ public class InteractionProtectionSystem extends EntityEventSystem<EntityStore, 
         final List<RegionData> regions = this.regionManager.getApplicableRegions(world.getName(), blockX, blockY, blockZ);
 
         if (regions.isEmpty()) return;
-        //if (this.isSeatingInteraction(event.getBlockType())) return;
+        if (this.isSeatingInteraction(event.getBlockType())) return;
         if (this.isInteractionAllowed(regions, event.getBlockType())) return;
 
         event.setCancelled(true);

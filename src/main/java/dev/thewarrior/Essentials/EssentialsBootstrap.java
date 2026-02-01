@@ -28,7 +28,7 @@ import dev.thewarrior.Essentials.Commands.Warp.SetWarpCommand;
 import dev.thewarrior.Essentials.Commands.Warp.WarpsCommand;
 import dev.thewarrior.Essentials.Events.*;
 import dev.thewarrior.Essentials.Handlers.PlayerChatEventHandler;
-import dev.thewarrior.Essentials.Handlers.PlayerEventHandler;
+import dev.thewarrior.Essentials.Handlers.EssentialsPlayerEventHandler;
 import dev.thewarrior.Essentials.Managers.*;
 import dev.thewarrior.OrionBootstrap;
 
@@ -136,6 +136,7 @@ public class EssentialsBootstrap extends BasePluginModule {
         this.plugin.getEntityStoreRegistry().registerSystem(new BlockPlaceProtectionSystem(this.regionManager));
         this.plugin.getEntityStoreRegistry().registerSystem(new InteractionProtectionSystem(this.regionManager));
         this.plugin.getEntityStoreRegistry().registerSystem(new PickupItemProtectionSystem(this.regionManager));
+        this.plugin.getEntityStoreRegistry().registerSystem(new GlobalBlockBreakProtectionSystem(this.regionManager));
 
         this.regionEntryProtectionSystem = new RegionEntryProtectionSystem(this.regionManager);
 
@@ -143,12 +144,12 @@ public class EssentialsBootstrap extends BasePluginModule {
     }
 
     public void registerEvents() {
-        this.plugin.getEventRegistry().registerGlobal(PlayerConnectEvent.class, event -> PlayerEventHandler.onPlayerConnect(event, this.plugin));
-        this.plugin.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> PlayerEventHandler.onPlayerReady(event, this.plugin));
+        this.plugin.getEventRegistry().registerGlobal(PlayerConnectEvent.class, event -> EssentialsPlayerEventHandler.onPlayerConnect(event, this.plugin));
+        this.plugin.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> EssentialsPlayerEventHandler.onPlayerReady(event, this.plugin));
         this.plugin.getEventRegistry().registerGlobal(PlayerChatEvent.class, event -> PlayerChatEventHandler.onEvent(event, this.plugin));
-        this.plugin.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, event -> PlayerEventHandler.onPlayerDisconnect(event, this.plugin));
+        this.plugin.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, event -> EssentialsPlayerEventHandler.onPlayerDisconnect(event, this.plugin));
 
-        this.plugin.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> PlayerEventHandler.onPlayerAddedToWorld(event, this.plugin));
+        this.plugin.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> EssentialsPlayerEventHandler.onPlayerAddedToWorld(event, this.plugin));
         this.plugin.getEventRegistry().registerGlobal(AllWorldsLoadedEvent.class, _ -> this.pluginConfigManager.syncWorldSpawnProvider());
     }
 }

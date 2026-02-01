@@ -53,7 +53,7 @@ public class PickupItemProtectionSystem extends EntityEventSystem<EntityStore, I
         final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
 
         if (player == null || playerRef == null || !playerRef.isValid()) return;
-        //if (player.hasPermission(BYPASS_PERMISSION)) return;
+        if (player.hasPermission(BYPASS_PERMISSION)) return;
 
         final TransformComponent transformComponent = store.getComponent(ref, TransformComponent.getComponentType());
 
