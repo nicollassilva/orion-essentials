@@ -9,11 +9,13 @@ import com.hypixel.hytale.server.core.modules.entity.component.TransformComponen
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.MiniGames.Gaming.Container.GameArena;
+import dev.thewarrior.MiniGames.Gaming.Enums.GameState;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameType;
 import dev.thewarrior.MiniGames.Gaming.Enums.GameWinnerCondition;
 import dev.thewarrior.MiniGames.Gaming.GameManager;
 import dev.thewarrior.MiniGames.Gaming.Model.Game;
 import dev.thewarrior.MiniGames.Gaming.Player.GamePlayer;
+import dev.thewarrior.MiniGames.Gaming.Player.GamePlayerStats;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
 
 public final class TNTRunGame extends Game {
@@ -30,9 +32,7 @@ public final class TNTRunGame extends Game {
         super.onGameTick();
 
         // mantém seu tick-rate atual
-        if (this.gameTick.get() % ((1_000 / GameManager.TICK_RATE_MS) - 17) != 0) {
-            return;
-        }
+        if (this.state.get() != GameState.RUNNING || this.gameTick.get() % ((1_000 / GameManager.TICK_RATE_MS) - 18) != 0) return;
 
         this.world.execute(() -> {
             for (final GamePlayer gamePlayer : this.players.values()) {
@@ -56,7 +56,7 @@ public final class TNTRunGame extends Game {
                 // Hypixel não quebra bloco enquanto o player está caindo
                 if (movement.getMovementStates().falling) continue;
 
-                handlePlayer(transform.getPosition());
+                handlePlayer(gamePlayer, transform.getPosition());
             }
         });
     }
@@ -65,7 +65,7 @@ public final class TNTRunGame extends Game {
      * Decide exatamente 1 bloco para quebrar (ou nenhum).
      * Nunca quebra mais de 1 por tick.
      */
-    private void handlePlayer(Vector3d pos) {
+    private void handlePlayer(GamePlayer gamePlayer, Vector3d pos) {
 
         final double px = pos.getX();
         final double pz = pos.getZ();
@@ -85,10 +85,11 @@ public final class TNTRunGame extends Game {
         final boolean back  = fracZ < THRESHOLD;
 
         boolean found = false;
+        boolean broke = false;
+
         final CandidateResult result = new CandidateResult(-1, -1, -1, Double.MAX_VALUE);
 
-        // ===== candidatos no nível do pé =====
-        found |= tryCandidate(px, pz, baseX, footY, baseZ, result);
+        found = tryCandidate(px, pz, baseX, footY, baseZ, result);
 
         if (right) found |= tryCandidate(px, pz, baseX + 1, footY, baseZ, result);
         if (left)  found |= tryCandidate(px, pz, baseX - 1, footY, baseZ, result);
@@ -103,12 +104,14 @@ public final class TNTRunGame extends Game {
         // achou → quebra APENAS UM bloco
         if (found) {
             this.world.setBlock(result.x, result.y, result.z, BlockType.EMPTY.getId());
-            return;
+            broke = true;
+        } else if (this.world.getBlock(baseX, belowY, baseZ) != BlockType.EMPTY_ID) {
+            this.world.setBlock(baseX, belowY, baseZ, BlockType.EMPTY.getId());
+            broke = true;
         }
 
-        // ===== fallback abaixo (raro, mas necessário) =====
-        if (this.world.getBlock(baseX, belowY, baseZ) != BlockType.EMPTY_ID) {
-            this.world.setBlock(baseX, belowY, baseZ, BlockType.EMPTY.getId());
+        if(broke) {
+            gamePlayer.addOrUpdateStat(GamePlayerStats.TNT_RUN_DESTROYED_BLOCKS, 1);
         }
     }
 

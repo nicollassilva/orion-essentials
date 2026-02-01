@@ -21,6 +21,7 @@ import dev.thewarrior.MiniGames.Gaming.Enums.GameWinnerCondition;
 import dev.thewarrior.MiniGames.Gaming.Enums.PlayerGameLeaveCause;
 import dev.thewarrior.MiniGames.Gaming.GameManager;
 import dev.thewarrior.MiniGames.Gaming.Player.GamePlayer;
+import dev.thewarrior.MiniGames.Gaming.Player.GamePlayerState;
 import dev.thewarrior.MiniGames.Gaming.Player.Session.PlayerGameSession;
 import dev.thewarrior.MiniGames.Storage.Prefabs.GamePrefabSpawnData;
 import dev.thewarrior.MiniGames.Storage.Settings.GameSettings;
@@ -307,7 +308,11 @@ public class Game {
     }
 
     public void onGameStart() {
-        // Override in subclasses
+        for (final GamePlayer gamePlayer : this.players.values()) {
+            if(!gamePlayer.setState(GamePlayerState.WAITING, GamePlayerState.PLAYING)) {
+                Logger.warning("Failed to set player " + gamePlayer.getId() + " state to PLAYING on game start");
+            }
+        }
     }
 
     public void onGameEnd() {

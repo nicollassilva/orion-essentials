@@ -240,7 +240,6 @@ public class GameManager {
 
         if(game == null) return null;
 
-        // Try to set current game - if fails, player is already in a game
         final boolean gameSet = sessionStarted.trySetCurrentGame(new PlayerCurrentGame(game.getId(), gameType));
 
         if (!gameSet) {

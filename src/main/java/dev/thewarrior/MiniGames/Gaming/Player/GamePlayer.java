@@ -37,7 +37,11 @@ public class GamePlayer {
         return this.state.get();
     }
 
-    public void setState(final GamePlayerState expected, final GamePlayerState state) {
-        this.state.compareAndSet(expected, state);
+    public boolean setState(final GamePlayerState expected, final GamePlayerState state) {
+        return this.state.compareAndSet(expected, state);
+    }
+
+    public void addOrUpdateStat(final GamePlayerStats stat, final int value) {
+        this.stats.merge(stat, value, Integer::sum);
     }
 }
