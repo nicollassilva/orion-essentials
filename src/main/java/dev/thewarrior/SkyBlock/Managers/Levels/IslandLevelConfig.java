@@ -8,4 +8,24 @@ public class IslandLevelConfig {
     private String description;
 
     private double requiredPoints;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getRequiredPoints() {
+        return requiredPoints;
+    }
 }

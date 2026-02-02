@@ -9,23 +9,30 @@ import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredAr
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
-import com.hypixel.hytale.server.core.command.system.pages.CommandListPage;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.SkyBlock.Managers.IslandsManager;
+import dev.thewarrior.SkyBlock.Pages.IslandMenuPage;
 
 import javax.annotation.Nonnull;
 
 public class GameModeCommand extends AbstractPlayerCommand {
     @Nonnull
     private static final Message MESSAGE_COMMANDS_GAMEMODE_ALREADY_IN_MODE_SELF = Message.translation("server.commands.gamemode.alreadyInMode.self");
+
     @Nonnull
     private final RequiredArg<GameMode> gameModeArg = this.withRequiredArg("gamemode", "server.commands.gamemode.gamemode.desc", ArgTypes.GAME_MODE);
 
-    public GameModeCommand() {
+    private final IslandsManager islandsManager;
+
+    public GameModeCommand(final IslandsManager islandsManager) {
         super("gamemode", "server.commands.gamemode.desc");
+
+        this.islandsManager = islandsManager;
+
         this.addAliases("gm");
         this.addUsageVariant(new GameModeCommand.GameModeOtherCommand());
     }
@@ -43,7 +50,7 @@ public class GameModeCommand extends AbstractPlayerCommand {
         assert playerComponent != null;
 
         if(!playerComponent.hasPermission("OP")) {
-            playerComponent.getPageManager().openCustomPage(ref, store, new CommandListPage(playerRef));
+            playerComponent.getPageManager().openCustomPage(ref, store, new IslandMenuPage(playerRef, this.islandsManager));
             return;
         }
 

@@ -194,7 +194,7 @@ public class Game {
 
                 if (playerRef == null || !playerRef.isValid()) continue;
 
-                GameUtil.teleportPlayerToServerSpawn(gamePlayer);
+                GameUtil.teleportPlayerToServerSpawn(playerRef);
             }
 
             // Transition to ENDED state
@@ -444,7 +444,7 @@ public class Game {
 
         // Teleport player back to server spawn (if possible)
         if(playerRef != null && playerRef.isValid()) {
-            GameUtil.teleportPlayerToServerSpawn(gamePlayer);
+            GameUtil.teleportPlayerToServerSpawn(playerRef);
         }
 
         // Handle game state updates

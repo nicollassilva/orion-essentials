@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.MiniGames.Utils.GameUtil;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Pages.Data.IslandMenuPageData;
@@ -35,14 +36,19 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
     }
 
     @Override
-    public void build(@NonNullDecl Ref<EntityStore> ref, @NonNullDecl UICommandBuilder commandBuilder, @NonNullDecl UIEventBuilder eventBuilder, @NonNullDecl Store<EntityStore> store) {
+    public void build(
+            @NonNullDecl Ref<EntityStore> ref,
+            @NonNullDecl UICommandBuilder commandBuilder,
+            @NonNullDecl UIEventBuilder eventBuilder,
+            @NonNullDecl Store<EntityStore> store
+    ) {
         commandBuilder.append("Pages/SkyBlock/IslandMenuPage.ui");
 
 //        this.loadCurrentIsland();
 //
 //        this.updateIslandInfo(commandBuilder);
 //
-//        this.bindMenuEvents(eventBuilder);
+        this.bindMenuEvents(eventBuilder);
     }
 
     private void loadCurrentIsland() {
@@ -75,6 +81,13 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
                 false
         );
 
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#SpawnButton",
+                EventData.of("Action", "TeleportToSpawn"),
+                false
+        );
+
         // Botão Quests
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
@@ -86,32 +99,32 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         // Botão Market
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#MarketButton",
-                EventData.of("Action", "OpenMarket"),
+                "#FriendsButton",
+                EventData.of("Action", "OpenFriends"),
                 false
         );
 
         // Botão Skills
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#SkillsButton",
-                EventData.of("Action", "OpenSkills"),
+                "#EconomyButton",
+                EventData.of("Action", "OpenEconomy"),
                 false
         );
 
         // Botão Perfil
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#ProfileButton",
-                EventData.of("Action", "OpenProfile"),
+                "#RankingButton",
+                EventData.of("Action", "OpenRanking"),
                 false
         );
 
-        // Botão Amigos
+        // Botão Fechar
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#FriendsButton",
-                EventData.of("Action", "OpenFriends"),
+                "#CloseButton",
+                EventData.of("Action", "ClosePage"),
                 false
         );
     }
@@ -124,12 +137,12 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         final boolean refIsValid = playerRef != null && playerRef.isValid();
 
         switch (data.action) {
+            case "TeleportToSpawn" -> this.onTeleportToSpawn(ref, store, playerRef, refIsValid);
             case "OpenIsland" -> this.onOpenIsland(ref, store, playerRef, refIsValid);
             case "OpenQuests" -> this.onOpenQuests(ref, store, playerRef, refIsValid);
-            case "OpenMarket" -> this.onOpenMarket(ref, store, playerRef, refIsValid);
-            case "OpenSkills" -> this.onOpenSkills(ref, store, playerRef, refIsValid);
-            case "OpenProfile" -> this.onOpenProfile(ref, store, playerRef, refIsValid);
             case "OpenFriends" -> this.onOpenFriends(ref, store, playerRef, refIsValid);
+            case "OpenEconomy" -> this.onOpenEconomy(ref, store, playerRef, refIsValid);
+            case "OpenRanking" -> this.onOpenRanking(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
         }
     }
@@ -158,39 +171,36 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         this.onClose(ref, store);
     }
 
-    private void onOpenMarket(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+    private void onOpenEconomy(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
         if (refIsValid) {
             NotificationUtil.sendNotification(
                     playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&dAbrindo mercado...")
+                    ColorUtil.colorize("&dAbrindo economia...")
             );
         }
 
-        // TODO: Abrir página do mercado
+        // TODO: Abrir página da economia
         this.onClose(ref, store);
     }
 
-    private void onOpenSkills(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+    private void onOpenRanking(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
         if (refIsValid) {
             NotificationUtil.sendNotification(
                     playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&cAbrindo skills...")
+                    ColorUtil.colorize("&cAbrindo ranking...")
             );
         }
 
-        // TODO: Abrir página de skills
+        // TODO: Abrir página de ranking
         this.onClose(ref, store);
     }
 
-    private void onOpenProfile(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
-        if (refIsValid) {
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&bAbrindo perfil...")
-            );
-        }
+    private void onTeleportToSpawn(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+        if (!refIsValid) return;
 
-        // TODO: Abrir página de perfil
+        NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&bTeleporting to Spawn..."));
+        GameUtil.teleportPlayerToServerSpawn(playerRef);
+
         this.onClose(ref, store);
     }
 

@@ -42,28 +42,31 @@ $C.@PageOverlay {
             // Informações da ilha no topo
             Group #IslandInfo {
                 LayoutMode: Left;
-                Anchor: (Height: 32);
+                Anchor: (Height: 220);
                 Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
                 Padding: (Horizontal: 12);
 
-                Label #IslandNameLabel {
-                    FlexWeight: 1;
-                    Style: (
-                        ...@InfoLabelStyle,
-                        TextColor: #b7cedd
-                    );
-                    Text: "Sua Ilha";
-                }
+                Group {
+                    LayoutMode: Left;
 
-                Label #IslandLevelLabel {
-                    Anchor: (Width: 70);
-                    Style: (
-                        ...@InfoLabelStyle,
-                        TextColor: #7ed56f,
-                        RenderBold: true,
-                        HorizontalAlignment: End
-                    );
-                    Text: "Nível 1";
+                    Label #IslandNameLabel {
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #b7cedd
+                        );
+                        Text: "Sua Ilha";
+                    }
+
+                    Label #IslandLevelLabel {
+                        Anchor: (Width: 70);
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #7ed56f,
+                            RenderBold: true,
+                            HorizontalAlignment: End
+                        );
+                        Text: "Nível 1";
+                    }
                 }
             }
 
@@ -77,7 +80,7 @@ $C.@PageOverlay {
                 LayoutMode: Left;
                 Anchor: (Bottom: 8);
 
-                Button #CopperButton {
+                Button #SpawnButton {
                     FlexWeight: 1;
                     Anchor: (Right: 8);
                     Style: @MenuButtonStyle;
@@ -102,7 +105,7 @@ $C.@PageOverlay {
                             Style: (
                                 ...@MenuButtonLabelStyle,
                                 FontSize: 12,
-                                TextColor: #ff6b6b
+                                TextColor: #9a9a9a
                             );
                         }
 
@@ -118,7 +121,7 @@ $C.@PageOverlay {
                     }
                 }
 
-                Button #GoldButton {
+                Button #IslandButton {
                     FlexWeight: 1;
                     Style: @MenuButtonStyle;
 
@@ -159,12 +162,11 @@ $C.@PageOverlay {
                 }
             }
 
-            // Grid de botões - Linha 2: Iron e Coal
             Group #Row2 {
                 LayoutMode: Left;
                 Anchor: (Bottom: 8);
 
-                Button #IronButton {
+                Button #QuestsButton {
                     FlexWeight: 1;
                     Anchor: (Right: 8);
                     Style: @MenuButtonStyle;
@@ -189,7 +191,7 @@ $C.@PageOverlay {
                             Style: (
                                 ...@MenuButtonLabelStyle,
                                 FontSize: 12,
-                                TextColor: #4ecdc4
+                                TextColor: #ff6b6b
                             );
                         }
 
@@ -205,7 +207,7 @@ $C.@PageOverlay {
                     }
                 }
 
-                Button #CoalButton {
+                Button #FriendsButton {
                     FlexWeight: 1;
                     Style: @MenuButtonStyle;
 
@@ -229,7 +231,7 @@ $C.@PageOverlay {
                             Style: (
                                 ...@MenuButtonLabelStyle,
                                 FontSize: 12,
-                                TextColor: #a8e6cf
+                                TextColor: #ffb3ba
                             );
                         }
 
@@ -275,7 +277,7 @@ $C.@PageOverlay {
                             Style: (
                                 ...@MenuButtonLabelStyle,
                                 FontSize: 12,
-                                TextColor: #f3d06f
+                                TextColor: #4ecdc4
                             );
                         }
 
@@ -315,7 +317,7 @@ $C.@PageOverlay {
                             Style: (
                                 ...@MenuButtonLabelStyle,
                                 FontSize: 12,
-                                TextColor: #32f366
+                                TextColor: #ffffff
                             );
                         }
 

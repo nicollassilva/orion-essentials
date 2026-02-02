@@ -38,7 +38,7 @@ public class SkyBlockBootstrap extends BasePluginModule {
 
     private void registerCommands() {
         this.plugin.getCommandRegistry().registerCommand(new IslandBaseCommand(this.skyBlockSettingsManager, this.islandsManager, this.plugin.getTeleportManager()));
-        this.plugin.getCommandRegistry().registerCommand(new GameModeCommand());
+        this.plugin.getCommandRegistry().registerCommand(new GameModeCommand(this.islandsManager));
     }
 
     private void registerEvents() {
