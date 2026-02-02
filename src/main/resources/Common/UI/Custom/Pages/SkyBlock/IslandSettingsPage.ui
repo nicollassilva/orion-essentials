@@ -1,0 +1,245 @@
+$C = "../../Common.ui";
+
+// Estilo de botão do menu usando SecondaryButtonStyle do Common
+@MenuButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+$C.@PageOverlay {
+    LayoutMode: Middle;
+
+    $C.@DecoratedContainer {
+        Anchor: (Width: 700, Height: 800);
+
+        #Title {
+            $C.@Title { @Text = "Configurações da Ilha"; }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 15, Top: 10);
+
+            // Nome e Título
+            Group #NameTitleGroup {
+                LayoutMode: Top;
+                Anchor: (Bottom: 10);
+
+                Group {
+                    LayoutMode: Left;
+                    Anchor: (Bottom: 5);
+
+                    Label {
+                        Text: "Nome:";
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #b7cedd,
+                            FontSize: 16,
+                            RenderBold: true
+                        );
+                        Anchor: (Width: 80);
+                    }
+
+                    $C.@TextField #NameInput {
+                        Anchor: (Width: 250);
+                        Value: "";
+                        PlaceholderText: "Nome da ilha";
+                    }
+                }
+
+                Group {
+                    LayoutMode: Left;
+
+                    Label {
+                        Text: "Título:";
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #b7cedd,
+                            FontSize: 16,
+                            RenderBold: true
+                        );
+                        Anchor: (Width: 80);
+                    }
+
+                    $C.@TextField #TitleInput {
+                        Anchor: (Width: 250);
+                        Value: "";
+                        PlaceholderText: "Título de entrada";
+                    }
+                }
+            }
+
+            // Separador
+            $C.@ContentSeparator {
+                Anchor: (Bottom: 10, Top: 10);
+            }
+
+            // Nível e Progresso
+            Group #LevelGroup {
+                LayoutMode: Top;
+                Anchor: (Bottom: 10);
+
+                Label #LevelLabel {
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #7ed56f,
+                        HorizontalAlignment: Center,
+                        FontSize: 18,
+                        RenderBold: true
+                    );
+                    Text: "Nível 1";
+                    Anchor: (Height: 30);
+                }
+
+                Group #ProgressBar {
+                    Anchor: (Height: 20, Width: 400, Top: 10);
+                    Background: #333333;
+
+                    Group #ProgressFill {
+                        Anchor: (Width: 50, Height: 100);
+                        Background: #7ed56f;
+                    }
+                }
+
+                Label #XPNeededLabel {
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #7ed56f,
+                        HorizontalAlignment: Center,
+                        FontSize: 14
+                    );
+                    Text: "Faltam 100 XP para o próximo nível";
+                    Anchor: (Height: 25, Top: 10);
+                }
+            }
+
+            // Última Visita
+            Label #LastVisitLabel {
+                Style: (
+                    ...@InfoLabelStyle,
+                    TextColor: #96a9be,
+                    HorizontalAlignment: Center,
+                    FontSize: 14
+                );
+                Text: "Última visita: Nunca";
+                Anchor: (Height: 25, Top: 10);
+            }
+
+            // Separador
+            $C.@ContentSeparator {
+                Anchor: (Bottom: 10, Top: 10);
+            }
+
+            // Amigos
+            Group #FriendsGroup {
+                LayoutMode: Top;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Amigos";
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd,
+                        HorizontalAlignment: Center,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Anchor: (Height: 30);
+                }
+
+                Group #FriendsList {
+                    LayoutMode: Top;
+                    Anchor: (Height: 100, Top: 10);
+                    Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+                    Padding: (Full: 10);
+
+                    // Placeholder for friends list
+                    Label #FriendsPlaceholder {
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #96a9be,
+                            HorizontalAlignment: Center
+                        );
+                        Text: "Lista de amigos aqui";
+                    }
+                }
+            }
+
+            // Separador
+            $C.@ContentSeparator {
+                Anchor: (Bottom: 10, Top: 10);
+            }
+
+            // Configurações
+            Group #SettingsGroup {
+                LayoutMode: Top;
+
+                Label {
+                    Text: "Configurações";
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd,
+                        HorizontalAlignment: Center,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Anchor: (Height: 30);
+                }
+
+                Group #SettingsList {
+                    LayoutMode: Top;
+                    Anchor: (Height: 100, Top: 10);
+                    Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+                    Padding: (Full: 10);
+
+                    // Placeholder for settings
+                    Label #SettingsPlaceholder {
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #96a9be,
+                            HorizontalAlignment: Center
+                        );
+                        Text: "Configurações da ilha aqui";
+                    }
+                }
+            }
+
+            // Separador antes das ações
+            $C.@ContentSeparator {
+                Anchor: (Bottom: 10, Top: 10);
+            }
+
+            // Botões de ação no rodapé
+            Group #ActionButtons {
+                LayoutMode: Left;
+                Anchor: (Height: 40);
+
+                $C.@SecondaryTextButton #SaveButton {
+                    @Text = "SALVAR";
+                    FlexWeight: 1;
+                    Anchor: (Right: 8, Height: 40);
+                }
+
+                $C.@SecondaryTextButton #TeleportButton {
+                    @Text = "TELEPORTAR";
+                    FlexWeight: 1;
+                    Anchor: (Right: 8, Height: 40);
+                }
+
+                $C.@TertiaryTextButton #CloseButtonAction {
+                    @Text = "FECHAR";
+                    Anchor: (Width: 100, Height: 40);
+                }
+            }
+        }
+    }
+}

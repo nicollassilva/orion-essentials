@@ -9,17 +9,20 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Pages.IslandMenuPage;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class IslandMenuCommand extends AbstractPlayerCommand {
     private final IslandsManager islandsManager;
+    private final IslandLevelManager islandLevelManager;
 
-    public IslandMenuCommand(final IslandsManager islandsManager) {
+    public IslandMenuCommand(final IslandsManager islandsManager, final IslandLevelManager islandLevelManager) {
         super("menu", "Abre o menu principal da ilha");
 
         this.islandsManager = islandsManager;
+        this.islandLevelManager = islandLevelManager;
 
         this.addAliases("m", "painel");
     }
@@ -39,7 +42,7 @@ public class IslandMenuCommand extends AbstractPlayerCommand {
             return;
         }
 
-        final IslandMenuPage menuPage = new IslandMenuPage(playerRef, this.islandsManager);
+        final IslandMenuPage menuPage = new IslandMenuPage(playerRef, this.islandsManager, this.islandLevelManager);
 
         player.getPageManager().openCustomPage(ref, store, menuPage);
     }

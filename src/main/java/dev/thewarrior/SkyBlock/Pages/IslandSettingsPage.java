@@ -1,0 +1,158 @@
+package dev.thewarrior.SkyBlock.Pages;
+
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.protocol.packets.interface_.Page;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
+import com.hypixel.hytale.server.core.ui.builder.EventData;
+import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
+import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
+import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
+import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
+import dev.thewarrior.SkyBlock.Managers.IslandsManager;
+import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelConfig;
+import dev.thewarrior.SkyBlock.Pages.Data.IslandSettingsPageData;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+
+import javax.annotation.Nonnull;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPageData> {
+    private final IslandsManager islandsManager;
+    private final IslandLevelManager islandLevelManager;
+    private final PlayerRef playerRef;
+    private final IslandData islandData;
+
+    public IslandSettingsPage(@Nonnull PlayerRef playerRef, IslandData islandData, IslandsManager islandsManager, IslandLevelManager islandLevelManager) {
+        super(playerRef, CustomPageLifetime.CanDismiss, IslandSettingsPageData.CODEC);
+
+        this.playerRef = playerRef;
+        this.islandData = islandData;
+        this.islandsManager = islandsManager;
+        this.islandLevelManager = islandLevelManager;
+    }
+
+    @Override
+    public void build(
+            @NonNullDecl Ref<EntityStore> ref,
+            @NonNullDecl UICommandBuilder commandBuilder,
+            @NonNullDecl UIEventBuilder eventBuilder,
+            @NonNullDecl Store<EntityStore> store
+    ) {
+        commandBuilder.append("Pages/SkyBlock/IslandSettingsPage.ui");
+
+        //this.updateIslandInfo(commandBuilder);
+
+        //this.bindMenuEvents(eventBuilder);
+    }
+
+    private void updateIslandInfo(UICommandBuilder commandBuilder) {
+        // Nome e Título
+        commandBuilder.set("#NameInput.Value", this.islandData.getIslandName());
+        commandBuilder.set("#TitleInput.Value", this.islandData.getEnterTitle() != null ? this.islandData.getEnterTitle() : "");
+
+        // Nível
+        int level = this.islandData.getLevel();
+        commandBuilder.set("#LevelLabel.Text", "Nível " + level);
+
+        // Progress Bar
+        double currentXP = this.islandData.getExperience();
+        List<IslandLevelConfig> levels = this.islandLevelManager.getData().getLevels();
+        double nextXP = levels.stream().filter(l -> l.getLevel() == level + 1).findFirst().map(IslandLevelConfig::getRequiredPoints).orElse(currentXP);
+        double progress = nextXP > 0 ? Math.min(currentXP / nextXP, 1.0) : 1.0;
+        commandBuilder.set("#ProgressFill.Anchor", "(Width: " + (int)(progress * 100) + "%, Height: 100%)");
+        commandBuilder.set("#XPNeededLabel.Text", "Faltam " + (int)(nextXP - currentXP) + " XP para o próximo nível");
+
+        // Última Visita
+        String lastVisit = "Nunca";
+        if (this.islandData.getLastVisitData() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            lastVisit = sdf.format(this.islandData.getLastVisitData().getTime());
+        }
+        commandBuilder.set("#LastVisitLabel.Text", "Última visita: " + lastVisit);
+
+        // Amigos (placeholder)
+        commandBuilder.set("#FriendsPlaceholder.Text", "Amigos: " + this.islandData.getFriends().size());
+
+        // Settings (placeholder)
+        commandBuilder.set("#SettingsPlaceholder.Text", "Configurações aqui");
+    }
+
+    private void bindMenuEvents(UIEventBuilder eventBuilder) {
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#SaveButton",
+                EventData.of("Action", "SaveChanges"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#TeleportButton",
+                EventData.of("Action", "TeleportToIsland"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#CloseButtonAction",
+                EventData.of("Action", "ClosePage"),
+                false
+        );
+    }
+
+    @Override
+    public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull IslandSettingsPageData data) {
+        System.out.println("Handling IslandSettingsPageData event: " + data.action);
+
+        final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+        final boolean refIsValid = playerRef != null && playerRef.isValid();
+
+        switch (data.action) {
+            case "SaveChanges" -> this.onSaveChanges(ref, store, playerRef, refIsValid, data);
+            case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
+            default -> this.onClose(ref, store);
+        }
+    }
+
+    private void onSaveChanges(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid, IslandSettingsPageData data) {
+        if (refIsValid) {
+            // Update island data
+            this.islandData.setIslandName(data.newName);
+            this.islandData.setEnterTitle(data.newTitle);
+            this.islandsManager.save(this.islandData);
+
+            NotificationUtil.sendNotification(
+                    playerRef.getPacketHandler(),
+                    ColorUtil.colorize("&aConfigurações salvas!")
+            );
+        }
+    }
+
+    private void onTeleportToIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+        if (refIsValid) {
+            NotificationUtil.sendNotification(
+                    playerRef.getPacketHandler(),
+                    ColorUtil.colorize("&aTeleportando para a ilha...")
+            );
+            // TODO: Teleport logic
+        }
+        this.onClose(ref, store);
+    }
+
+    public void onClose(Ref<EntityStore> ref, Store<EntityStore> store) {
+        Player player = store.getComponent(ref, Player.getComponentType());
+
+        if (player == null) return;
+
+        player.getPageManager().setPage(ref, store, Page.None);
+    }
+}

@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
+import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Pages.Data.PlayerIslandsPageData;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -24,13 +25,15 @@ import java.util.List;
 
 public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPageData> {
     private final IslandsManager islandsManager;
+    private final IslandLevelManager islandLevelManager;
     private final PlayerRef playerRef;
 
-    public PlayerIslandsPage(@Nonnull PlayerRef playerRef, IslandsManager islandsManager) {
+    public PlayerIslandsPage(@Nonnull PlayerRef playerRef, IslandsManager islandsManager, IslandLevelManager islandLevelManager) {
         super(playerRef, CustomPageLifetime.CanDismiss, PlayerIslandsPageData.CODEC);
 
         this.playerRef = playerRef;
         this.islandsManager = islandsManager;
+        this.islandLevelManager = islandLevelManager;
     }
 
     @Override
@@ -81,39 +84,25 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
         final boolean refIsValid = playerRef != null && playerRef.isValid();
 
         switch (data.action) {
-            case "SelectIsland" -> this.onSelectIsland(ref, store, playerRef, refIsValid, data.islandIndex);
+            case "SelectIsland" -> this.onSelectIsland(ref, store, playerRef, refIsValid, Integer.parseInt(data.islandIndex));
             case "CreateIsland" -> this.onCreateIsland(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
         }
     }
 
-    private void onSelectIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid, String islandIndex) {
+    private void onSelectIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid, int islandIndex) {
         if (!refIsValid) return;
-
-        int islandIndexInt;
-        try {
-            islandIndexInt = Integer.parseInt(islandIndex);
-        } catch (NumberFormatException e) {
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&cÍndice de ilha inválido.")
-            );
-            return;
-        }
 
         List<IslandData> islands = this.islandsManager.getIslandsForPlayer(playerRef.getUuid());
 
-        if (islandIndexInt > 0 && islandIndexInt <= islands.size()) {
-            IslandData selectedIsland = islands.get(islandIndexInt - 1);
+        if (islandIndex > 0 && islandIndex <= islands.size()) {
+            IslandData selectedIsland = islands.get(islandIndex - 1);
 
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&aTeleportando para " + selectedIsland.getIslandName() + "...")
-            );
+            Player player = store.getComponent(ref, Player.getComponentType());
 
-            // TODO: Teleport to the island
-            // For now, just close
-            this.onClose(ref, store);
+            if (player != null) {
+                player.getPageManager().openCustomPage(ref, store, new IslandSettingsPage(playerRef, selectedIsland, this.islandsManager, this.islandLevelManager));
+            }
         }
     }
 

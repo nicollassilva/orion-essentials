@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
 import dev.thewarrior.Essentials.Managers.TeleportManager;
 import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.Essentials.Utils.StringUtils;
+import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Managers.SkyBlockSettingsManager;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -16,15 +17,16 @@ public class IslandBaseCommand extends CommandBase {
     public IslandBaseCommand(
             final SkyBlockSettingsManager skyBlockSettingsManager,
             final IslandsManager islandsManager,
-            final TeleportManager teleportManager
-            ) {
+            final TeleportManager teleportManager,
+            final IslandLevelManager islandLevelManager
+    ) {
         super("island", "Comando base para gerenciar ilhas no SkyBlock.");
 
         this.addAliases("is", "ilha");
 
         this.addSubCommand(new IslandCreateCommand(skyBlockSettingsManager, islandsManager));
         this.addSubCommand(new IslandTeleportCommand(islandsManager, teleportManager));
-        this.addSubCommand(new IslandMenuCommand(islandsManager));
+        this.addSubCommand(new IslandMenuCommand(islandsManager, islandLevelManager));
 
         this.requirePermission(PermissionUtil.getPermission("skyblock.use"));
     }

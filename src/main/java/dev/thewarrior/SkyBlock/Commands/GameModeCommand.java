@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Pages.IslandMenuPage;
 
@@ -27,11 +28,13 @@ public class GameModeCommand extends AbstractPlayerCommand {
     private final RequiredArg<GameMode> gameModeArg = this.withRequiredArg("gamemode", "server.commands.gamemode.gamemode.desc", ArgTypes.GAME_MODE);
 
     private final IslandsManager islandsManager;
+    private final IslandLevelManager islandLevelManager;
 
-    public GameModeCommand(final IslandsManager islandsManager) {
+    public GameModeCommand(final IslandsManager islandsManager, final IslandLevelManager islandLevelManager) {
         super("gamemode", "server.commands.gamemode.desc");
 
         this.islandsManager = islandsManager;
+        this.islandLevelManager = islandLevelManager;
 
         this.addAliases("gm");
         this.addUsageVariant(new GameModeCommand.GameModeOtherCommand());
@@ -50,7 +53,7 @@ public class GameModeCommand extends AbstractPlayerCommand {
         assert playerComponent != null;
 
         if(!playerComponent.hasPermission("OP")) {
-            playerComponent.getPageManager().openCustomPage(ref, store, new IslandMenuPage(playerRef, this.islandsManager));
+            playerComponent.getPageManager().openCustomPage(ref, store, new IslandMenuPage(playerRef, this.islandsManager, this.islandLevelManager));
             return;
         }
 

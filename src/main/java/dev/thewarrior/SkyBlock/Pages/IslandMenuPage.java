@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.MiniGames.Utils.GameUtil;
+import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Pages.Data.IslandMenuPageData;
@@ -25,15 +26,18 @@ import javax.annotation.Nonnull;
 
 public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> {
     private final IslandsManager islandsManager;
+    private final IslandLevelManager islandLevelManager;
+
     private final PlayerRef playerRef;
 
     private IslandData currentIsland;
 
-    public IslandMenuPage(@Nonnull PlayerRef playerRef, IslandsManager islandsManager) {
+    public IslandMenuPage(@Nonnull PlayerRef playerRef, IslandsManager islandsManager, IslandLevelManager islandLevelManager) {
         super(playerRef, CustomPageLifetime.CanDismiss, IslandMenuPageData.CODEC);
 
         this.playerRef = playerRef;
         this.islandsManager = islandsManager;
+        this.islandLevelManager = islandLevelManager;
     }
 
     @Override
@@ -181,7 +185,7 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         Player player = store.getComponent(ref, Player.getComponentType());
 
         if (player != null) {
-            player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(playerRef, this.islandsManager));
+            player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(playerRef, this.islandsManager, this.islandLevelManager));
         }
     }
 
