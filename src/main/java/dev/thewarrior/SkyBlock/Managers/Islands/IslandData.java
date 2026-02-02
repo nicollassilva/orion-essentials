@@ -1,6 +1,10 @@
 package dev.thewarrior.SkyBlock.Managers.Islands;
 
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandFriendData;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandLastVisitData;
+import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandSettings;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -19,7 +23,11 @@ public class IslandData {
 
     private IslandLastVisitData lastVisitData;
 
-    private transient AtomicBoolean needsUpdate = new AtomicBoolean(false);
+    private final transient AtomicBoolean needsUpdate = new AtomicBoolean(false);
+
+    private IslandSettings islandSettings = new IslandSettings();
+
+    private ObjectArraySet<IslandFriendData> friends = new ObjectArraySet<>();
 
     public IslandData(UUID ownerId, String worldName) {
         this.id = UUID.randomUUID();
@@ -27,6 +35,10 @@ public class IslandData {
         this.ownerId = ownerId;
         this.worldName = worldName;
         this.islandName = "Default";
+
+        if(!worldName.endsWith("1")) {
+            this.islandName += worldName.substring(worldName.length() - 1);
+        }
 
         this.needsUpdate.set(true);
     }
@@ -81,6 +93,38 @@ public class IslandData {
 
     public void setLastVisitData(IslandLastVisitData lastVisitData) {
         this.lastVisitData = lastVisitData;
+        this.needsUpdate.set(true);
+    }
+
+    public ObjectArraySet<IslandFriendData> getFriends() {
+        return this.friends;
+    }
+
+    public boolean isFriend(UUID friendUuid) {
+        if(this.friends == null) return false;
+
+        for (IslandFriendData friendData : this.friends) {
+            if(friendData.getUuid().equals(friendUuid)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void addFriend(PlayerRef playerRef, String nickname) {
+        if(this.isFriend(playerRef.getUuid())) return;
+
+        this.friends.add(new IslandFriendData(playerRef.getUuid(), nickname));
+
+        this.needsUpdate.set(true);
+    }
+
+    public void removeFriend(UUID friendUuid) {
+        if(this.friends == null) return;
+
+        this.friends.removeIf(friendData -> friendData.getUuid().equals(friendUuid));
+
         this.needsUpdate.set(true);
     }
 

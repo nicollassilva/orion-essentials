@@ -24,6 +24,7 @@ public class IslandBaseCommand extends CommandBase {
 
         this.addSubCommand(new IslandCreateCommand(skyBlockSettingsManager, islandsManager));
         this.addSubCommand(new IslandTeleportCommand(islandsManager, teleportManager));
+        this.addSubCommand(new IslandMenuCommand(islandsManager));
 
         this.requirePermission(PermissionUtil.getPermission("skyblock.use"));
     }
@@ -34,7 +35,8 @@ public class IslandBaseCommand extends CommandBase {
                 Message.raw("\n- Como usar o comando ").color(Color.GREEN), Message.raw("/ilha").color(Color.WHITE).bold(true), Message.raw(":\n").color(Color.GREEN),
                 Message.raw("Comando para gerenciar sua ilha no SkyBlock.\n\n").color(Color.LIGHT_GRAY).italic(true),
                 Message.raw("/ilha ").color(Color.WHITE).bold(true), Message.raw("iniciar").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Cria uma nova ilha\n", 8, " ")),
-                Message.raw("/ilha ").color(Color.WHITE).bold(true), Message.raw("tp [name?] [owner?]").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Teleportar para ilha\n", 8, " "))
+                Message.raw("/ilha ").color(Color.WHITE).bold(true), Message.raw("tp [name?] [owner?]").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Teleportar para ilha\n", 8, " ")),
+                Message.raw("/ilha ").color(Color.WHITE).bold(true), Message.raw("menu").color(Color.YELLOW).bold(true), Message.raw(StringUtils.padLeft("Abre o menu da ilha\n", 8, " "))
         ));
     }
 }

@@ -1,0 +1,256 @@
+$C = "../../Common.ui";
+
+@MenuButtonStyle = ButtonStyle(
+    Default: (Background: #1a2332),
+    Hovered: (Background: #2a3a52),
+    Pressed: (Background: #0f1620),
+    Sounds: $C.@ButtonSounds
+);
+
+$C.@PageOverlay {
+    LayoutMode: Middle;
+
+    $C.@DecoratedContainer {
+        Anchor: (Width: 500, Height: 700);
+
+        #Title {
+            $C.@Title { @Text = "Menu da Ilha"; }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Anchor: (Bottom: 20);
+
+            Group #IslandInfo {
+                LayoutMode: Top;
+                Anchor: (Height: 40);
+                Background: #000000(0.45);
+
+                Label #IslandNameLabel {
+                    Padding: (Left: 15);
+                    FlexWeight: 1;
+                    Style: (
+                        FontSize: 14,
+                        TextColor: #b6c9de,
+                        VerticalAlignment: Center
+                    );
+                }
+
+                Label #IslandLevelLabel {
+                    Padding: (Right: 15);
+                    Anchor: (Width: 100);
+                    Style: (
+                        FontSize: 14,
+                        TextColor: #28a745,
+                        RenderBold: true,
+                        VerticalAlignment: Center
+                    );
+                }
+            }
+
+            Group #Row1 {
+                LayoutMode: Left;
+                Anchor: (Height: 100, Bottom: 15);
+
+                Button #IslandButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 10, Height: 100);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 15);
+
+                        Label #IslandIcon {
+                            Text: "ILHA";
+                            Anchor: (Height: 40);
+                            Style: (
+                                FontSize: 28,
+                                HorizontalAlignment: Center
+                            );
+                        }
+
+                        Label #IslandLabel {
+                            Text: "Ilha";
+                            Anchor: (Height: 30);
+                            Style: (
+                                FontSize: 16,
+                                TextColor: #FFFFFF,
+                                RenderBold: true,
+                                HorizontalAlignment: Center
+                            );
+                        }
+                    }
+                }
+
+                Button #QuestsButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 10, Height: 100);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 15);
+
+                        Label #QuestsIcon {
+                            Text: "QS";
+                            Anchor: (Height: 40);
+                            Style: (
+                                FontSize: 28,
+                                HorizontalAlignment: Center
+                            );
+                        }
+
+                        Label #QuestsLabel {
+                            Text: "Quests";
+                            Anchor: (Height: 30);
+                            Style: (
+                                FontSize: 16,
+                                TextColor: #FFFFFF,
+                                RenderBold: true,
+                                HorizontalAlignment: Center
+                            );
+                        }
+                    }
+                }
+            }
+
+            Group #Row2 {
+                LayoutMode: Left;
+                Anchor: (Height: 100, Bottom: 15);
+
+                Button #MarketButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 10, Height: 100);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 15);
+
+                        Group {
+                            Padding: (Full: 5);
+                            Anchor: (Width: 50, Height: 50);
+                            Background: #000000(0.15);
+
+                            ItemIcon #MarketIcon {
+                                ItemId: "Ore_Gold_Stone";
+                                TooltipText: "Market";
+                            }
+                        }
+
+                        Label #MarketLabel {
+                            Text: "Market";
+                            Anchor: (Height: 30, Top: 5);
+                            Style: (
+                                FontSize: 16,
+                                TextColor: #FFFFFF,
+                                RenderBold: true,
+                                HorizontalAlignment: Center
+                            );
+                        }
+                    }
+                }
+
+                Button #SkillsButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 10, Height: 100);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 15);
+
+                        Label #SkillsIcon {
+                            Text: "SKS";
+                            Anchor: (Height: 40);
+                            Style: (
+                                FontSize: 28,
+                                HorizontalAlignment: Center
+                            );
+                        }
+
+                        Label #SkillsLabel {
+                            Text: "Skills";
+                            Anchor: (Height: 30);
+                            Style: (
+                                FontSize: 16,
+                                TextColor: #FFFFFF,
+                                RenderBold: true,
+                                HorizontalAlignment: Center
+                            );
+                        }
+                    }
+                }
+            }
+
+            Group #Row3 {
+                LayoutMode: Left;
+                Anchor: (Height: 100);
+
+                Button #ProfileButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 10, Height: 100);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 15);
+
+                        Label #ProfileIcon {
+                            Text: "PF";
+                            Anchor: (Height: 40);
+                            Style: (
+                                FontSize: 28,
+                                HorizontalAlignment: Center
+                            );
+                        }
+
+                        Label #ProfileLabel {
+                            Text: "Perfil";
+                            Anchor: (Height: 30);
+                            Style: (
+                                FontSize: 16,
+                                TextColor: #FFFFFF,
+                                RenderBold: true,
+                                HorizontalAlignment: Center
+                            );
+                        }
+                    }
+                }
+
+                Button #FriendsButton {
+                    FlexWeight: 1;
+                    Anchor: (Height: 100);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 15);
+
+                        Label #FriendsIcon {
+                            Text: "AMGS";
+                            Anchor: (Height: 40);
+                            Style: (
+                                FontSize: 28,
+                                HorizontalAlignment: Center
+                            );
+                        }
+
+                        Label #FriendsLabel {
+                            Text: "Amigos";
+                            Anchor: (Height: 30);
+                            Style: (
+                                FontSize: 16,
+                                TextColor: #FFFFFF,
+                                RenderBold: true,
+                                HorizontalAlignment: Center
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
