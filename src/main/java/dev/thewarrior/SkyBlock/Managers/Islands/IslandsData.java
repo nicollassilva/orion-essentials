@@ -47,6 +47,18 @@ public class IslandsData {
         return list;
     }
 
+    public List<IslandData> getIslandsForPlayer(final UUID ownerId) {
+        final List<IslandData> list = new ObjectArrayList<>();
+
+        for (final IslandData island : this.islands.values()) {
+            if(island.getOwnerId().equals(ownerId)) {
+                list.add(island);
+            }
+        }
+
+        return list;
+    }
+
     public int getIslandCountForPlayer(final PlayerRef ref) {
         int count = 0;
 

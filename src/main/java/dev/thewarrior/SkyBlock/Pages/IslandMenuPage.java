@@ -176,15 +176,13 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
     }
 
     private void onOpenIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
-        if (refIsValid) {
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&aAbrindo configurações da ilha...")
-            );
-        }
+        if (!refIsValid) return;
 
-        // TODO: Abrir página de configurações da ilha
-        this.onClose(ref, store);
+        Player player = store.getComponent(ref, Player.getComponentType());
+
+        if (player != null) {
+            player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(playerRef, this.islandsManager));
+        }
     }
 
     private void onOpenQuests(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {

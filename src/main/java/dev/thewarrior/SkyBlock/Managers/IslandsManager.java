@@ -10,6 +10,7 @@ import dev.thewarrior.SkyBlock.Managers.Islands.IslandsData;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -73,6 +74,10 @@ public class IslandsManager extends StorableManager<IslandsData> {
 
     public IslandData getIslandByNameAndOwner(final String islandName, final UUID ownerName) {
         return this.data.getIslandByNameAndOwner(islandName, ownerName);
+    }
+
+    public List<IslandData> getIslandsForPlayer(final UUID ownerId) {
+        return this.data.getIslandsForPlayer(ownerId);
     }
 
     public void save(final IslandData data) {
