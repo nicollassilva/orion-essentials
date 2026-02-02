@@ -1,256 +1,255 @@
 $C = "../../Common.ui";
 
+// Estilo de botão do menu usando SecondaryButtonStyle do Common
 @MenuButtonStyle = ButtonStyle(
-    Default: (Background: #1a2332),
-    Hovered: (Background: #2a3a52),
-    Pressed: (Background: #0f1620),
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
     Sounds: $C.@ButtonSounds
+);
+
+@MenuButtonLabelStyle = LabelStyle(
+    FontSize: 14,
+    TextColor: #bfcdd5,
+    RenderBold: true,
+    RenderUppercase: true,
+    HorizontalAlignment: Center,
+    VerticalAlignment: Center
+);
+
+@MenuIconLabelStyle = LabelStyle(
+    FontSize: 24,
+    TextColor: #96a9be,
+    HorizontalAlignment: Center,
+    VerticalAlignment: Center
+);
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
 );
 
 $C.@PageOverlay {
     LayoutMode: Middle;
 
     $C.@DecoratedContainer {
-        Anchor: (Width: 500, Height: 700);
+        @CloseButton = true;
+        Anchor: (Width: 420, Height: 480);
 
         #Title {
-            $C.@Title { @Text = "Menu da Ilha"; }
+            $C.@Title { @Text = "MENU DA ILHA"; }
         }
 
         #Content {
             LayoutMode: Top;
-            Anchor: (Bottom: 20);
+            Padding: (Full: 17, Top: 12);
 
+            // Informações da ilha no topo
             Group #IslandInfo {
-                LayoutMode: Top;
-                Anchor: (Height: 40);
-                Background: #000000(0.45);
+                LayoutMode: Left;
+                Anchor: (Height: 36);
+                Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+                Padding: (Horizontal: 12);
 
                 Label #IslandNameLabel {
-                    Padding: (Left: 15);
                     FlexWeight: 1;
                     Style: (
-                        FontSize: 14,
-                        TextColor: #b6c9de,
-                        VerticalAlignment: Center
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd
                     );
+                    Text: "Sua Ilha";
                 }
 
                 Label #IslandLevelLabel {
-                    Padding: (Right: 15);
-                    Anchor: (Width: 100);
+                    Anchor: (Width: 80);
                     Style: (
-                        FontSize: 14,
-                        TextColor: #28a745,
+                        ...@InfoLabelStyle,
+                        TextColor: #7ed56f,
                         RenderBold: true,
-                        VerticalAlignment: Center
+                        HorizontalAlignment: End
                     );
+                    Text: "Nível 1";
                 }
             }
 
+            // Separador
+            $C.@PanelSeparatorFancy {
+                @Anchor = (Top: 12, Bottom: 12);
+            }
+
+            // Grid de botões - Linha 1
             Group #Row1 {
                 LayoutMode: Left;
-                Anchor: (Height: 100, Bottom: 15);
+                Anchor: (Height: 90, Bottom: 10);
 
                 Button #IslandButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 10, Height: 100);
+                    Anchor: (Right: 8, Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 15);
+                        Padding: (Top: 18);
 
-                        Label #IslandIcon {
-                            Text: "ILHA";
-                            Anchor: (Height: 40);
-                            Style: (
-                                FontSize: 28,
-                                HorizontalAlignment: Center
-                            );
+                        Group {
+                            Text: "🏝";
+                            Anchor: (Height: 32);
+                            Style: @MenuIconLabelStyle;
                         }
 
-                        Label #IslandLabel {
-                            Text: "Ilha";
-                            Anchor: (Height: 30);
-                            Style: (
-                                FontSize: 16,
-                                TextColor: #FFFFFF,
-                                RenderBold: true,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "ILHA";
+                            Anchor: (Height: 28, Top: 4);
+                            Style: @MenuButtonLabelStyle;
                         }
                     }
                 }
 
                 Button #QuestsButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 10, Height: 100);
+                    Anchor: (Right: 8, Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 15);
+                        Padding: (Top: 18);
 
-                        Label #QuestsIcon {
-                            Text: "QS";
-                            Anchor: (Height: 40);
-                            Style: (
-                                FontSize: 28,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "📜";
+                            Anchor: (Height: 32);
+                            Style: @MenuIconLabelStyle;
                         }
 
-                        Label #QuestsLabel {
-                            Text: "Quests";
-                            Anchor: (Height: 30);
-                            Style: (
-                                FontSize: 16,
-                                TextColor: #FFFFFF,
-                                RenderBold: true,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "QUESTS";
+                            Anchor: (Height: 28, Top: 4);
+                            Style: @MenuButtonLabelStyle;
                         }
                     }
                 }
-            }
-
-            Group #Row2 {
-                LayoutMode: Left;
-                Anchor: (Height: 100, Bottom: 15);
 
                 Button #MarketButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 10, Height: 100);
+                    Anchor: (Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 15);
+                        Padding: (Top: 18);
 
-                        Group {
-                            Padding: (Full: 5);
-                            Anchor: (Width: 50, Height: 50);
-                            Background: #000000(0.15);
-
-                            ItemIcon #MarketIcon {
-                                ItemId: "Ore_Gold_Stone";
-                                TooltipText: "Market";
-                            }
+                        Label {
+                            Text: "💰";
+                            Anchor: (Height: 32);
+                            Style: @MenuIconLabelStyle;
                         }
 
-                        Label #MarketLabel {
-                            Text: "Market";
-                            Anchor: (Height: 30, Top: 5);
-                            Style: (
-                                FontSize: 16,
-                                TextColor: #FFFFFF,
-                                RenderBold: true,
-                                HorizontalAlignment: Center
-                            );
-                        }
-                    }
-                }
-
-                Button #SkillsButton {
-                    FlexWeight: 1;
-                    Anchor: (Right: 10, Height: 100);
-                    Style: @MenuButtonStyle;
-
-                    Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 15);
-
-                        Label #SkillsIcon {
-                            Text: "SKS";
-                            Anchor: (Height: 40);
-                            Style: (
-                                FontSize: 28,
-                                HorizontalAlignment: Center
-                            );
-                        }
-
-                        Label #SkillsLabel {
-                            Text: "Skills";
-                            Anchor: (Height: 30);
-                            Style: (
-                                FontSize: 16,
-                                TextColor: #FFFFFF,
-                                RenderBold: true,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "MARKET";
+                            Anchor: (Height: 28, Top: 4);
+                            Style: @MenuButtonLabelStyle;
                         }
                     }
                 }
             }
 
-            Group #Row3 {
+            // Grid de botões - Linha 2
+            Group #Row2 {
                 LayoutMode: Left;
-                Anchor: (Height: 100);
+                Anchor: (Height: 90, Bottom: 10);
 
-                Button #ProfileButton {
+                Button #SkillsButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 10, Height: 100);
+                    Anchor: (Right: 8, Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 15);
+                        Padding: (Top: 18);
 
-                        Label #ProfileIcon {
-                            Text: "PF";
-                            Anchor: (Height: 40);
-                            Style: (
-                                FontSize: 28,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "⚔";
+                            Anchor: (Height: 32);
+                            Style: @MenuIconLabelStyle;
                         }
 
-                        Label #ProfileLabel {
-                            Text: "Perfil";
-                            Anchor: (Height: 30);
-                            Style: (
-                                FontSize: 16,
-                                TextColor: #FFFFFF,
-                                RenderBold: true,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "SKILLS";
+                            Anchor: (Height: 28, Top: 4);
+                            Style: @MenuButtonLabelStyle;
+                        }
+                    }
+                }
+
+                Button #ProfileButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 8, Height: 90);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 18);
+
+                        Label {
+                            Text: "👤";
+                            Anchor: (Height: 32);
+                            Style: @MenuIconLabelStyle;
+                        }
+
+                        Label {
+                            Text: "PERFIL";
+                            Anchor: (Height: 28, Top: 4);
+                            Style: @MenuButtonLabelStyle;
                         }
                     }
                 }
 
                 Button #FriendsButton {
                     FlexWeight: 1;
-                    Anchor: (Height: 100);
+                    Anchor: (Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 15);
+                        Padding: (Top: 18);
 
-                        Label #FriendsIcon {
-                            Text: "AMGS";
-                            Anchor: (Height: 40);
-                            Style: (
-                                FontSize: 28,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "👥";
+                            Anchor: (Height: 32);
+                            Style: @MenuIconLabelStyle;
                         }
 
-                        Label #FriendsLabel {
-                            Text: "Amigos";
-                            Anchor: (Height: 30);
-                            Style: (
-                                FontSize: 16,
-                                TextColor: #FFFFFF,
-                                RenderBold: true,
-                                HorizontalAlignment: Center
-                            );
+                        Label {
+                            Text: "AMIGOS";
+                            Anchor: (Height: 28, Top: 4);
+                            Style: @MenuButtonLabelStyle;
                         }
                     }
+                }
+            }
+
+            // Separador antes das ações
+            $C.@ContentSeparator {
+                @Anchor = (Top: 8, Bottom: 12);
+            }
+
+            // Botões de ação no rodapé
+            Group #ActionButtons {
+                LayoutMode: Left;
+                Anchor: (Height: 44);
+
+                $C.@SecondaryTextButton #TeleportButton {
+                    @Text = "TELEPORTAR";
+                    FlexWeight: 1;
+                    Anchor: (Right: 8, Height: 44);
+                }
+
+                $C.@TertiaryTextButton #SettingsButton {
+                    @Text = "CONFIG";
+                    Anchor: (Width: 150, Height: 44);
                 }
             }
         }
     }
 }
-
