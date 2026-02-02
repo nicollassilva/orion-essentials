@@ -108,6 +108,13 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
+                "#SkillsButton",
+                EventData.of("Action", "OpenSkills"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
                 "#FriendsButton",
                 EventData.of("Action", "OpenFriends"),
                 false
@@ -143,18 +150,20 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         final boolean refIsValid = playerRef != null && playerRef.isValid();
 
         switch (data.action) {
-            case "OpenLevelUpInfo" -> this.onLevelUpInfo(ref, store, playerRef, refIsValid);
+            case "OpenLevelUpInfo" -> this.onOpenLevelUpInfo(ref, store, playerRef, refIsValid);
             case "TeleportToSpawn" -> this.onTeleportToSpawn(ref, store, playerRef, refIsValid);
             case "OpenIsland" -> this.onOpenIsland(ref, store, playerRef, refIsValid);
             case "OpenQuests" -> this.onOpenQuests(ref, store, playerRef, refIsValid);
+            case "OpenSkills" -> this.onOpenSkills(ref, store, playerRef, refIsValid);
             case "OpenFriends" -> this.onOpenFriends(ref, store, playerRef, refIsValid);
             case "OpenEconomy" -> this.onOpenEconomy(ref, store, playerRef, refIsValid);
+            case "MarketButton" -> this.onOpenMarket(ref, store, playerRef, refIsValid);
             case "OpenRanking" -> this.onOpenRanking(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
         }
     }
 
-    private void onLevelUpInfo(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+    private void onOpenLevelUpInfo(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
         if (refIsValid) {
             NotificationUtil.sendNotification(
                     playerRef.getPacketHandler(),
@@ -190,6 +199,18 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         this.onClose(ref, store);
     }
 
+    private void onOpenSkills(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+        if (refIsValid) {
+            NotificationUtil.sendNotification(
+                    playerRef.getPacketHandler(),
+                    ColorUtil.colorize("&eAbrindo skills...")
+            );
+        }
+
+        // TODO: Abrir página de skills
+        this.onClose(ref, store);
+    }
+
     private void onOpenEconomy(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
         if (refIsValid) {
             NotificationUtil.sendNotification(
@@ -199,6 +220,18 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         }
 
         // TODO: Abrir página da economia
+        this.onClose(ref, store);
+    }
+
+    private void onOpenMarket(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+        if (refIsValid) {
+            NotificationUtil.sendNotification(
+                    playerRef.getPacketHandler(),
+                    ColorUtil.colorize("&cAbrindo market...")
+            );
+        }
+
+        // TODO: Abrir página de market
         this.onClose(ref, store);
     }
 
