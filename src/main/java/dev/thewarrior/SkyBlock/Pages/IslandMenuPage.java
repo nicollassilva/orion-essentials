@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
@@ -44,36 +45,46 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
     ) {
         commandBuilder.append("Pages/SkyBlock/IslandMenuPage.ui");
 
-//        this.loadCurrentIsland();
-//
-//        this.updateIslandInfo(commandBuilder);
-//
+        this.loadCurrentIsland();
+
+        this.updateIslandInfo(commandBuilder);
+
         this.bindMenuEvents(eventBuilder);
     }
 
     private void loadCurrentIsland() {
         if (this.playerRef == null || !this.playerRef.isValid()) return;
 
-        // Tentar encontrar a primeira ilha do jogador
-        final var islands = this.islandsManager.getData().getIslandsForPlayer(this.playerRef);
+        Ref<EntityStore> ref = this.playerRef.getReference();
 
-        if (islands != null && !islands.isEmpty()) {
-            this.currentIsland = islands.get(0);
-        }
+        if(ref == null || !ref.isValid()) return;
+
+        Store<EntityStore> store = ref.getStore();
+        World world = store.getExternalData().getWorld();
+
+        if(!world.getName().startsWith("island_")) return;
+
+        this.currentIsland = this.islandsManager.getIslandByWorldName(world.getName());
     }
 
     private void updateIslandInfo(UICommandBuilder commandBuilder) {
         if (this.currentIsland != null) {
-            commandBuilder.set("#IslandNameLabel.Text", "Ilha: " + this.currentIsland.getIslandName());
-            commandBuilder.set("#IslandLevelLabel.Text", "Nível " + this.currentIsland.getLevel());
+            commandBuilder.set("#IslandNameLabel.Text", this.currentIsland.getIslandName());
+            commandBuilder.set("#CurrentIslandLevelLabel.Text", this.currentIsland.getLevel());
         } else {
             commandBuilder.set("#IslandNameLabel.Text", "Nenhuma ilha selecionada");
-            commandBuilder.set("#IslandLevelLabel.Text", "");
+            commandBuilder.set("#LevelInfo.Visible", false);
         }
     }
 
     private void bindMenuEvents(UIEventBuilder eventBuilder) {
-        // Botão Ilha
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#LevelUpInfoButton",
+                EventData.of("Action", "OpenLevelUpInfo"),
+                false
+        );
+
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#IslandButton",
@@ -88,7 +99,6 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
                 false
         );
 
-        // Botão Quests
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#QuestsButton",
@@ -96,7 +106,6 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
                 false
         );
 
-        // Botão Market
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#FriendsButton",
@@ -104,7 +113,6 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
                 false
         );
 
-        // Botão Skills
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#EconomyButton",
@@ -112,7 +120,6 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
                 false
         );
 
-        // Botão Perfil
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#RankingButton",
@@ -120,7 +127,6 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
                 false
         );
 
-        // Botão Fechar
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#CloseButton",
@@ -137,6 +143,7 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         final boolean refIsValid = playerRef != null && playerRef.isValid();
 
         switch (data.action) {
+            case "OpenLevelUpInfo" -> this.onLevelUpInfo(ref, store, playerRef, refIsValid);
             case "TeleportToSpawn" -> this.onTeleportToSpawn(ref, store, playerRef, refIsValid);
             case "OpenIsland" -> this.onOpenIsland(ref, store, playerRef, refIsValid);
             case "OpenQuests" -> this.onOpenQuests(ref, store, playerRef, refIsValid);
@@ -145,6 +152,18 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
             case "OpenRanking" -> this.onOpenRanking(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
         }
+    }
+
+    private void onLevelUpInfo(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
+        if (refIsValid) {
+            NotificationUtil.sendNotification(
+                    playerRef.getPacketHandler(),
+                    ColorUtil.colorize("&aAbrindo info de level...")
+            );
+        }
+
+        // TODO: Abrir página de info de level
+        this.onClose(ref, store);
     }
 
     private void onOpenIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
