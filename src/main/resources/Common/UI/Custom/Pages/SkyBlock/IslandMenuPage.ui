@@ -10,17 +10,10 @@ $C = "../../Common.ui";
 );
 
 @MenuButtonLabelStyle = LabelStyle(
-    FontSize: 14,
+    FontSize: 12,
     TextColor: #bfcdd5,
     RenderBold: true,
     RenderUppercase: true,
-    HorizontalAlignment: Center,
-    VerticalAlignment: Center
-);
-
-@MenuIconLabelStyle = LabelStyle(
-    FontSize: 24,
-    TextColor: #96a9be,
     HorizontalAlignment: Center,
     VerticalAlignment: Center
 );
@@ -36,20 +29,20 @@ $C.@PageOverlay {
 
     $C.@DecoratedContainer {
         @CloseButton = true;
-        Anchor: (Width: 420, Height: 480);
+        Anchor: (Width: 500, Height: 700);
 
         #Title {
-            $C.@Title { @Text = "MENU DA ILHA"; }
+            $C.@Title { @Text = "Menu SkyBlock - Orion Network"; }
         }
 
         #Content {
             LayoutMode: Top;
-            Padding: (Full: 17, Top: 12);
+            Padding: (Full: 15, Top: 10);
 
             // Informações da ilha no topo
             Group #IslandInfo {
                 LayoutMode: Left;
-                Anchor: (Height: 36);
+                Anchor: (Height: 32);
                 Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
                 Padding: (Horizontal: 12);
 
@@ -63,7 +56,7 @@ $C.@PageOverlay {
                 }
 
                 Label #IslandLevelLabel {
-                    Anchor: (Width: 80);
+                    Anchor: (Width: 70);
                     Style: (
                         ...@InfoLabelStyle,
                         TextColor: #7ed56f,
@@ -75,155 +68,265 @@ $C.@PageOverlay {
             }
 
             // Separador
-            $C.@PanelSeparatorFancy {
-                @Anchor = (Top: 12, Bottom: 12);
+            $C.@ContentSeparator {
+                @Anchor = (Top: 10, Bottom: 10);
             }
 
-            // Grid de botões - Linha 1
+            // Grid de botões - Linha 1: Copper e Gold
             Group #Row1 {
                 LayoutMode: Left;
-                Anchor: (Height: 90, Bottom: 10);
+                Anchor: (Bottom: 8);
 
-                Button #IslandButton {
+                Button #CopperButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 8, Height: 90);
+                    Anchor: (Right: 8);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 18);
+                        Padding: (Top: 8, Bottom: 8);
 
                         Group {
-                            Text: "🏝";
-                            Anchor: (Height: 32);
-                            Style: @MenuIconLabelStyle;
+                            Anchor: (Width: 50, Height: 50);
+                            Background: (TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16);
+
+                            ItemIcon {
+                                ItemId: "Teleporter";
+                                Anchor: (Width: 40, Height: 40);
+                            }
                         }
 
                         Label {
-                            Text: "ILHA";
-                            Anchor: (Height: 28, Top: 4);
-                            Style: @MenuButtonLabelStyle;
-                        }
-                    }
-                }
-
-                Button #QuestsButton {
-                    FlexWeight: 1;
-                    Anchor: (Right: 8, Height: 90);
-                    Style: @MenuButtonStyle;
-
-                    Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 18);
-
-                        Label {
-                            Text: "📜";
-                            Anchor: (Height: 32);
-                            Style: @MenuIconLabelStyle;
+                            Text: "Spawn";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 12,
+                                TextColor: #ff6b6b
+                            );
                         }
 
                         Label {
-                            Text: "QUESTS";
-                            Anchor: (Height: 28, Top: 4);
-                            Style: @MenuButtonLabelStyle;
+                            Text: "Volte ao início";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 10,
+                                TextColor: #9aafc8
+                            );
                         }
                     }
                 }
 
-                Button #MarketButton {
+                Button #GoldButton {
                     FlexWeight: 1;
-                    Anchor: (Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 18);
+                        Padding: (Top: 8, Bottom: 8);
 
-                        Label {
-                            Text: "💰";
-                            Anchor: (Height: 32);
-                            Style: @MenuIconLabelStyle;
+                        Group {
+                            Anchor: (Width: 50, Height: 50);
+                            Background: (TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16);
+
+                            ItemIcon {
+                                ItemId: "Plant_Crop_Apple_Block";
+                                Anchor: (Width: 40, Height: 40);
+                            }
                         }
 
                         Label {
-                            Text: "MARKET";
-                            Anchor: (Height: 28, Top: 4);
-                            Style: @MenuButtonLabelStyle;
+                            Text: "Ilhas";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 12,
+                                TextColor: #ffd93d
+                            );
+                        }
+
+                        Label {
+                            Text: "Gerencie suas ilhas";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 10,
+                                TextColor: #9aafc8
+                            );
                         }
                     }
                 }
             }
 
-            // Grid de botões - Linha 2
+            // Grid de botões - Linha 2: Iron e Coal
             Group #Row2 {
                 LayoutMode: Left;
-                Anchor: (Height: 90, Bottom: 10);
+                Anchor: (Bottom: 8);
 
-                Button #SkillsButton {
+                Button #IronButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 8, Height: 90);
+                    Anchor: (Right: 8);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 18);
+                        Padding: (Top: 8, Bottom: 8);
 
-                        Label {
-                            Text: "⚔";
-                            Anchor: (Height: 32);
-                            Style: @MenuIconLabelStyle;
+                        Group {
+                            Anchor: (Width: 50, Height: 50);
+                            Background: (TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16);
+
+                            ItemIcon {
+                                ItemId: "Ingredient_Bolt_Cindercloth";
+                                Anchor: (Width: 40, Height: 40);
+                            }
                         }
 
                         Label {
-                            Text: "SKILLS";
-                            Anchor: (Height: 28, Top: 4);
-                            Style: @MenuButtonLabelStyle;
+                            Text: "Quests";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 12,
+                                TextColor: #4ecdc4
+                            );
+                        }
+
+                        Label {
+                            Text: "Complete missões";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 10,
+                                TextColor: #9aafc8
+                            );
                         }
                     }
                 }
 
-                Button #ProfileButton {
+                Button #CoalButton {
                     FlexWeight: 1;
-                    Anchor: (Right: 8, Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 18);
+                        Padding: (Top: 8, Bottom: 8);
 
-                        Label {
-                            Text: "👤";
-                            Anchor: (Height: 32);
-                            Style: @MenuIconLabelStyle;
+                        Group {
+                            Anchor: (Width: 50, Height: 50);
+                            Background: (TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16);
+
+                            ItemIcon {
+                                ItemId: "Deco_Trophy_Harvest";
+                                Anchor: (Width: 40, Height: 40);
+                            }
                         }
 
                         Label {
-                            Text: "PERFIL";
-                            Anchor: (Height: 28, Top: 4);
-                            Style: @MenuButtonLabelStyle;
+                            Text: "Amigos";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 12,
+                                TextColor: #a8e6cf
+                            );
+                        }
+
+                        Label {
+                            Text: "Conecte-se com outros";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 10,
+                                TextColor: #9aafc8
+                            );
+                        }
+                    }
+                }
+            }
+
+            // Grid de botões - Linha 3: Mithril e Silver
+            Group #Row3 {
+                LayoutMode: Left;
+
+                Button #EconomyButton {
+                    FlexWeight: 1;
+                    Anchor: (Right: 8);
+                    Style: @MenuButtonStyle;
+
+                    Group {
+                        LayoutMode: Top;
+                        Padding: (Top: 8, Bottom: 8);
+
+                        Group {
+                            Anchor: (Width: 50, Height: 50);
+                            Background: (TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16);
+
+                            ItemIcon {
+                                ItemId: "Ingredient_Powder_Boom";
+                                Anchor: (Width: 40, Height: 40);
+                            }
+                        }
+
+                        Label {
+                            Text: "Economia";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 12,
+                                TextColor: #f3d06f
+                            );
+                        }
+
+                        Label {
+                            Text: "Acompanhe suas finanças";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 10,
+                                TextColor: #9aafc8
+                            );
                         }
                     }
                 }
 
-                Button #FriendsButton {
+                Button #RankingButton {
                     FlexWeight: 1;
-                    Anchor: (Height: 90);
                     Style: @MenuButtonStyle;
 
                     Group {
                         LayoutMode: Top;
-                        Padding: (Top: 18);
+                        Padding: (Top: 8, Bottom: 8);
 
-                        Label {
-                            Text: "👥";
-                            Anchor: (Height: 32);
-                            Style: @MenuIconLabelStyle;
+                        Group {
+                            Anchor: (Width: 50, Height: 50);
+                            Background: (TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16);
+
+                            ItemIcon {
+                                ItemId: "Bench_Memories";
+                                Anchor: (Width: 40, Height: 40);
+                            }
                         }
 
                         Label {
-                            Text: "AMIGOS";
-                            Anchor: (Height: 28, Top: 4);
-                            Style: @MenuButtonLabelStyle;
+                            Text: "Ranking";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 12,
+                                TextColor: #32f366
+                            );
+                        }
+
+                        Label {
+                            Text: "Conquiste posições";
+                            Anchor: (Top: 4);
+                            Style: (
+                                ...@MenuButtonLabelStyle,
+                                FontSize: 10,
+                                TextColor: #9aafc8
+                            );
                         }
                     }
                 }
@@ -231,23 +334,23 @@ $C.@PageOverlay {
 
             // Separador antes das ações
             $C.@ContentSeparator {
-                @Anchor = (Top: 8, Bottom: 12);
+                @Anchor = (Top: 10, Bottom: 10);
             }
 
             // Botões de ação no rodapé
             Group #ActionButtons {
                 LayoutMode: Left;
-                Anchor: (Height: 44);
+                Anchor: (Height: 40);
 
                 $C.@SecondaryTextButton #TeleportButton {
                     @Text = "TELEPORTAR";
                     FlexWeight: 1;
-                    Anchor: (Right: 8, Height: 44);
+                    Anchor: (Right: 8, Height: 40);
                 }
 
-                $C.@TertiaryTextButton #SettingsButton {
-                    @Text = "CONFIG";
-                    Anchor: (Width: 150, Height: 44);
+                $C.@TertiaryTextButton #CloseButtonAction {
+                    @Text = "FECHAR";
+                    Anchor: (Width: 100, Height: 40);
                 }
             }
         }
