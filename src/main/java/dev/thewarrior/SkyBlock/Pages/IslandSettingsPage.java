@@ -49,9 +49,9 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
     ) {
         commandBuilder.append("Pages/SkyBlock/IslandSettingsPage.ui");
 
-        //this.updateIslandInfo(commandBuilder);
+        this.updateIslandInfo(commandBuilder);
 
-        //this.bindMenuEvents(eventBuilder);
+        this.bindMenuEvents(eventBuilder);
     }
 
     private void updateIslandInfo(UICommandBuilder commandBuilder) {
@@ -68,7 +68,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         List<IslandLevelConfig> levels = this.islandLevelManager.getData().getLevels();
         double nextXP = levels.stream().filter(l -> l.getLevel() == level + 1).findFirst().map(IslandLevelConfig::getRequiredPoints).orElse(currentXP);
         double progress = nextXP > 0 ? Math.min(currentXP / nextXP, 1.0) : 1.0;
-        commandBuilder.set("#ProgressFill.Anchor", "(Width: " + (int)(progress * 100) + "%, Height: 100%)");
+        commandBuilder.set("#ProgressBar.Value", progress);
         commandBuilder.set("#XPNeededLabel.Text", "Faltam " + (int)(nextXP - currentXP) + " XP para o próximo nível");
 
         // Última Visita

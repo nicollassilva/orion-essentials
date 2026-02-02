@@ -100,13 +100,18 @@ $C.@PageOverlay {
                     Anchor: (Height: 30);
                 }
 
-                Group #ProgressBar {
-                    Anchor: (Height: 20, Width: 400, Top: 10);
-                    Background: #333333;
+                Group {
+                    Background: "../../Pages/Memories/MemoriesProgress/MemoriesBarBg.png";
+                    Anchor: (Height: 22, Top: 10);
+                    Padding: (Full: 6);
 
-                    Group #ProgressFill {
-                        Anchor: (Width: 50, Height: 100);
-                        Background: #7ed56f;
+                    ProgressBar #ProgressBar {
+                        BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarFill.png";
+                        Value: 0.5;
+                    }
+
+                    ProgressBar #ProgressBarTexture {
+                        BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarTexture.png";
                     }
                 }
 
