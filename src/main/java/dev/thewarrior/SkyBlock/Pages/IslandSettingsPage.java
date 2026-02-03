@@ -165,10 +165,13 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 this.onClose(ref, store, false);
             }
             case "OpenSettings" -> {
-                if (refIsValid) {
-                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo configurações da ilha..."));
+                if (!refIsValid) return;
+
+                Player player = store.getComponent(ref, Player.getComponentType());
+
+                if (player != null) {
+                    player.getPageManager().openCustomPage(ref, store, new IslandConfigPage(playerRef, this.islandData, this.islandsManager, this.islandLevelManager));
                 }
-                this.onClose(ref, store, false);
             }
             case "OpenVisits" -> {
                 if (refIsValid) {

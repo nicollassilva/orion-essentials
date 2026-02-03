@@ -1,0 +1,309 @@
+$C = "../../Common.ui";
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+@MenuButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+
+$C.@PageOverlay {}
+
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 500, Height: 600);
+
+    #Title {
+        $C.@Title { @Text = "Configurações da Ilha"; }
+    }
+
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 15, Top: 10);
+
+        // Inputs
+        Group {
+            LayoutMode: Top;
+            Anchor: (Bottom: 10);
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Nome:";
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Anchor: (Width: 60);
+                }
+
+                $C.@TextField #NameInput {
+                    FlexWeight: 1;
+                    Anchor: (Height: 40);
+                }
+            }
+
+            Group {
+                LayoutMode: Left;
+
+                Label {
+                    Text: "Título ao entrar:";
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Anchor: (Width: 130);
+                }
+
+                $C.@TextField #TitleInput {
+                    FlexWeight: 1;
+                    Anchor: (Height: 40);
+                }
+            }
+        }
+
+        // Separator
+        $C.@ContentSeparator {
+            Anchor: (Top: 10, Bottom: 10);
+        }
+
+        // Settings
+        Group {
+            LayoutMode: Top;
+            Anchor: (Top: 10);
+
+            // Permitir visitantes
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Permitir visitantes";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #AllowVisitorsButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #00FF00;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+
+            // Permitir que visitantes falem
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Permitir que visitantes falem";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #AllowVisitorsChatButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #00FF00;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+
+            // Permitir que visitantes construam
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Permitir que visitantes construam";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #AllowVisitorsBuildButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #FF0000;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+
+            // Permitir que amigos visitem
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Permitir que amigos visitem";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #AllowFriendsVisitButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #00FF00;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+
+            // Permitir que amigos construam
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Permitir que amigos construam";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #AllowFriendsBuildButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #00FF00;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+
+            // Permitir que amigos destruam
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 10);
+
+                Label {
+                    Text: "Permitir que amigos destruam";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #AllowFriendsDestroyButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #FF0000;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+
+            // PvP habilitado
+            Group {
+                LayoutMode: Left;
+
+                Label {
+                    Text: "PvP habilitado";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        VerticalAlignment: Center
+                    );
+                    FlexWeight: 1;
+                }
+
+                Group {
+                    Padding: (Full: 6);
+                    Background: #000000(0.3);
+
+                    TextButton #PvpEnabledButton {
+                        Anchor: (Width: 60, Height: 30);
+                        Background: #FF0000;
+                        Padding: (Horizontal: 14, Vertical: 5);
+                        Text: "";
+                    }
+                }
+            }
+        }
+
+        // Separator
+        $C.@ContentSeparator {
+            Anchor: (Top: 10, Bottom: 10);
+        }
+
+        // Save button
+        Button #SaveButton {
+            Style: @MenuButtonStyle;
+            Anchor: (Height: 40);
+
+            Label {
+                Text: "Salvar Configurações";
+                Style: (
+                    FontSize: 18,
+                    TextColor: #FFFFFF,
+                    RenderBold: true,
+                    HorizontalAlignment: Center,
+                    VerticalAlignment: Center
+                );
+            }
+        }
+    }
+}
+
+$C.@BackButton {}
