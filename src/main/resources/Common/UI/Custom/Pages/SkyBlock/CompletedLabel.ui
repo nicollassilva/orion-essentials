@@ -1,0 +1,11 @@
+Label {
+    Text: "Resgatado";
+    Style: (
+        TextColor: #7ed56f,
+        FontSize: 14,
+        RenderBold: true,
+        HorizontalAlignment: Center
+    );
+    Anchor: (Width: 100, Height: 30);
+}
+

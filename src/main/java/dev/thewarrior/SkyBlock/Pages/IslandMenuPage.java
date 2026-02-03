@@ -179,8 +179,8 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
 
         Player player = store.getComponent(ref, Player.getComponentType());
 
-        if (player != null && !player.wasRemoved()) {
-            player.getPageManager().openCustomPage(ref, store, new IslandLevelDetailsPage(playerRef, this.islandLevelManager));
+        if (player != null) {
+            player.getPageManager().openCustomPage(ref, store, new IslandLevelDetailsPage(playerRef, this.islandsManager, this.islandLevelManager, this.currentIsland));
         }
     }
 
@@ -303,4 +303,3 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
         player.getPageManager().setPage(ref, store, Page.None);
     }
 }
-

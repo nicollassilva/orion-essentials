@@ -15,7 +15,7 @@ Group {
         LayoutMode: Left;
         Anchor: (Bottom: 10);
 
-        Group {
+        Group #LevelButton {
             Anchor: (Width: 30, Height: 30);
             Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
 
@@ -25,7 +25,7 @@ Group {
                     TextColor: #FFFFFF,
                     HorizontalAlignment: Center,
                     VerticalAlignment: Center,
-                    FontSize: 16,
+                    FontSize: 20,
                     RenderBold: true
                 );
             }
