@@ -20,14 +20,12 @@ import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandSettings;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
-import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelConfig;
 import dev.thewarrior.SkyBlock.Pages.Data.IslandSettingsPageData;
 import dev.thewarrior.SkyBlock.Pages.Utils.ConfirmDialog;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -63,48 +61,64 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
     }
 
     private void updateIslandInfo(UICommandBuilder commandBuilder) {
-        // Nome e Título
-        commandBuilder.set("#NameInput.Value", this.islandData.getName());
-        commandBuilder.set("#TitleInput.Value", this.islandData.getEnterTitle() != null ? this.islandData.getEnterTitle() : "");
+        commandBuilder.set("#IslandNameLabel.Text", this.islandData.getName());
+        commandBuilder.set("#IslandLevelLabel.Text", "Nível " + this.islandData.getLevel());
 
-        // Nível
-        int level = this.islandData.getLevel();
-        commandBuilder.set("#LevelLabel.Text", "Nível " + level);
+        // Assume owner name is available, e.g., this.islandData.getOwnerName()
+        String ownerName = "Jogador"; // Placeholder
+        commandBuilder.set("#OwnerLabel.Text", "Dono: " + ownerName);
 
-        // Progress Bar
-        double currentXP = this.islandData.getExperience();
-        List<IslandLevelConfig> levels = this.islandLevelManager.getData().getLevels();
-        double nextXP = levels.stream().filter(l -> l.getLevel() == level + 1).findFirst().map(IslandLevelConfig::getRequiredPoints).orElse(currentXP);
-        double progress = nextXP > 0 ? Math.min(currentXP / nextXP, 1.0) : 1.0;
-        commandBuilder.set("#ProgressBar.Value", progress);
-        commandBuilder.set("#XPNeededLabel.Text", "Faltam " + (int)(nextXP - currentXP) + " XP para o próximo nível");
-
-        // Última Visita
         String lastVisit = "Nunca";
         if (this.islandData.getLastVisitData() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             lastVisit = sdf.format(this.islandData.getLastVisitData().getTime());
         }
         commandBuilder.set("#LastVisitLabel.Text", "Última visita: " + lastVisit);
-
-        // Amigos (placeholder)
-        commandBuilder.set("#FriendsPlaceholder.Text", "Amigos: " + this.islandData.getFriends().size());
-
-        // Settings
-        IslandSettings settings = this.islandData.getSettings();
-
-        if(settings != null) {
-            commandBuilder.set("#AllowVisitorsCheck #CheckBox.Value", settings.isAllowVisitors());
-            commandBuilder.set("#AllowVisitorsChatCheck #CheckBox.Value", settings.isAllowVisitorsChat());
-            commandBuilder.set("#AllowVisitorsBuildCheck #CheckBox.Value", settings.isAllowVisitorsToBuild());
-            commandBuilder.set("#AllowFriendsVisitCheck #CheckBox.Value", settings.isAllowFriendsToVisit());
-            commandBuilder.set("#AllowFriendsBuildCheck #CheckBox.Value", settings.isAllowFriendsToBuild());
-            commandBuilder.set("#AllowFriendsDestroyCheck #CheckBox.Value", settings.isAllowFriendsToDestroy());
-            commandBuilder.set("#PvpEnabledCheck #CheckBox.Value", settings.isPvpEnabled());
-        }
     }
 
     private void bindMenuEvents(UIEventBuilder eventBuilder) {
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#InfoButton",
+                EventData.of("Action", "OpenInfo"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#MembersButton",
+                EventData.of("Action", "OpenMembers"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#SettingsButton",
+                EventData.of("Action", "OpenSettings"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#VisitsButton",
+                EventData.of("Action", "OpenVisits"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#ExpandButton",
+                EventData.of("Action", "ExpandIsland"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#DeleteButton",
+                EventData.of("Action", "DeleteIsland"),
+                false
+        );
+
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#TeleportButton",
@@ -114,25 +128,9 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#DeleteIslandButton",
-                EventData.of("Action", "DeleteIsland"),
+                "#StatsButton",
+                EventData.of("Action", "OpenStats"),
                 false
-        );
-
-        eventBuilder.addEventBinding(
-                CustomUIEventBindingType.Activating,
-                "#SaveButton",
-                EventData.of("Action", "SaveChanges")
-                        .append("@NameInput", "#NameInput.Value")
-                        .append("@TitleInput", "#TitleInput.Value")
-                        .append("@AllowVisitorsCheck", "#AllowVisitorsCheck #CheckBox.Value")
-                        .append("@AllowVisitorsChatCheck", "#AllowVisitorsChatCheck #CheckBox.Value")
-                        .append("@AllowVisitorsBuildCheck", "#AllowVisitorsBuildCheck #CheckBox.Value")
-                        .append("@AllowFriendsVisitCheck", "#AllowFriendsVisitCheck #CheckBox.Value")
-                        .append("@AllowFriendsBuildCheck", "#AllowFriendsBuildCheck #CheckBox.Value")
-                        .append("@AllowFriendsDestroyCheck", "#AllowFriendsDestroyCheck #CheckBox.Value")
-                        .append("@PvpEnabledCheck", "#PvpEnabledCheck #CheckBox.Value")
-                , false
         );
 
         eventBuilder.addEventBinding(
@@ -151,7 +149,42 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         final boolean refIsValid = playerRef != null && playerRef.isValid();
 
         switch (data.action) {
-            case "SaveChanges" -> this.onSaveChanges(ref, store, playerRef, refIsValid, data);
+            case "OpenInfo" -> {
+                if (refIsValid) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo informações da ilha..."));
+                }
+                this.onClose(ref, store, false);
+            }
+            case "OpenMembers" -> {
+                if (refIsValid) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo amigos da ilha..."));
+                }
+                this.onClose(ref, store, false);
+            }
+            case "OpenSettings" -> {
+                if (refIsValid) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo configurações da ilha..."));
+                }
+                this.onClose(ref, store, false);
+            }
+            case "OpenVisits" -> {
+                if (refIsValid) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo visitas da ilha..."));
+                }
+                this.onClose(ref, store, false);
+            }
+            case "ExpandIsland" -> {
+                if (refIsValid) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eExpandindo ilha..."));
+                }
+                this.onClose(ref, store, false);
+            }
+            case "OpenStats" -> {
+                if (refIsValid) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo estatísticas da ilha..."));
+                }
+                this.onClose(ref, store, false);
+            }
             case "DeleteIsland" -> {
                 if (!refIsValid) return;
 
@@ -177,7 +210,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 player.getPageManager().openCustomPage(ref, store, dialog);
             }
             case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
-            default -> this.onClose(ref, store, true);
+            default -> this.onClose(ref, store, false);
         }
     }
 
