@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Pages.IslandMenuPage;
@@ -25,6 +26,8 @@ public class IslandMenuCommand extends AbstractPlayerCommand {
         this.islandLevelManager = islandLevelManager;
 
         this.addAliases("m", "painel");
+
+        this.requirePermission(PermissionUtil.getPermission("skyblock.menu"));
     }
 
     @Override

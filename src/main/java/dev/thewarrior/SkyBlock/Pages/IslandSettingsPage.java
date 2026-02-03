@@ -27,12 +27,16 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import javax.annotation.Nonnull;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPageData> {
     private final IslandsManager islandsManager;
     private final IslandLevelManager islandLevelManager;
     private final PlayerRef playerRef;
     private final IslandData islandData;
+
+    private volatile boolean isActive = true;
 
     public IslandSettingsPage(@Nonnull PlayerRef playerRef, IslandData islandData, IslandsManager islandsManager, IslandLevelManager islandLevelManager) {
         super(playerRef, CustomPageLifetime.CanDismiss, IslandSettingsPageData.CODEC);
@@ -201,6 +205,22 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         this.islandData.setNeedsUpdate(true);
         this.islandsManager.save(this.islandData);
 
+        final UICommandBuilder commandBuilder = new UICommandBuilder();
+
+        commandBuilder.set("#SaveButton.Disabled", true);
+
+        this.sendUpdate(commandBuilder);
+
+        CompletableFuture.runAsync(() -> {
+            if(!this.isActive) return;
+
+            final UICommandBuilder enableButtonCommandBuilder = new UICommandBuilder();
+
+            enableButtonCommandBuilder.set("#SaveButton.Disabled", false);
+
+            this.sendUpdate(enableButtonCommandBuilder);
+        }, CompletableFuture.delayedExecutor(3000, TimeUnit.MILLISECONDS));
+
         NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aConfigurações da ilha salvas com sucesso!"));
     }
 
@@ -228,5 +248,9 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         if (player == null) return;
 
         player.getPageManager().setPage(ref, store, Page.None);
+    }
+
+    public void onDismiss(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {
+        this.isActive = false;
     }
 }

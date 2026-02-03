@@ -45,39 +45,34 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
     ) {
         commandBuilder.append("Pages/SkyBlock/PlayerIslandsPage.ui");
 
-        this.updateIslands(commandBuilder);
+        this.updateIslands(commandBuilder, eventBuilder);
 
-        this.bindMenuEvents(eventBuilder);
-    }
-
-    private void updateIslands(UICommandBuilder commandBuilder) {
-        List<IslandData> islands = this.islandsManager.getIslandsForPlayer(this.playerRef.getUuid());
-
-        for (int i = 0; i < 9; i++) {
-            if (i < islands.size()) {
-                IslandData island = islands.get(i);
-                commandBuilder.set("#LevelLabel" + (i + 1) + ".Text", String.valueOf(island.getLevel()));
-                commandBuilder.set("#NameLabel" + (i + 1) + ".Text", island.getName());
-                commandBuilder.set("#Island" + (i + 1) + ".Visible", true);
-            } else {
-                commandBuilder.set("#Island" + (i + 1) + ".Visible", false);
-            }
-        }
-    }
-
-    private void bindMenuEvents(UIEventBuilder eventBuilder) {
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#CloseButton",
                 EventData.of("Action", "ClosePage"),
                 false
         );
+    }
 
-        for (int i = 1; i <= 9; i++) {
+    private void updateIslands(UICommandBuilder commandBuilder, UIEventBuilder eventBuilder) {
+        List<IslandData> islands = this.islandsManager.getIslandsForPlayer(this.playerRef.getUuid());
+
+        commandBuilder.clear("#Islands");
+
+        for (int i = 0; i < islands.size(); i++) {
+            IslandData island = islands.get(i);
+            String selector = "#Islands[" + i + "]";
+
+            commandBuilder.append("#Islands", "Pages/SkyBlock/IslandEntry.ui");
+
+            commandBuilder.set(selector + " #LevelLabel.Text", String.valueOf(island.getLevel()));
+            commandBuilder.set(selector + " #NameLabel.Text", island.getName());
+
             eventBuilder.addEventBinding(
                     CustomUIEventBindingType.Activating,
-                    "#Island" + i,
-                    EventData.of("Action", "SelectIsland").append("IslandIndex", String.valueOf(i)),
+                    selector,
+                    EventData.of("Action", "SelectIsland").append("IslandIndex", String.valueOf(i + 1)),
                     false
             );
         }

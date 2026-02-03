@@ -21,6 +21,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.universe.world.worldgen.provider.FlatWorldGenProvider;
 import com.hypixel.hytale.server.core.universe.world.worldgen.provider.VoidWorldGenProvider;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.Essentials.Utils.TeleportUtil;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
@@ -48,6 +49,8 @@ public class IslandCreateCommand extends AbstractPlayerCommand {
         this.addAliases("criar", "create", "start");
 
         this.defaultPrefabSelection = PrefabStore.get().getServerPrefab(this.skyBlockSettingsManager.getDefaultPrefabName());
+
+        this.requirePermission(PermissionUtil.getPermission("skyblock.create"));
     }
 
     @Override

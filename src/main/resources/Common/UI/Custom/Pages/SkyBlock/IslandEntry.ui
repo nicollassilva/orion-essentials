@@ -1,0 +1,57 @@
+$C = "../../Common.ui";
+
+// Estilo de botão do menu usando SecondaryButtonStyle do Common
+@MenuButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+Button {
+    Anchor: (Height: 45, Top: 5);
+    FlexWeight: 1;
+    Style: @MenuButtonStyle;
+
+    Group {
+        LayoutMode: Left;
+        Padding: (Full: 10);
+
+        Group #LevelBox {
+            Anchor: (Width: 30, Height: 30);
+            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+            Padding: (Full: 5);
+
+            Label #LevelLabel {
+                Style: (
+                    ...@InfoLabelStyle,
+                    TextColor: #FFFFFF,
+                    HorizontalAlignment: Center,
+                    VerticalAlignment: Center,
+                    FontSize: 14,
+                    RenderBold: true
+                );
+                Text: "1";
+            }
+        }
+
+        Label #NameLabel {
+            Anchor: (Left: 10);
+            Style: (
+                ...@InfoLabelStyle,
+                TextColor: #b7cedd,
+                HorizontalAlignment: Center,
+                VerticalAlignment: Center,
+                FontSize: 16,
+            );
+            Text: "Nome da Ilha";
+        }
+    }
+}

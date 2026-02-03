@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.thewarrior.Essentials.Managers.TeleportManager;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
+import dev.thewarrior.Essentials.Utils.PermissionUtil;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -31,6 +32,8 @@ public class IslandTeleportCommand extends AbstractPlayerCommand {
         this.addAliases("tp", "ir", "teleportar");
 
         this.setAllowsExtraArguments(true);
+
+        this.requirePermission(PermissionUtil.getPermission("skyblock.tp"));
     }
 
     @Override

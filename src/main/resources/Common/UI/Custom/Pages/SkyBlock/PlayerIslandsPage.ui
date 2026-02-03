@@ -30,386 +30,73 @@ $C.@PageOverlay {
             LayoutMode: Top;
             Padding: (Full: 15, Top: 10);
 
-            // Grid 3x3 de ilhas
-            Group #IslandsGrid {
+            Group {
                 LayoutMode: Top;
-                Anchor: (Height: 500);
 
-                // Row 1
-                Group #Row1 {
-                    LayoutMode: Left;
-                    Anchor: (Bottom: 10);
+                Group {
+                    LayoutMode: Top;
 
-                    Button #Island1 {
-                        Anchor: (Width: 180, Height: 120, Right: 10);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox1 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel1 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel1 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 1";
-                            }
-                        }
-                    }
-
-                    Button #Island2 {
-                        Anchor: (Width: 180, Height: 120, Right: 10);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox2 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel2 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel2 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 2";
-                            }
-                        }
-                    }
-
-                    Button #Island3 {
-                        Anchor: (Width: 180, Height: 120);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox3 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel3 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel3 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 3";
-                            }
-                        }
+                    Label {
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #FFFFFF,
+                            FontSize: 16,
+                            RenderBold: true
+                        );
+                        Text: "Minhas Ilhas";
+                        FlexWeight: 1;
+                        Anchor: (Height: 30, Bottom: 10);
+                        Padding: (Left: 10);
+                        Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
                     }
                 }
 
-                // Row 2
-                Group #Row2 {
-                    LayoutMode: Left;
-                    Anchor: (Bottom: 10);
+                // Grid 3x3 de ilhas
+                Group #IslandsGrid {
+                    LayoutMode: Top;
+                    FlexWeight: 1;
 
-                    Button #Island4 {
-                        Anchor: (Width: 180, Height: 120, Right: 10);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox4 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel4 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel4 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 4";
-                            }
-                        }
+                    Group #Islands {
+                        LayoutMode: TopScrolling;
+                        FlexWeight: 1;
+                        Anchor: (Height: 250);
+                        ScrollbarStyle: @DefaultScrollbarStyle;
                     }
+                }
+            }
 
-                    Button #Island5 {
-                        Anchor: (Width: 180, Height: 120, Right: 10);
-                        Style: @MenuButtonStyle;
+            Group {
+                LayoutMode: Top;
+                Anchor: (Top: 10);
 
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
+                Group {
+                    LayoutMode: Top;
 
-                            Group #LevelBox5 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel5 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel5 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 5";
-                            }
-                        }
-                    }
-
-                    Button #Island6 {
-                        Anchor: (Width: 180, Height: 120);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox6 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel6 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel6 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 6";
-                            }
-                        }
+                    Label {
+                        Style: (
+                            ...@InfoLabelStyle,
+                            TextColor: #FFFFFF,
+                            FontSize: 16,
+                            RenderBold: true
+                        );
+                        Text: "Ilhas de Amigos";
+                        FlexWeight: 1;
+                        Anchor: (Height: 30, Bottom: 10);
+                        Padding: (Left: 10);
+                        Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
                     }
                 }
 
-                // Row 3
-                Group #Row3 {
-                    LayoutMode: Left;
-                    Anchor: (Bottom: 10);
+                // Grid 3x3 de ilhas
+                Group #IslandsGrid {
+                    LayoutMode: Top;
+                    FlexWeight: 1;
 
-                    Button #Island7 {
-                        Anchor: (Width: 180, Height: 120, Right: 10);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox7 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel7 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel7 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 7";
-                            }
-                        }
-                    }
-
-                    Button #Island8 {
-                        Anchor: (Width: 180, Height: 120, Right: 10);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox8 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel8 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel8 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 8";
-                            }
-                        }
-                    }
-
-                    Button #Island9 {
-                        Anchor: (Width: 180, Height: 120);
-                        Style: @MenuButtonStyle;
-
-                        Group {
-                            LayoutMode: Top;
-                            Padding: (Full: 10);
-
-                            Group #LevelBox9 {
-                                Anchor: (Width: 30, Height: 30);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-                                Padding: (Full: 5);
-
-                                Label #LevelLabel9 {
-                                    Style: (
-                                        ...@InfoLabelStyle,
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 14,
-                                        RenderBold: true
-                                    );
-                                    Text: "Lv. 1";
-                                }
-                            }
-
-                            Label #NameLabel9 {
-                                Anchor: (Top: 10);
-                                Style: (
-                                    ...@InfoLabelStyle,
-                                    TextColor: #b7cedd,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 16,
-                                    RenderBold: true
-                                );
-                                Text: "Ilha 9";
-                            }
-                        }
+                    Group #Islands {
+                        LayoutMode: TopScrolling;
+                        FlexWeight: 1;
+                        Anchor: (Height: 250);
+                        ScrollbarStyle: @DefaultScrollbarStyle;
                     }
                 }
             }
