@@ -150,10 +150,13 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         switch (data.action) {
             case "OpenInfo" -> {
-                if (refIsValid) {
-                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo informações da ilha..."));
+                if (!refIsValid) return;
+
+                Player player = store.getComponent(ref, Player.getComponentType());
+
+                if (player != null) {
+                    player.getPageManager().openCustomPage(ref, store, new IslandInfoPage(playerRef, islandData, islandsManager, islandLevelManager));
                 }
-                this.onClose(ref, store, false);
             }
             case "OpenMembers" -> {
                 if (refIsValid) {
@@ -210,6 +213,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 player.getPageManager().openCustomPage(ref, store, dialog);
             }
             case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
+            case "ClosePage" -> this.onClose(ref, store, true);
             default -> this.onClose(ref, store, false);
         }
     }
@@ -223,28 +227,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         if(hasValidNameChanges) this.islandData.setName(data.newName);
         if(hasValidTitleChanges) this.islandData.setEnterTitle(data.newTitle);
 
-        boolean hasAllowVisitorsChange = this.islandData.getSettings().isAllowVisitors() != data.allowVisitors;
-        boolean hasAllowVisitorsChatChange = this.islandData.getSettings().isAllowVisitorsChat() != data.allowVisitorsChat;
-        boolean hasAllowVisitorsBuildChange = this.islandData.getSettings().isAllowVisitorsToBuild() != data.allowVisitorsBuild;
-        boolean hasAllowFriendsVisitChange = this.islandData.getSettings().isAllowFriendsToVisit() != data.allowFriendsVisit;
-        boolean hasAllowFriendsBuildChange = this.islandData.getSettings().isAllowFriendsToBuild() != data.allowFriendsBuild;
-        boolean hasAllowFriendsDestroyChange = this.islandData.getSettings().isAllowFriendsToDestroy() != data.allowFriendsDestroy;
-        boolean hasPvpEnabledChange = this.islandData.getSettings().isPvpEnabled() != data.pvpEnabled;
-
-        boolean hasAnySettingsChanges = hasAllowVisitorsChange || hasAllowVisitorsChatChange || hasAllowVisitorsBuildChange ||
-                hasAllowFriendsVisitChange || hasAllowFriendsBuildChange || hasAllowFriendsDestroyChange || hasPvpEnabledChange;
-
-        if(hasAnySettingsChanges) {
-            final IslandSettings settings = this.islandData.getSettings();
-
-            if(hasAllowVisitorsChange) settings.setAllowVisitors(data.allowVisitors);
-            if(hasAllowVisitorsChatChange) settings.setAllowVisitorsChat(data.allowVisitorsChat);
-            if(hasAllowVisitorsBuildChange) settings.setAllowVisitorsToBuild(data.allowVisitorsBuild);
-            if(hasAllowFriendsVisitChange) settings.setAllowFriendsToVisit(data.allowFriendsVisit);
-            if(hasAllowFriendsBuildChange) settings.setAllowFriendsToBuild(data.allowFriendsBuild);
-            if(hasAllowFriendsDestroyChange) settings.setAllowFriendsToDestroy(data.allowFriendsDestroy);
-            if(hasPvpEnabledChange) settings.setPvpEnabled(data.pvpEnabled);
-        }
+        boolean hasAnySettingsChanges = this.checkAndUpdateIslandSettings(data);
 
         if(!hasValidNameChanges && !hasValidTitleChanges && !hasAnySettingsChanges) {
             NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eNenhuma alteração foi feita nas configurações da ilha."));
@@ -271,6 +254,32 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         }, CompletableFuture.delayedExecutor(3000, TimeUnit.MILLISECONDS));
 
         NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aConfigurações da ilha salvas com sucesso!"));
+    }
+
+    private boolean checkAndUpdateIslandSettings(IslandSettingsPageData data) {
+        boolean hasAllowVisitorsChange = this.islandData.getSettings().isAllowVisitors() != data.allowVisitors;
+        boolean hasAllowVisitorsChatChange = this.islandData.getSettings().isAllowVisitorsChat() != data.allowVisitorsChat;
+        boolean hasAllowVisitorsBuildChange = this.islandData.getSettings().isAllowVisitorsToBuild() != data.allowVisitorsBuild;
+        boolean hasAllowFriendsVisitChange = this.islandData.getSettings().isAllowFriendsToVisit() != data.allowFriendsVisit;
+        boolean hasAllowFriendsBuildChange = this.islandData.getSettings().isAllowFriendsToBuild() != data.allowFriendsBuild;
+        boolean hasAllowFriendsDestroyChange = this.islandData.getSettings().isAllowFriendsToDestroy() != data.allowFriendsDestroy;
+        boolean hasPvpEnabledChange = this.islandData.getSettings().isPvpEnabled() != data.pvpEnabled;
+
+        boolean hasAnySettingsChanges = hasAllowVisitorsChange || hasAllowVisitorsChatChange || hasAllowVisitorsBuildChange ||
+                hasAllowFriendsVisitChange || hasAllowFriendsBuildChange || hasAllowFriendsDestroyChange || hasPvpEnabledChange;
+
+        if(hasAnySettingsChanges) {
+            final IslandSettings settings = this.islandData.getSettings();
+
+            if(hasAllowVisitorsChange) settings.setAllowVisitors(data.allowVisitors);
+            if(hasAllowVisitorsChatChange) settings.setAllowVisitorsChat(data.allowVisitorsChat);
+            if(hasAllowVisitorsBuildChange) settings.setAllowVisitorsToBuild(data.allowVisitorsBuild);
+            if(hasAllowFriendsVisitChange) settings.setAllowFriendsToVisit(data.allowFriendsVisit);
+            if(hasAllowFriendsBuildChange) settings.setAllowFriendsToBuild(data.allowFriendsBuild);
+            if(hasAllowFriendsDestroyChange) settings.setAllowFriendsToDestroy(data.allowFriendsDestroy);
+            if(hasPvpEnabledChange) settings.setPvpEnabled(data.pvpEnabled);
+        }
+        return hasAnySettingsChanges;
     }
 
     private void onTeleportToIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
