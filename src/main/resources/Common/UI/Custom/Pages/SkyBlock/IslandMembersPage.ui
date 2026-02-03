@@ -67,6 +67,7 @@ $C.@DecoratedContainer {
         // Lista de membros
         Group #MemberList {
             LayoutMode: TopScrolling;
+            ScrollbarStyle: $C.@DefaultScrollbarStyle;
             Anchor: (Height: 400);
             // Entries will be appended here
         }

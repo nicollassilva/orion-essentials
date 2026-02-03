@@ -1,0 +1,25 @@
+$C = "../../Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Bottom: 5, Height: 50);
+    Background: (Color: #000000(0.3));
+    Padding: (Horizontal: 10, Vertical: 5);
+
+    Label #PlayerNameLabel {
+        Text: "Nome do Jogador";
+        Style: (
+            TextColor: #FFFFFF,
+            FontSize: 14,
+            RenderBold: true,
+            VerticalAlignment: Center,
+            HorizontalAlignment: Start
+        );
+        FlexWeight: 1;
+    }
+
+    $C.@SmallSecondaryTextButton #InviteButton {
+        Anchor: (Width: 110, Height: 30);
+        Text: "CONVIDAR";
+    }
+}

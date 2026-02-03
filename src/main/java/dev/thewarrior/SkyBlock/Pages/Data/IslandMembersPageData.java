@@ -9,29 +9,15 @@ public class IslandMembersPageData {
             .append(new KeyedCodec<>("Action", Codec.STRING),
                     (d, v) -> d.action = v,
                     (d) -> d.action).add()
-            .append(new KeyedCodec<>("MemberIndex", Codec.INTEGER),
+            .append(new KeyedCodec<>("MemberIndex", Codec.STRING),
                     (d, v) -> d.memberIndex = v,
                     (d) -> d.memberIndex).add()
-            .append(new KeyedCodec<>("NewPermission", Codec.STRING),
+            .append(new KeyedCodec<>("@NewPermission", Codec.STRING),
                     (d, v) -> d.newPermission = v,
                     (d) -> d.newPermission).add()
             .build();
 
     public String action;
-    public int memberIndex;
+    public String memberIndex;
     public String newPermission;
-
-    public static IslandMembersPageData of(String action) {
-        IslandMembersPageData data = new IslandMembersPageData();
-        data.action = action;
-        return data;
-    }
-
-    public static IslandMembersPageData of(String action, int memberIndex, String newPermission) {
-        IslandMembersPageData data = new IslandMembersPageData();
-        data.action = action;
-        data.memberIndex = memberIndex;
-        data.newPermission = newPermission;
-        return data;
-    }
 }

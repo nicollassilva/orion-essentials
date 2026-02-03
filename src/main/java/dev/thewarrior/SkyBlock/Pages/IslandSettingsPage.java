@@ -164,7 +164,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 Player player = store.getComponent(ref, Player.getComponentType());
 
                 if (player != null) {
-                    player.getPageManager().openCustomPage(ref, store, new IslandMembersPage(playerRef, islandData, islandsManager));
+                    player.getPageManager().openCustomPage(ref, store, new IslandMembersPage(playerRef, islandData, islandsManager, islandLevelManager));
                 }
             }
             case "OpenSettings" -> {

@@ -8,6 +8,7 @@ public class IslandFriendData {
     private UUID uuid;
     private String nickname;
     private IslandFriendPermission permission = IslandFriendPermission.DEFAULT;
+    private long addedAt = System.currentTimeMillis();
 
     public IslandFriendData(UUID uuid, String nickname) {
         this.uuid = uuid;
@@ -28,5 +29,9 @@ public class IslandFriendData {
 
     public void setPermission(IslandFriendPermission permission) {
         this.permission = permission;
+    }
+
+    public long getAddedAt() {
+        return addedAt;
     }
 }
