@@ -1,0 +1,76 @@
+$C = "../../Common.ui";
+
+@MenuButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+@RemoveButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Cancel.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Cancel_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Cancel_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+$C.@PageOverlay {}
+
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 450, Height: 540);
+
+    #Title {
+        $C.@Title { @Text = "Membros da Ilha"; }
+    }
+
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 15, Top: 10);
+
+        // Header
+        Group #HeaderGroup {
+            LayoutMode: Left;
+
+            Label #TitleLabel {
+                Text: "Membros da Ilha (0/5)";
+                Anchor: (Left: 10);
+                Style: (
+                    TextColor: #FFFFFF,
+                    FontSize: 14,
+                    RenderBold: true,
+                    VerticalAlignment: Center,
+                    HorizontalAlignment: Start
+                );
+                FlexWeight: 1;
+            }
+
+            $C.@SmallSecondaryTextButton #InviteButton {
+                @Text = "CONVIDAR";
+                Anchor: (Right: 8, Height: 40);
+            }
+        }
+
+        // Separador
+        $C.@ContentSeparator {
+            Anchor: (Bottom: 10, Top: 10);
+        }
+
+        // Lista de membros
+        Group #MemberList {
+            LayoutMode: TopScrolling;
+            Anchor: (Height: 400);
+            // Entries will be appended here
+        }
+    }
+}
+
+$C.@BackButton {}

@@ -159,10 +159,13 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 }
             }
             case "OpenMembers" -> {
-                if (refIsValid) {
-                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eAbrindo amigos da ilha..."));
+                if (!refIsValid) return;
+
+                Player player = store.getComponent(ref, Player.getComponentType());
+
+                if (player != null) {
+                    player.getPageManager().openCustomPage(ref, store, new IslandMembersPage(playerRef, islandData, islandsManager));
                 }
-                this.onClose(ref, store, false);
             }
             case "OpenSettings" -> {
                 if (!refIsValid) return;

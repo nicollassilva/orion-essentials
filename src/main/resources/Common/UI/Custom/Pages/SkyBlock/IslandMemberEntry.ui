@@ -1,0 +1,46 @@
+$C = "../../Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Bottom: 5, Height: 50);
+    Background: (Color: #2a2e32(0.8));
+    Padding: (Horizontal: 10, Vertical: 5);
+
+    Label #MemberNameLabel {
+        Text: "Nome do Membro";
+        Style: (
+            TextColor: #FFFFFF,
+            FontSize: 14,
+            RenderBold: true,
+            VerticalAlignment: Center,
+            HorizontalAlignment: Start
+        );
+        FlexWeight: 1;
+    }
+
+    $C.@DropdownBox #PermissionDropdown {
+        Anchor: (Width: 120, Height: 30);
+    }
+
+    Button #RemoveButton {
+        Anchor: (Width: 80, Height: 30);
+        Style: ButtonStyle(
+            Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Cancel.png", Border: 12)),
+            Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Cancel_Hovered.png", Border: 12)),
+            Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Cancel_Pressed.png", Border: 12)),
+            Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+            Sounds: $C.@ButtonSounds
+        );
+
+        Label {
+            Text: "REMOVER";
+            Style: (
+                FontSize: 10,
+                TextColor: #FFFFFF,
+                RenderBold: true,
+                HorizontalAlignment: Center,
+                VerticalAlignment: Center
+            );
+        }
+    }
+}

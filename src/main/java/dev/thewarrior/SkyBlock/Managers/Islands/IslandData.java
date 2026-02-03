@@ -5,7 +5,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandFriendData;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandLastVisitData;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandSettings;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,7 +30,7 @@ public class IslandData {
 
     private IslandSettings settings;
 
-    private ObjectArraySet<IslandFriendData> friends = new ObjectArraySet<>();
+    private ObjectArrayList<IslandFriendData> friends = new ObjectArrayList<>();
 
     public IslandData(UUID ownerId, String worldName, Vector3d spawnLocation, Vector3d spawnRotation) {
         this.id = UUID.randomUUID();
@@ -121,7 +121,7 @@ public class IslandData {
         this.setNeedsUpdate(true);
     }
 
-    public ObjectArraySet<IslandFriendData> getFriends() {
+    public ObjectArrayList<IslandFriendData> getFriends() {
         return this.friends;
     }
 
