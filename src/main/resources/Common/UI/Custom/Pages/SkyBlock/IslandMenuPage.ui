@@ -30,489 +30,489 @@ $C = "../../Common.ui";
     VerticalAlignment: Center
 );
 
-$C.@PageOverlay {
-    LayoutMode: Middle;
+$C.@PageOverlay {}
 
-    $C.@DecoratedContainer {
-        @CloseButton = true;
-        Anchor: (Width: 500, Height: 700);
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 500, Height: 700);
 
-        #Title {
-            $C.@Title { @Text = "Menu SkyBlock - Orion Network"; }
+    #Title {
+        $C.@Title { @Text = "Menu SkyBlock - Orion Network"; }
+    }
+
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 15, Top: 10);
+
+        Group #IslandInfo {
+            LayoutMode: Top;
+            Anchor: (Height: 150);
+            Padding: (Horizontal: 12, Vertical: 6);
+
+            Group {
+                LayoutMode: Top;
+
+                Label #IslandNameLabel {
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #FFFFFF,
+                        HorizontalAlignment: Center,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Text: "Nome da Ilha";
+                    FlexWeight: 1;
+                    Anchor: (Height: 30, Bottom: 10);
+                    Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+                }
+            }
+
+            Group #LevelInfo {
+                LayoutMode: Top;
+                Padding: (Horizontal: 5);
+                Anchor: (Top: 5);
+
+                Group {
+                    LayoutMode: Left;
+
+                    Group {
+                        FlexWeight: 1;
+                        Anchor: (Bottom: 5);
+                        LayoutMode: Left;
+
+                        Label #CurrentLevelInfo {
+                            Text: "Nível Atual:";
+                            Anchor: (Height: 30);
+                            Style: (
+                                TextColor: #FFFFFF,
+                                HorizontalAlignment: Center,
+                                FontSize: 14,
+                                VerticalAlignment: Center,
+                            );
+                        }
+
+                        Group {
+                            Anchor: (Height: 30, Width: 30, Left: 10);
+                            Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
+
+                            Label #CurrentIslandLevelLabel {
+                                Text: "1";
+                                Style: (
+                                    TextColor: #FFFFFF,
+                                    HorizontalAlignment: Center,
+                                    VerticalAlignment: Center,
+                                    FontSize: 16,
+                                    RenderBold: true,
+                                );
+                            }
+                        }
+                    }
+
+                    Button #LevelUpInfoButton {
+                        Anchor: (Height: 30, Bottom: 5);
+                        Padding: (Horizontal: 8, Vertical: 4);
+
+                        Style: ButtonStyle(
+                            Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16)),
+                            Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary_Hovered.png", Border: 16)),
+                            Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary_Pressed.png", Border: 16)),
+                            Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 16)),
+                            Sounds: $C.@ButtonSounds
+                        );
+
+                        Label {
+                            Text: "Informações";
+                            Style: (
+                                TextColor: #FFFFFF,
+                                HorizontalAlignment: Center,
+                                FontSize: 14,
+                                VerticalAlignment: Center,
+                            );
+                        }
+                    }
+                }
+
+                Group {
+                    Background: "../../Pages/Memories/MemoriesProgress/MemoriesBarBg.png";
+                    Anchor: (Height: 22, Top: 10);
+                    Padding: (Full: 6);
+
+                    ProgressBar #MemoriesProgressBar {
+                        BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarFill.png";
+                        EffectTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarTipOfTheBar.png";
+                        EffectWidth: 114;
+                        EffectHeight: 32;
+                        EffectOffset: 104;
+                        Value: 0.5;
+                    }
+
+                    ProgressBar #MemoriesProgressBarTexture {
+                        BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarTexture.png";
+                    }
+                }
+
+                Label #CurrentLevelInfo {
+                    Text: "Faltam 150 XP para o próximo nível";
+                    Anchor: (Height: 30, Top: 5);
+                    Style: (
+                        ...@InfoLabelStyle,
+                        HorizontalAlignment: Center,
+                        FontSize: 13
+                    );
+                }
+            }
         }
 
-        #Content {
-            LayoutMode: Top;
-            Padding: (Full: 15, Top: 10);
+        $C.@ContentSeparator {
+            @Anchor = (Top: 10, Bottom: 10);
+        }
 
-            Group #IslandInfo {
-                LayoutMode: Top;
-                Anchor: (Height: 150);
-                Padding: (Horizontal: 12, Vertical: 6);
+        Group #Row1 {
+            LayoutMode: Left;
+            Anchor: (Bottom: 8);
+
+            Button #SpawnButton {
+                FlexWeight: 1;
+                Anchor: (Right: 8);
+                Style: @MenuButtonStyle;
 
                 Group {
                     LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
 
-                    Label #IslandNameLabel {
+                    Group {
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+
+                        ItemIcon {
+                            ItemId: "Teleporter";
+                            Anchor: (Width: 40, Height: 40);
+                        }
+                    }
+
+                    Label {
+                        Text: "Spawn";
+                        Anchor: (Top: 4);
                         Style: (
-                            ...@InfoLabelStyle,
-                            TextColor: #FFFFFF,
-                            HorizontalAlignment: Center,
-                            FontSize: 16,
-                            RenderBold: true
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #9a9a9a
                         );
-                        Text: "Nome da Ilha";
-                        FlexWeight: 1;
-                        Anchor: (Height: 30, Bottom: 10);
-                        Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+                    }
+
+                    Label {
+                        Text: "Volte para o lobby";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
                     }
                 }
+            }
 
-                Group #LevelInfo {
+            Button #IslandButton {
+                FlexWeight: 1;
+                Style: @MenuButtonStyle;
+
+                Group {
                     LayoutMode: Top;
-                    Padding: (Horizontal: 5);
-                    Anchor: (Top: 5);
+                    Padding: (Top: 8, Bottom: 8);
 
                     Group {
-                        LayoutMode: Left;
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
 
-                        Group {
-                            FlexWeight: 1;
-                            Anchor: (Bottom: 5);
-                            LayoutMode: Left;
-
-                            Label #CurrentLevelInfo {
-                                Text: "Nível Atual:";
-                                Anchor: (Height: 30);
-                                Style: (
-                                    TextColor: #FFFFFF,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 14,
-                                    VerticalAlignment: Center,
-                                );
-                            }
-
-                            Group {
-                                Anchor: (Height: 30, Width: 30, Left: 10);
-                                Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
-
-                                Label #CurrentIslandLevelLabel {
-                                    Text: "1";
-                                    Style: (
-                                        TextColor: #FFFFFF,
-                                        HorizontalAlignment: Center,
-                                        VerticalAlignment: Center,
-                                        FontSize: 16,
-                                        RenderBold: true,
-                                    );
-                                }
-                            }
-                        }
-
-                        Button #LevelUpInfoButton {
-                            Anchor: (Height: 30, Bottom: 5);
-                            Padding: (Horizontal: 8, Vertical: 4);
-
-                            Style: ButtonStyle(
-                                Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary.png", Border: 16)),
-                                Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary_Hovered.png", Border: 16)),
-                                Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary_Pressed.png", Border: 16)),
-                                Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 16)),
-                                Sounds: $C.@ButtonSounds
-                            );
-
-                            Label {
-                                Text: "Informações";
-                                Style: (
-                                    TextColor: #FFFFFF,
-                                    HorizontalAlignment: Center,
-                                    FontSize: 14,
-                                    VerticalAlignment: Center,
-                                );
-                            }
+                        ItemIcon {
+                            ItemId: "Plant_Crop_Apple_Block";
+                            Anchor: (Width: 40, Height: 40);
                         }
                     }
 
-                    Group {
-                        Background: "../../Pages/Memories/MemoriesProgress/MemoriesBarBg.png";
-                        Anchor: (Height: 22, Top: 10);
-                        Padding: (Full: 6);
-
-                        ProgressBar #MemoriesProgressBar {
-                            BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarFill.png";
-                            EffectTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarTipOfTheBar.png";
-                            EffectWidth: 114;
-                            EffectHeight: 32;
-                            EffectOffset: 104;
-                            Value: 0.5;
-                        }
-
-                        ProgressBar #MemoriesProgressBarTexture {
-                            BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarTexture.png";
-                        }
-                    }
-
-                    Label #CurrentLevelInfo {
-                        Text: "Faltam 150 XP para o próximo nível";
-                        Anchor: (Height: 30, Top: 5);
+                    Label {
+                        Text: "Ilhas";
+                        Anchor: (Top: 4);
                         Style: (
-                            ...@InfoLabelStyle,
-                            HorizontalAlignment: Center,
-                            FontSize: 13
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #ffd93d
+                        );
+                    }
+
+                    Label {
+                        Text: "Gerencie suas ilhas";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
+                    }
+                }
+            }
+        }
+
+        Group #Row2 {
+            LayoutMode: Left;
+            Anchor: (Bottom: 8);
+
+            Button #QuestsButton {
+                FlexWeight: 1;
+                Anchor: (Right: 8);
+                Style: @DisabledButtonStyle;
+
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
+
+                    Group {
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+
+                        ItemIcon {
+                            ItemId: "Ingredient_Bolt_Cindercloth";
+                            Anchor: (Width: 40, Height: 40);
+                        }
+                    }
+
+                    Label {
+                        Text: "Quests";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #ff6b6b
+                        );
+                    }
+
+                    Label {
+                        Text: "Complete missões";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
                         );
                     }
                 }
             }
 
-            $C.@ContentSeparator {
-                @Anchor = (Top: 10, Bottom: 10);
-            }
+            Button #SkillsButton {
+                FlexWeight: 1;
+                Style: @DisabledButtonStyle;
 
-            Group #Row1 {
-                LayoutMode: Left;
-                Anchor: (Bottom: 8);
-
-                Button #SpawnButton {
-                    FlexWeight: 1;
-                    Anchor: (Right: 8);
-                    Style: @MenuButtonStyle;
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
 
                     Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
 
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Teleporter";
-                                Anchor: (Width: 40, Height: 40);
-                            }
-                        }
-
-                        Label {
-                            Text: "Spawn";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #9a9a9a
-                            );
-                        }
-
-                        Label {
-                            Text: "Volte para o lobby";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
+                        ItemIcon {
+                            ItemId: "Weapon_Sword_Frost";
+                            Anchor: (Width: 40, Height: 40);
                         }
                     }
-                }
 
-                Button #IslandButton {
-                    FlexWeight: 1;
-                    Style: @MenuButtonStyle;
+                    Label {
+                        Text: "Habilidades";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #3aceff
+                        );
+                    }
+
+                    Label {
+                        Text: "Melhore suas habilidades";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
+                    }
+                }
+            }
+        }
+
+        Group #Row3 {
+            LayoutMode: Left;
+
+            Button #EconomyButton {
+                FlexWeight: 1;
+                Anchor: (Right: 8);
+                Style: @DisabledButtonStyle;
+
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
 
                     Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
 
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Plant_Crop_Apple_Block";
-                                Anchor: (Width: 40, Height: 40);
-                            }
+                        ItemIcon {
+                            ItemId: "Ingredient_Powder_Boom";
+                            Anchor: (Width: 40, Height: 40);
                         }
+                    }
 
-                        Label {
-                            Text: "Ilhas";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #ffd93d
-                            );
-                        }
+                    Label {
+                        Text: "Economia";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #4ecdc4
+                        );
+                    }
 
-                        Label {
-                            Text: "Gerencie suas ilhas";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
-                        }
+                    Label {
+                        Text: "Acompanhe suas finanças";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
                     }
                 }
             }
 
-            Group #Row2 {
-                LayoutMode: Left;
-                Anchor: (Bottom: 8);
+            Button #FriendsButton {
+                FlexWeight: 1;
+                Style: @DisabledButtonStyle;
 
-                Button #QuestsButton {
-                    FlexWeight: 1;
-                    Anchor: (Right: 8);
-                    Style: @DisabledButtonStyle;
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
 
                     Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
 
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Ingredient_Bolt_Cindercloth";
-                                Anchor: (Width: 40, Height: 40);
-                            }
-                        }
-
-                        Label {
-                            Text: "Quests";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #ff6b6b
-                            );
-                        }
-
-                        Label {
-                            Text: "Complete missões";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
+                        ItemIcon {
+                            ItemId: "Deco_Trophy_Harvest";
+                            Anchor: (Width: 40, Height: 40);
                         }
                     }
-                }
 
-                Button #SkillsButton {
-                    FlexWeight: 1;
-                    Style: @DisabledButtonStyle;
+                    Label {
+                        Text: "Amigos";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #ffb3ba
+                        );
+                    }
+
+                    Label {
+                        Text: "Conecte-se com outros";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
+                    }
+                }
+            }
+        }
+
+        $C.@ContentSeparator {
+            @Anchor = (Top: 10, Bottom: 10);
+        }
+
+        Group #Row4 {
+            LayoutMode: Left;
+
+            Button #MarketButton {
+                FlexWeight: 1;
+                Anchor: (Right: 8);
+                Style: @DisabledButtonStyle;
+
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
 
                     Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
 
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Weapon_Sword_Frost";
-                                Anchor: (Width: 40, Height: 40);
-                            }
+                        ItemIcon {
+                            ItemId: "Furniture_Kweebec_Sign";
+                            Anchor: (Width: 40, Height: 40);
                         }
+                    }
 
-                        Label {
-                            Text: "Habilidades";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #3aceff
-                            );
-                        }
+                    Label {
+                        Text: "Mercado";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #cd7752
+                        );
+                    }
 
-                        Label {
-                            Text: "Melhore suas habilidades";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
-                        }
+                    Label {
+                        Text: "Compre e venda itens";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
                     }
                 }
             }
 
-            Group #Row3 {
-                LayoutMode: Left;
+            Button #RankingButton {
+                FlexWeight: 1;
+                Style: @DisabledButtonStyle;
 
-                Button #EconomyButton {
-                    FlexWeight: 1;
-                    Anchor: (Right: 8);
-                    Style: @DisabledButtonStyle;
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Top: 8, Bottom: 8);
 
                     Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
+                        Anchor: (Width: 50, Height: 50);
+                        Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
 
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Ingredient_Powder_Boom";
-                                Anchor: (Width: 40, Height: 40);
-                            }
-                        }
-
-                        Label {
-                            Text: "Economia";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #4ecdc4
-                            );
-                        }
-
-                        Label {
-                            Text: "Acompanhe suas finanças";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
+                        ItemIcon {
+                            ItemId: "Bench_Memories";
+                            Anchor: (Width: 40, Height: 40);
                         }
                     }
-                }
 
-                Button #FriendsButton {
-                    FlexWeight: 1;
-                    Style: @DisabledButtonStyle;
-
-                    Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
-
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Deco_Trophy_Harvest";
-                                Anchor: (Width: 40, Height: 40);
-                            }
-                        }
-
-                        Label {
-                            Text: "Amigos";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #ffb3ba
-                            );
-                        }
-
-                        Label {
-                            Text: "Conecte-se com outros";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
-                        }
+                    Label {
+                        Text: "Ranking";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 12,
+                            TextColor: #ffffff
+                        );
                     }
-                }
-            }
 
-            $C.@ContentSeparator {
-                @Anchor = (Top: 10, Bottom: 10);
-            }
-
-            Group #Row4 {
-                LayoutMode: Left;
-
-                Button #MarketButton {
-                    FlexWeight: 1;
-                    Anchor: (Right: 8);
-                    Style: @DisabledButtonStyle;
-
-                    Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
-
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Furniture_Kweebec_Sign";
-                                Anchor: (Width: 40, Height: 40);
-                            }
-                        }
-
-                        Label {
-                            Text: "Mercado";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #cd7752
-                            );
-                        }
-
-                        Label {
-                            Text: "Compre e venda itens";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
-                        }
-                    }
-                }
-
-                Button #RankingButton {
-                    FlexWeight: 1;
-                    Style: @DisabledButtonStyle;
-
-                    Group {
-                        LayoutMode: Top;
-                        Padding: (Top: 8, Bottom: 8);
-
-                        Group {
-                            Anchor: (Width: 50, Height: 50);
-                            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
-
-                            ItemIcon {
-                                ItemId: "Bench_Memories";
-                                Anchor: (Width: 40, Height: 40);
-                            }
-                        }
-
-                        Label {
-                            Text: "Ranking";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 12,
-                                TextColor: #ffffff
-                            );
-                        }
-
-                        Label {
-                            Text: "Conquiste posições";
-                            Anchor: (Top: 4);
-                            Style: (
-                                ...@MenuButtonLabelStyle,
-                                FontSize: 10,
-                                TextColor: #9aafc8
-                            );
-                        }
+                    Label {
+                        Text: "Conquiste posições";
+                        Anchor: (Top: 4);
+                        Style: (
+                            ...@MenuButtonLabelStyle,
+                            FontSize: 10,
+                            TextColor: #9aafc8
+                        );
                     }
                 }
             }
         }
     }
 }
+
+$C.@BackButton {}

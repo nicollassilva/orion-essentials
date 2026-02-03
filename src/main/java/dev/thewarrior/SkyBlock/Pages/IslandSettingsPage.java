@@ -21,6 +21,7 @@ import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelConfig;
 import dev.thewarrior.SkyBlock.Pages.Data.IslandSettingsPageData;
+import dev.thewarrior.SkyBlock.Pages.Utils.ConfirmDialog;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
@@ -163,7 +164,17 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 }
 
                 NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&dDeletando ilha..."));
-                // TODO: Confirm deletion dialog
+
+                ConfirmDialog dialog = new ConfirmDialog(playerRef,
+                        ColorUtil.colorize("Confirme a remoção permanente da ilha: \n&l&e" + this.islandData.getName() + "&r&c\n\nESSA AÇÃO NÃO PODE SER DESFEITA."),
+                        "Plant_Crop_Apple_Block",
+                        () -> {
+                            // TODO: Delete island logic
+                            NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aIlha deletada com sucesso."));
+                            this.onClose(ref, store);
+                        }, () -> player.getPageManager().openCustomPage(ref, store, new IslandSettingsPage(playerRef, islandData, islandsManager, islandLevelManager)));
+
+                player.getPageManager().openCustomPage(ref, store, dialog);
             }
             case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
