@@ -5,7 +5,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.protocol.packets.interface_.Page;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
@@ -113,8 +112,8 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#BackButton",
-                EventData.of("Action", "BackToPlayerIslandsPage"),
+                "#DeleteIslandButton",
+                EventData.of("Action", "DeleteIsland"),
                 false
         );
 
@@ -151,14 +150,20 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         switch (data.action) {
             case "SaveChanges" -> this.onSaveChanges(ref, store, playerRef, refIsValid, data);
-            case "BackToPlayerIslandsPage" -> {
+            case "DeleteIsland" -> {
                 if (!refIsValid) return;
 
                 final Player player = store.getComponent(ref, Player.getComponentType());
 
                 if(player == null || player.wasRemoved()) return;
 
-                player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(playerRef, this.islandsManager, this.islandLevelManager));
+                if(!this.playerRef.getUuid().equals(this.islandData.getOwnerId())) {
+                    NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cApenas o dono da ilha pode deletá-la."));
+                    return;
+                }
+
+                NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&dDeletando ilha..."));
+                // TODO: Confirm deletion dialog
             }
             case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
@@ -247,7 +252,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         if (player == null) return;
 
-        player.getPageManager().setPage(ref, store, Page.None);
+        player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(this.playerRef, this.islandsManager, this.islandLevelManager));
     }
 
     public void onDismiss(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {

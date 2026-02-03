@@ -278,8 +278,8 @@ $C.@PageOverlay {
                 LayoutMode: Left;
                 Anchor: (Height: 40);
 
-                $C.@TertiaryTextButton #BackButton {
-                    @Text = "Voltar";
+                $C.@CancelTextButton #DeleteIslandButton {
+                    @Text = "DELETAR";
                     Anchor: (Width: 130, Height: 40, Right: 8);
                 }
 
