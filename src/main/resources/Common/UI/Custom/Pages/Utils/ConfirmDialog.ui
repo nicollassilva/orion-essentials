@@ -1,60 +1,60 @@
 $C = "../../Common.ui";
 
-$C.@PageOverlay {
-    LayoutMode: Middle;
+$C.@PageOverlay {}
 
-    $C.@DecoratedContainer {
-        @CloseButton = true;
-        Anchor: (Width: 400, Height: 250);
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 400, Height: 250);
 
-        #Title {
-            $C.@Title { @Text = "Confirmar"; }
+    #Title {
+        $C.@Title { @Text = "CONFIRMAÇÃO NECESSÁRIA"; }
+    }
+
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 15, Top: 10);
+
+        // Item opcional
+        Group #ItemGroup {
+            Anchor: (Width: 50, Height: 50);
+            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+
+            ItemIcon #DialogItem {
+                ItemId: "Plant_Crop_Apple_Block";
+                Anchor: (Width: 40, Height: 40);
+            }
         }
 
-        #Content {
-            LayoutMode: Top;
-            Padding: (Full: 15, Top: 10);
+        // Mensagem
+        Label #DialogMessage {
+            Style: (
+                ...$C.@DefaultLabelStyle,
+                TextColor: #b7cedd,
+                HorizontalAlignment: Center,
+                FontSize: 14,
+            );
+            Text: "Você tem certeza?";
+            Anchor: (Height: 65, Top: 10);
+        }
 
-            // Item opcional
-            Group #ItemGroup {
-                Anchor: (Width: 50, Height: 50);
-                Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+        // Botões
+        Group #ButtonGroup {
+            LayoutMode: Left;
+            Anchor: (Height: 40, Top: 20);
 
-                ItemIcon #DialogItem {
-                    ItemId: "Plant_Crop_Apple_Block";
-                    Anchor: (Width: 40, Height: 40);
-                }
+            $C.@TextButton #ConfirmButton {
+                @Text = "CONFIRMAR";
+                FlexWeight: 1;
+                Anchor: (Right: 10, Height: 40);
             }
 
-            // Mensagem
-            Label #DialogMessage {
-                Style: (
-                    ...$C.@DefaultLabelStyle,
-                    TextColor: #b7cedd,
-                    HorizontalAlignment: Center,
-                    FontSize: 14,
-                );
-                Text: "Você tem certeza?";
-                Anchor: (Height: 65, Top: 10);
-            }
-
-            // Botões
-            Group #ButtonGroup {
-                LayoutMode: Left;
-                Anchor: (Height: 40, Top: 20);
-
-                $C.@SecondaryTextButton #CancelButton {
-                    @Text = "CANCELAR";
-                    FlexWeight: 1;
-                    Anchor: (Right: 10, Height: 40);
-                }
-
-                $C.@TextButton #ConfirmButton {
-                    @Text = "CONFIRMAR";
-                    FlexWeight: 1;
-                    Anchor: (Height: 40);
-                }
+            $C.@SecondaryTextButton #CancelButton {
+                @Text = "CANCELAR";
+                FlexWeight: 1;
+                Anchor: (Height: 40);
             }
         }
     }
 }
+
+$C.@BackButton {}

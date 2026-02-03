@@ -163,14 +163,13 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                     return;
                 }
 
-                NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&dDeletando ilha..."));
-
                 ConfirmDialog dialog = new ConfirmDialog(playerRef,
                         ColorUtil.colorize("Confirme a remoção permanente da ilha: \n&l&e" + this.islandData.getName() + "&r&c\n\nESSA AÇÃO NÃO PODE SER DESFEITA."),
                         "Plant_Crop_Apple_Block",
                         () -> {
                             // TODO: Delete island logic
                             NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aIlha deletada com sucesso."));
+
                             this.onClose(ref, store);
                         }, () -> player.getPageManager().openCustomPage(ref, store, new IslandSettingsPage(playerRef, islandData, islandsManager, islandLevelManager)));
 

@@ -9,4 +9,8 @@ public class IslandLevelSettings {
     public List<IslandLevelConfig> getLevels() {
         return levels;
     }
+
+    public void setLevels(List<IslandLevelConfig> levels) {
+        this.levels = new CopyOnWriteArrayList<>(levels);
+    }
 }

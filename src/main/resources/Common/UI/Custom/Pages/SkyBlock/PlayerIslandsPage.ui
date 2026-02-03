@@ -15,91 +15,91 @@ $C = "../../Common.ui";
     VerticalAlignment: Center
 );
 
-$C.@PageOverlay {
-    LayoutMode: Middle;
+$C.@PageOverlay {}
 
-    $C.@DecoratedContainer {
-        @CloseButton = true;
-        Anchor: (Width: 600, Height: 700);
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 600, Height: 700);
 
-        #Title {
-            $C.@Title { @Text = "Suas Ilhas - Orion Network"; }
-        }
+    #Title {
+        $C.@Title { @Text = "Suas Ilhas - Orion Network"; }
+    }
 
-        #Content {
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 15, Top: 10);
+
+        Group {
             LayoutMode: Top;
-            Padding: (Full: 15, Top: 10);
 
             Group {
                 LayoutMode: Top;
 
-                Group {
-                    LayoutMode: Top;
-
-                    Label {
-                        Style: (
-                            ...@InfoLabelStyle,
-                            TextColor: #FFFFFF,
-                            FontSize: 16,
-                            RenderBold: true
-                        );
-                        Text: "Minhas Ilhas";
-                        FlexWeight: 1;
-                        Anchor: (Height: 30, Bottom: 10);
-                        Padding: (Left: 10);
-                        Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
-                    }
-                }
-
-                // Grid 3x3 de ilhas
-                Group #IslandsGrid {
-                    LayoutMode: Top;
+                Label {
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Text: "Minhas Ilhas";
                     FlexWeight: 1;
-
-                    Group #Islands {
-                        LayoutMode: TopScrolling;
-                        FlexWeight: 1;
-                        Anchor: (Height: 250);
-                        ScrollbarStyle: @DefaultScrollbarStyle;
-                    }
+                    Anchor: (Height: 30, Bottom: 10);
+                    Padding: (Left: 10);
+                    Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
                 }
             }
 
+            // Grid 3x3 de ilhas
+            Group #IslandsGrid {
+                LayoutMode: Top;
+                FlexWeight: 1;
+
+                Group #Islands {
+                    LayoutMode: TopScrolling;
+                    FlexWeight: 1;
+                    Anchor: (Height: 250);
+                    ScrollbarStyle: @DefaultScrollbarStyle;
+                }
+            }
+        }
+
+        Group {
+            LayoutMode: Top;
+            Anchor: (Top: 10);
+
             Group {
                 LayoutMode: Top;
-                Anchor: (Top: 10);
 
-                Group {
-                    LayoutMode: Top;
-
-                    Label {
-                        Style: (
-                            ...@InfoLabelStyle,
-                            TextColor: #FFFFFF,
-                            FontSize: 16,
-                            RenderBold: true
-                        );
-                        Text: "Ilhas de Amigos";
-                        FlexWeight: 1;
-                        Anchor: (Height: 30, Bottom: 10);
-                        Padding: (Left: 10);
-                        Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
-                    }
-                }
-
-                // Grid 3x3 de ilhas
-                Group #IslandsGrid {
-                    LayoutMode: Top;
+                Label {
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Text: "Ilhas de Amigos";
                     FlexWeight: 1;
+                    Anchor: (Height: 30, Bottom: 10);
+                    Padding: (Left: 10);
+                    Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+                }
+            }
 
-                    Group #Islands {
-                        LayoutMode: TopScrolling;
-                        FlexWeight: 1;
-                        Anchor: (Height: 250);
-                        ScrollbarStyle: @DefaultScrollbarStyle;
-                    }
+            // Grid 3x3 de ilhas
+            Group #IslandsGrid {
+                LayoutMode: Top;
+                FlexWeight: 1;
+
+                Group #Islands {
+                    LayoutMode: TopScrolling;
+                    FlexWeight: 1;
+                    Anchor: (Height: 250);
+                    ScrollbarStyle: @DefaultScrollbarStyle;
                 }
             }
         }
     }
 }
+
+$C.@BackButton {}

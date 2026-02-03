@@ -9,6 +9,8 @@ public class IslandLevelConfig {
 
     private double requiredPoints;
 
+    private IslandLevelReward reward;
+
     public int getLevel() {
         return level;
     }
@@ -27,5 +29,9 @@ public class IslandLevelConfig {
 
     public double getRequiredPoints() {
         return requiredPoints;
+    }
+
+    public IslandLevelReward getReward() {
+        return reward;
     }
 }
