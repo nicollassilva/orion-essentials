@@ -20,120 +20,157 @@ $C.@DecoratedContainer {
         LayoutMode: Top;
         Padding: (Full: 15, Top: 10);
 
-        // Nome
+        // Nome and Título
         Group {
-            LayoutMode: Left;
+            LayoutMode: Top;
             Anchor: (Bottom: 10);
 
-            Label {
-                Text: "Nome:";
-                Style: (
-                    ...@InfoLabelStyle,
-                    TextColor: #b7cedd,
-                    FontSize: 16,
-                    RenderBold: true
-                );
-                Anchor: (Width: 100);
+            Group {
+                LayoutMode: Left;
+                Anchor: (Bottom: 5);
+
+                Label {
+                    Text: "Nome:";
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Anchor: (Width: 60);
+                }
+
+                Label #IslandNameLabel {
+                    Text: "Nome da Ilha";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    FlexWeight: 1;
+                }
             }
 
-            Label #IslandNameLabel {
-                Text: "Nome da Ilha";
-                Style: (
-                    TextColor: #FFFFFF,
-                    FontSize: 16,
-                    RenderBold: true
-                );
+            Group {
+                LayoutMode: Left;
+
+                Label {
+                    Text: "Título ao entrar:";
+                    Style: (
+                        ...@InfoLabelStyle,
+                        TextColor: #b7cedd,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    Anchor: (Width: 130);
+                }
+
+                Label #IslandTitleLabel {
+                    Text: "Título de entrada";
+                    Style: (
+                        TextColor: #FFFFFF,
+                        FontSize: 16,
+                        RenderBold: true
+                    );
+                    FlexWeight: 1;
+                }
+            }
+        }
+
+        // Separator
+        $C.@ContentSeparator {}
+
+        // Two columns
+        Group {
+            LayoutMode: Left;
+            Anchor: (Top: 10);
+
+            // Left column: Level
+            Group {
+                LayoutMode: Top;
                 FlexWeight: 1;
+                Anchor: (Right: 10);
+
+                // Top separator
+                $C.@ContentSeparator {}
+
+                // Labels
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Vertical: 10);
+
+                    Label #IslandLevelLabel {
+                        Text: "1/10";
+                        Style: (
+                            TextColor: #7ed56f,
+                            FontSize: 18,
+                            RenderBold: true,
+                            HorizontalAlignment: Center
+                        );
+                    }
+
+                    Label #IslandExpLabel {
+                        Text: "100/200 XP";
+                        Style: (
+                            TextColor: #FFFFFF,
+                            FontSize: 14,
+                            HorizontalAlignment: Center
+                        );
+                    }
+                }
+
+                // Bottom separator
+                $C.@ContentSeparator {}
+
+                // Button
+                $C.@SecondaryTextButton #LevelInfoButton {
+                    Text: "Informações sobre leveis";
+                    Anchor: (Height: 40);
+                }
             }
-        }
 
-        // Título de entrada
-        Group {
-            LayoutMode: Left;
-            Anchor: (Bottom: 10);
-
-            Label {
-                Text: "Título de entrada:";
-                Style: (
-                    ...@InfoLabelStyle,
-                    TextColor: #b7cedd,
-                    FontSize: 16,
-                    RenderBold: true
-                );
-                Anchor: (Width: 150);
-            }
-
-            Label #IslandTitleLabel {
-                Text: "Título de entrada";
-                Style: (
-                    TextColor: #FFFFFF,
-                    FontSize: 16,
-                    RenderBold: true
-                );
+            // Right column: Size
+            Group {
+                LayoutMode: Top;
                 FlexWeight: 1;
-            }
-        }
+                Anchor: (Left: 10);
 
-        // Level
-        Group {
-            LayoutMode: Left;
-            Anchor: (Bottom: 10);
+                // Top separator
+                $C.@ContentSeparator {}
 
-            Label {
-                Text: "Level:";
-                Style: (
-                    ...@InfoLabelStyle,
-                    TextColor: #b7cedd,
-                    FontSize: 16,
-                    RenderBold: true
-                );
-                Anchor: (Width: 60);
-            }
+                // Labels
+                Group {
+                    LayoutMode: Top;
+                    Padding: (Vertical: 10);
 
-            Label #IslandLevelLabel {
-                Text: "1";
-                Style: (
-                    TextColor: #7ed56f,
-                    FontSize: 16,
-                    RenderBold: true
-                );
-                Anchor: (Width: 50);
-            }
+                    Label #IslandSizeLabel {
+                        Text: "100x100";
+                        Style: (
+                            TextColor: #FFFFFF,
+                            FontSize: 18,
+                            RenderBold: true,
+                            HorizontalAlignment: Center
+                        );
+                    }
 
-            $C.@SecondaryTextButton #LevelInfoButton {
-                Text: "Informações sobre leveis";
-                Anchor: (Width: 200, Height: 40, Left: 20);
-            }
-        }
+                    Label #IslandUpgradeLabel {
+                        Text: "Próximo upgrade: 200x200";
+                        Style: (
+                            TextColor: #FFFFFF,
+                            FontSize: 14,
+                            HorizontalAlignment: Center
+                        );
+                    }
+                }
 
-        // Tamanho atual
-        Group {
-            LayoutMode: Left;
+                // Bottom separator
+                $C.@ContentSeparator {}
 
-            Label {
-                Text: "Tamanho atual:";
-                Style: (
-                    ...@InfoLabelStyle,
-                    TextColor: #b7cedd,
-                    FontSize: 16,
-                    RenderBold: true
-                );
-                Anchor: (Width: 130);
-            }
-
-            Label #IslandSizeLabel {
-                Text: "100x100";
-                Style: (
-                    TextColor: #FFFFFF,
-                    FontSize: 16,
-                    RenderBold: true
-                );
-                Anchor: (Width: 100);
-            }
-
-            $C.@SecondaryTextButton #ExpandButton {
-                Text: "Expandir";
-                Anchor: (Width: 120, Height: 40, Left: 20);
+                // Button
+                $C.@SecondaryTextButton #ExpandButton {
+                    Text: "Expandir";
+                    Anchor: (Height: 40);
+                }
             }
         }
     }

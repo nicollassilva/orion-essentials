@@ -17,10 +17,13 @@ import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
+import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelConfig;
+import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelSettings;
 import dev.thewarrior.SkyBlock.Pages.Data.IslandInfoPageData;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class IslandInfoPage extends InteractiveCustomUIPage<IslandInfoPageData> {
     private final IslandsManager islandsManager;
@@ -54,7 +57,17 @@ public class IslandInfoPage extends InteractiveCustomUIPage<IslandInfoPageData> 
     private void updateIslandInfo(UICommandBuilder commandBuilder) {
         commandBuilder.set("#IslandNameLabel.Text", this.islandData.getName());
         commandBuilder.set("#IslandTitleLabel.Text", this.islandData.getEnterTitle() != null ? this.islandData.getEnterTitle() : "Nenhum");
-        commandBuilder.set("#IslandLevelLabel.Text", String.valueOf(this.islandData.getLevel()));
+
+        IslandLevelSettings settings = this.islandLevelManager.getData();
+        List<IslandLevelConfig> levels = settings.getLevels();
+        int maxLevel = levels.size();
+        commandBuilder.set("#IslandLevelLabel.Text", this.islandData.getLevel() + "/" + maxLevel);
+
+        double currentExp = this.islandData.getExperience();
+        int level = this.islandData.getLevel();
+        double nextExp = level < maxLevel ? levels.get(level).getRequiredPoints() : currentExp;
+        commandBuilder.set("#IslandExpLabel.Text", (int)currentExp + "/" + (int)nextExp + " XP");
+
         commandBuilder.set("#IslandSizeLabel.Text", "100x100"); // Placeholder
     }
 
