@@ -27,7 +27,7 @@ public class IslandsData {
 
     public IslandData getIslandByNameAndOwner(final String islandName, final UUID ownerId) {
         for (final IslandData island : this.islands.values()) {
-            if(island.getIslandName().equalsIgnoreCase(islandName) && island.getOwnerId().equals(ownerId)) {
+            if(island.getName().equalsIgnoreCase(islandName) && island.getOwnerId().equals(ownerId)) {
                 return island;
             }
         }

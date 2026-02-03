@@ -94,7 +94,7 @@ public class IslandCreateCommand extends AbstractPlayerCommand {
                     boolean hasErrors = true;
 
                     try {
-                        final IslandData island = this.islandsManager.createIslandForPlayer(playerRef, worldName);
+                        final IslandData island = this.islandsManager.createIslandForPlayer(playerRef, worldName, spawnLocation, spawnRotation);
 
                         if(island != null) {
                             hasErrors = false;

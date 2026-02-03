@@ -1,5 +1,6 @@
 package dev.thewarrior.SkyBlock.Managers;
 
+import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.util.UUIDUtil;
@@ -36,7 +37,7 @@ public class IslandsManager extends StorableManager<IslandsData> {
         return new IslandsData();
     }
 
-    public IslandData createIslandForPlayer(final PlayerRef ref, String worldName) {
+    public IslandData createIslandForPlayer(final PlayerRef ref, String worldName, Vector3d spawnLocation, Vector3d spawnRotation) {
         final UUID ownerId = ref.getUuid();
 
         if(UUIDUtil.isEmptyOrNull(ownerId)) {
@@ -47,7 +48,7 @@ public class IslandsManager extends StorableManager<IslandsData> {
             throw new IllegalStateException("Generated world name is null or empty");
         }
 
-        final IslandData islandData = new IslandData(ref.getUuid(), worldName);
+        final IslandData islandData = new IslandData(ref.getUuid(), worldName, spawnLocation, spawnRotation);
 
         islandData.setEnterTitle("Bem vindo(a) à ilha de " + ref.getUsername());
 
@@ -103,6 +104,7 @@ public class IslandsManager extends StorableManager<IslandsData> {
             }
 
             if(needsUpdate) {
+                // TODO: Optimize to only save changed islands
                 this.saveConfig();
             }
         });

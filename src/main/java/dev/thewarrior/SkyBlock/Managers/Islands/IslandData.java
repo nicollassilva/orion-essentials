@@ -1,5 +1,6 @@
 package dev.thewarrior.SkyBlock.Managers.Islands;
 
+import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandFriendData;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandLastVisitData;
@@ -11,9 +12,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class IslandData {
     private UUID id;
+    private String name;
     private UUID ownerId;
 
-    private String islandName;
+    private Vector3d spawnLocation;
+    private Vector3d spawnRotation;
     private String worldName;
 
     private String enterTitle;
@@ -23,21 +26,23 @@ public class IslandData {
 
     private IslandLastVisitData lastVisitData;
 
-    private final transient AtomicBoolean needsUpdate = new AtomicBoolean(false);
+    private transient AtomicBoolean needsUpdate = new AtomicBoolean(false);
 
-    private IslandSettings islandSettings = new IslandSettings();
+    private IslandSettings settings;
 
     private ObjectArraySet<IslandFriendData> friends = new ObjectArraySet<>();
 
-    public IslandData(UUID ownerId, String worldName) {
+    public IslandData(UUID ownerId, String worldName, Vector3d spawnLocation, Vector3d spawnRotation) {
         this.id = UUID.randomUUID();
-
+        this.name = "Default";
         this.ownerId = ownerId;
         this.worldName = worldName;
-        this.islandName = "Default";
+        this.spawnLocation = spawnLocation.clone();
+        this.spawnRotation = spawnRotation.clone();
+        this.settings = new IslandSettings();
 
         if(!worldName.endsWith("1")) {
-            this.islandName += worldName.substring(worldName.length() - 1);
+            this.name += worldName.substring(worldName.length() - 1);
         }
 
         this.needsUpdate.set(true);
@@ -47,12 +52,30 @@ public class IslandData {
         return this.id;
     }
 
+    public Vector3d getSpawnLocation() {
+        return this.spawnLocation;
+    }
+
+    public void setSpawnLocation(Vector3d spawnLocation) {
+        this.spawnLocation = spawnLocation;
+        this.setNeedsUpdate(true);
+    }
+
+    public Vector3d getSpawnRotation() {
+        return this.spawnRotation;
+    }
+
+    public void setSpawnRotation(Vector3d spawnRotation) {
+        this.spawnRotation = spawnRotation;
+        this.setNeedsUpdate(true);
+    }
+
     public String getWorldName() {
         return this.worldName;
     }
 
-    public String getIslandName() {
-        return this.islandName;
+    public String getName() {
+        return this.name;
     }
 
     public String getEnterTitle() {
@@ -61,12 +84,13 @@ public class IslandData {
 
     public void setEnterTitle(String enterTitle) {
         this.enterTitle = enterTitle;
-        this.needsUpdate.set(true);
+        this.setNeedsUpdate(true);
     }
 
-    public void setIslandName(String islandName) {
-        this.islandName = islandName;
-        this.needsUpdate.set(true);
+    public void setName(String name) {
+        this.name = name;
+
+        this.setNeedsUpdate(true);
     }
 
     public int getLevel() {
@@ -75,7 +99,8 @@ public class IslandData {
 
     public void setLevel(int level) {
         this.level = level;
-        this.needsUpdate.set(true);
+
+        this.setNeedsUpdate(true);
     }
 
     public double getExperience() {
@@ -84,7 +109,7 @@ public class IslandData {
 
     public void setExperience(double experience) {
         this.experience = experience;
-        this.needsUpdate.set(true);
+        this.setNeedsUpdate(true);
     }
 
     public IslandLastVisitData getLastVisitData() {
@@ -93,7 +118,7 @@ public class IslandData {
 
     public void setLastVisitData(IslandLastVisitData lastVisitData) {
         this.lastVisitData = lastVisitData;
-        this.needsUpdate.set(true);
+        this.setNeedsUpdate(true);
     }
 
     public ObjectArraySet<IslandFriendData> getFriends() {
@@ -117,7 +142,7 @@ public class IslandData {
 
         this.friends.add(new IslandFriendData(playerRef.getUuid(), nickname));
 
-        this.needsUpdate.set(true);
+        this.setNeedsUpdate(true);
     }
 
     public void removeFriend(UUID friendUuid) {
@@ -125,14 +150,34 @@ public class IslandData {
 
         this.friends.removeIf(friendData -> friendData.getUuid().equals(friendUuid));
 
-        this.needsUpdate.set(true);
+        this.setNeedsUpdate(true);
     }
 
+    /**
+     * Getters are necessary because AtomicBoolean is transient, so after deserialization it can be null.
+     */
     public boolean needsUpdate() {
+        if(this.needsUpdate == null) {
+            this.needsUpdate = new AtomicBoolean(false);
+        }
+
         return this.needsUpdate.getAndSet(false);
     }
 
+    public void setNeedsUpdate(boolean needsUpdate) {
+        if(this.needsUpdate == null) {
+            this.needsUpdate = new AtomicBoolean(needsUpdate);
+        } else {
+            this.needsUpdate.set(needsUpdate);
+        }
+    }
+    /*********/
+
     public UUID getOwnerId() {
         return this.ownerId;
+    }
+
+    public IslandSettings getSettings() {
+        return this.settings;
     }
 }

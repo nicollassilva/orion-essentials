@@ -2,6 +2,7 @@ package dev.thewarrior.SkyBlock.Pages;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.protocol.packets.interface_.Page;
@@ -13,8 +14,10 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
+import dev.thewarrior.Essentials.Managers.TeleportManager;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
+import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandSettings;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelConfig;
@@ -56,7 +59,7 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
     private void updateIslandInfo(UICommandBuilder commandBuilder) {
         // Nome e Título
-        commandBuilder.set("#NameInput.Value", this.islandData.getIslandName());
+        commandBuilder.set("#NameInput.Value", this.islandData.getName());
         commandBuilder.set("#TitleInput.Value", this.islandData.getEnterTitle() != null ? this.islandData.getEnterTitle() : "");
 
         // Nível
@@ -82,18 +85,21 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         // Amigos (placeholder)
         commandBuilder.set("#FriendsPlaceholder.Text", "Amigos: " + this.islandData.getFriends().size());
 
-        // Settings (placeholder)
-        commandBuilder.set("#SettingsPlaceholder.Text", "Configurações aqui");
+        // Settings
+        IslandSettings settings = this.islandData.getSettings();
+
+        if(settings != null) {
+            commandBuilder.set("#AllowVisitorsCheck #CheckBox.Value", settings.isAllowVisitors());
+            commandBuilder.set("#AllowVisitorsChatCheck #CheckBox.Value", settings.isAllowVisitorsChat());
+            commandBuilder.set("#AllowVisitorsBuildCheck #CheckBox.Value", settings.isAllowVisitorsToBuild());
+            commandBuilder.set("#AllowFriendsVisitCheck #CheckBox.Value", settings.isAllowFriendsToVisit());
+            commandBuilder.set("#AllowFriendsBuildCheck #CheckBox.Value", settings.isAllowFriendsToBuild());
+            commandBuilder.set("#AllowFriendsDestroyCheck #CheckBox.Value", settings.isAllowFriendsToDestroy());
+            commandBuilder.set("#PvpEnabledCheck #CheckBox.Value", settings.isPvpEnabled());
+        }
     }
 
     private void bindMenuEvents(UIEventBuilder eventBuilder) {
-        eventBuilder.addEventBinding(
-                CustomUIEventBindingType.Activating,
-                "#SaveButton",
-                EventData.of("Action", "SaveChanges"),
-                false
-        );
-
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#TeleportButton",
@@ -103,7 +109,30 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#CloseButtonAction",
+                "#BackButton",
+                EventData.of("Action", "BackToPlayerIslandsPage"),
+                false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#SaveButton",
+                EventData.of("Action", "SaveChanges")
+                        .append("@NameInput", "#NameInput.Value")
+                        .append("@TitleInput", "#TitleInput.Value")
+                        .append("@AllowVisitorsCheck", "#AllowVisitorsCheck #CheckBox.Value")
+                        .append("@AllowVisitorsChatCheck", "#AllowVisitorsChatCheck #CheckBox.Value")
+                        .append("@AllowVisitorsBuildCheck", "#AllowVisitorsBuildCheck #CheckBox.Value")
+                        .append("@AllowFriendsVisitCheck", "#AllowFriendsVisitCheck #CheckBox.Value")
+                        .append("@AllowFriendsBuildCheck", "#AllowFriendsBuildCheck #CheckBox.Value")
+                        .append("@AllowFriendsDestroyCheck", "#AllowFriendsDestroyCheck #CheckBox.Value")
+                        .append("@PvpEnabledCheck", "#PvpEnabledCheck #CheckBox.Value")
+                , false
+        );
+
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#CloseButton",
                 EventData.of("Action", "ClosePage"),
                 false
         );
@@ -118,33 +147,78 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
 
         switch (data.action) {
             case "SaveChanges" -> this.onSaveChanges(ref, store, playerRef, refIsValid, data);
+            case "BackToPlayerIslandsPage" -> {
+                if (!refIsValid) return;
+
+                final Player player = store.getComponent(ref, Player.getComponentType());
+
+                if(player == null || player.wasRemoved()) return;
+
+                player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(playerRef, this.islandsManager, this.islandLevelManager));
+            }
             case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
             default -> this.onClose(ref, store);
         }
     }
 
     private void onSaveChanges(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid, IslandSettingsPageData data) {
-        if (refIsValid) {
-            // Update island data
-            this.islandData.setIslandName(data.newName);
-            this.islandData.setEnterTitle(data.newTitle);
-            this.islandsManager.save(this.islandData);
+        if (!refIsValid) return;
 
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&aConfigurações salvas!")
-            );
+        boolean hasValidNameChanges = data.newName != null && !data.newName.isEmpty() && !data.newName.equals(this.islandData.getName());
+        boolean hasValidTitleChanges = !data.newTitle.equals(this.islandData.getEnterTitle());
+
+        if(hasValidNameChanges) this.islandData.setName(data.newName);
+        if(hasValidTitleChanges) this.islandData.setEnterTitle(data.newTitle);
+
+        boolean hasAllowVisitorsChange = this.islandData.getSettings().isAllowVisitors() != data.allowVisitors;
+        boolean hasAllowVisitorsChatChange = this.islandData.getSettings().isAllowVisitorsChat() != data.allowVisitorsChat;
+        boolean hasAllowVisitorsBuildChange = this.islandData.getSettings().isAllowVisitorsToBuild() != data.allowVisitorsBuild;
+        boolean hasAllowFriendsVisitChange = this.islandData.getSettings().isAllowFriendsToVisit() != data.allowFriendsVisit;
+        boolean hasAllowFriendsBuildChange = this.islandData.getSettings().isAllowFriendsToBuild() != data.allowFriendsBuild;
+        boolean hasAllowFriendsDestroyChange = this.islandData.getSettings().isAllowFriendsToDestroy() != data.allowFriendsDestroy;
+        boolean hasPvpEnabledChange = this.islandData.getSettings().isPvpEnabled() != data.pvpEnabled;
+
+        boolean hasAnySettingsChanges = hasAllowVisitorsChange || hasAllowVisitorsChatChange || hasAllowVisitorsBuildChange ||
+                hasAllowFriendsVisitChange || hasAllowFriendsBuildChange || hasAllowFriendsDestroyChange || hasPvpEnabledChange;
+
+        if(hasAnySettingsChanges) {
+            final IslandSettings settings = this.islandData.getSettings();
+
+            if(hasAllowVisitorsChange) settings.setAllowVisitors(data.allowVisitors);
+            if(hasAllowVisitorsChatChange) settings.setAllowVisitorsChat(data.allowVisitorsChat);
+            if(hasAllowVisitorsBuildChange) settings.setAllowVisitorsToBuild(data.allowVisitorsBuild);
+            if(hasAllowFriendsVisitChange) settings.setAllowFriendsToVisit(data.allowFriendsVisit);
+            if(hasAllowFriendsBuildChange) settings.setAllowFriendsToBuild(data.allowFriendsBuild);
+            if(hasAllowFriendsDestroyChange) settings.setAllowFriendsToDestroy(data.allowFriendsDestroy);
+            if(hasPvpEnabledChange) settings.setPvpEnabled(data.pvpEnabled);
         }
+
+        if(!hasValidNameChanges && !hasValidTitleChanges && !hasAnySettingsChanges) {
+            NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&eNenhuma alteração foi feita nas configurações da ilha."));
+            return;
+        }
+
+        this.islandData.setNeedsUpdate(true);
+        this.islandsManager.save(this.islandData);
+
+        NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aConfigurações da ilha salvas com sucesso!"));
     }
 
     private void onTeleportToIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
-        if (refIsValid) {
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&aTeleportando para a ilha...")
-            );
-            // TODO: Teleport logic
-        }
+        if (!refIsValid) return;
+
+        Vector3d spawnLocation = this.islandData.getSpawnLocation();
+        Vector3d spawnRotation = this.islandData.getSpawnRotation();
+
+        TeleportManager.get().queueTeleport(
+                playerRef, ref, store,
+                playerRef.getTransform().getPosition(),
+                this.islandData.getWorldName(),
+                spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ(),
+                (float) spawnRotation.getY(), (float) spawnRotation.getX(),
+                null
+        );
+
         this.onClose(ref, store);
     }
 

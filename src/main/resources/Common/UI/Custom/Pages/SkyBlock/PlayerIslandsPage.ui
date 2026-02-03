@@ -19,6 +19,7 @@ $C.@PageOverlay {
     LayoutMode: Middle;
 
     $C.@DecoratedContainer {
+        @CloseButton = true;
         Anchor: (Width: 600, Height: 700);
 
         #Title {

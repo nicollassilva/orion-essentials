@@ -53,7 +53,10 @@ public class EssentialsBootstrap extends BasePluginModule {
         this.pluginConfigManager = new PluginConfigManager(this.getDataDirectory());
         this.warpManager = new WarpManager(this.getDataDirectory());
         this.regionManager = new RegionManager(this.getDataDirectory());
+
         this.teleportManager = new TeleportManager(this.pluginConfigManager, this.regionManager);
+        TeleportManager.INSTANCE = this.teleportManager;
+
         this.tpaManager = new TpaManager();
         this.permissionManager = new PermissionManager(this.getDataDirectory(), this.pluginConfigManager);
         this.playerHistoryManager = new PlayerHistoryManager(this.getDataDirectory());

@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Teleport destinations are stored as data and executed via buffer.run() callback.
  */
 public class TeleportManager {
+    public static TeleportManager INSTANCE;
+
     private static final String BYPASS_PERMISSION = PermissionUtil.getPermission("teleport.bypass");
     private static final double CANCEL_DISTANCE = 2.0;
 
@@ -37,6 +39,14 @@ public class TeleportManager {
     public TeleportManager(@Nonnull PluginConfigManager configManager, @Nonnull RegionManager regionManager) {
         this.configManager = configManager;
         this.regionManager = regionManager;
+    }
+
+    public static TeleportManager get() {
+        if(INSTANCE == null) {
+            throw new IllegalStateException("TeleportManager has not been initialized yet.");
+        }
+
+        return INSTANCE;
     }
 
     /**

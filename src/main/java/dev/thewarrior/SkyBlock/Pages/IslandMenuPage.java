@@ -14,8 +14,10 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
+import dev.thewarrior.Essentials.Managers.PluginConfigManager;
+import dev.thewarrior.Essentials.Managers.TeleportManager;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
-import dev.thewarrior.MiniGames.Utils.GameUtil;
+import dev.thewarrior.Essentials.Utils.Location;
 import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
@@ -32,7 +34,11 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
 
     private IslandData currentIsland;
 
-    public IslandMenuPage(@Nonnull PlayerRef playerRef, IslandsManager islandsManager, IslandLevelManager islandLevelManager) {
+    public IslandMenuPage(
+            @Nonnull PlayerRef playerRef,
+            IslandsManager islandsManager,
+            IslandLevelManager islandLevelManager
+    ) {
         super(playerRef, CustomPageLifetime.CanDismiss, IslandMenuPageData.CODEC);
 
         this.playerRef = playerRef;
@@ -73,8 +79,9 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
 
     private void updateIslandInfo(UICommandBuilder commandBuilder) {
         if (this.currentIsland != null) {
-            commandBuilder.set("#IslandNameLabel.Text", this.currentIsland.getIslandName());
-            commandBuilder.set("#CurrentIslandLevelLabel.Text", this.currentIsland.getLevel());
+            commandBuilder.set("#LevelInfo.Visible", true);
+            commandBuilder.set("#IslandNameLabel.Text", this.currentIsland.getName());
+            commandBuilder.set("#CurrentIslandLevelLabel.Text", String.valueOf(this.currentIsland.getLevel()));
         } else {
             commandBuilder.set("#IslandNameLabel.Text", "Nenhuma ilha selecionada");
             commandBuilder.set("#LevelInfo.Visible", false);
@@ -252,8 +259,28 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
     private void onTeleportToSpawn(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
         if (!refIsValid) return;
 
-        NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&bTeleporting to Spawn..."));
-        GameUtil.teleportPlayerToServerSpawn(playerRef);
+        Location spawn = PluginConfigManager.SPAWN_LOCATION;
+
+        if(spawn == null) {
+            NotificationUtil.sendNotification(
+                    playerRef.getPacketHandler(),
+                    ColorUtil.colorize("&cLocalização de spawn não está definida.")
+            );
+        } else {
+            TeleportManager.get().queueTeleport(
+                    playerRef,
+                    ref,
+                    store,
+                    playerRef.getTransform().getPosition(),
+                    spawn.getWorld(),
+                    spawn.getX(),
+                    spawn.getY(),
+                    spawn.getZ(),
+                    spawn.getYaw(),
+                    spawn.getPitch(),
+                    null
+            );
+        }
 
         this.onClose(ref, store);
     }

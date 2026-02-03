@@ -57,7 +57,7 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
             if (i < islands.size()) {
                 IslandData island = islands.get(i);
                 commandBuilder.set("#LevelLabel" + (i + 1) + ".Text", String.valueOf(island.getLevel()));
-                commandBuilder.set("#NameLabel" + (i + 1) + ".Text", island.getIslandName());
+                commandBuilder.set("#NameLabel" + (i + 1) + ".Text", island.getName());
                 commandBuilder.set("#Island" + (i + 1) + ".Visible", true);
             } else {
                 commandBuilder.set("#Island" + (i + 1) + ".Visible", false);
@@ -66,6 +66,13 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
     }
 
     private void bindMenuEvents(UIEventBuilder eventBuilder) {
+        eventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#CloseButton",
+                EventData.of("Action", "ClosePage"),
+                false
+        );
+
         for (int i = 1; i <= 9; i++) {
             eventBuilder.addEventBinding(
                     CustomUIEventBindingType.Activating,
@@ -97,6 +104,8 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
 
         if (islandIndex > 0 && islandIndex <= islands.size()) {
             IslandData selectedIsland = islands.get(islandIndex - 1);
+
+            if(selectedIsland == null) return;
 
             Player player = store.getComponent(ref, Player.getComponentType());
 

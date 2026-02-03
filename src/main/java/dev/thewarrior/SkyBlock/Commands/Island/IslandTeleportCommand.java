@@ -78,7 +78,7 @@ public class IslandTeleportCommand extends AbstractPlayerCommand {
                 playerRef, ref, store,
                 playerRef.getTransform().getPosition(),
                 islandData.getWorldName(), 2.5, 109, -2.6, -3.12f, 0f,
-                ColorUtil.colorize("&aTeleportando para a ilha &f" + islandData.getIslandName() + "&a" + (ownerId.equals(playerRef.getUuid()) ? "" : " do jogador &f" + parts[3]) + "&a...")
+                ColorUtil.colorize("&aTeleportando para a ilha &f" + islandData.getName() + "&a" + (ownerId.equals(playerRef.getUuid()) ? "" : " do jogador &f" + parts[3]) + "&a...")
         );
     }
 }
