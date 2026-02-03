@@ -11,6 +11,15 @@ public class IslandLevelConfig {
 
     private IslandLevelReward reward;
 
+    public IslandLevelConfig(int level, String displayName, String icon, String description, double requiredPoints, IslandLevelReward reward) {
+        this.level = level;
+        this.displayName = displayName;
+        this.icon = icon;
+        this.description = description;
+        this.requiredPoints = requiredPoints;
+        this.reward = reward;
+    }
+
     public int getLevel() {
         return level;
     }
