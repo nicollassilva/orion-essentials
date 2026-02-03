@@ -1,6 +1,10 @@
+$C = "../../Common.ui";
+
 Group {
     Anchor: (Width: 50, Height: 50, Right: 5);
     Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+    TextTooltipStyle: $C.@DefaultTextTooltipStyle;
+    TextTooltipShowDelay: 0.1;
 
     ItemIcon #ItemIcon {
         ItemId: "Rock_Stone_Cobble";

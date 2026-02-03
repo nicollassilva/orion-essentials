@@ -5,6 +5,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.protocol.packets.interface_.Page;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
@@ -170,13 +171,13 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                             // TODO: Delete island logic
                             NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aIlha deletada com sucesso."));
 
-                            this.onClose(ref, store);
+                            this.onClose(ref, store, true);
                         }, () -> player.getPageManager().openCustomPage(ref, store, new IslandSettingsPage(playerRef, islandData, islandsManager, islandLevelManager)));
 
                 player.getPageManager().openCustomPage(ref, store, dialog);
             }
             case "TeleportToIsland" -> this.onTeleportToIsland(ref, store, playerRef, refIsValid);
-            default -> this.onClose(ref, store);
+            default -> this.onClose(ref, store, true);
         }
     }
 
@@ -254,15 +255,19 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
                 null
         );
 
-        this.onClose(ref, store);
+        this.onClose(ref, store, false);
     }
 
-    public void onClose(Ref<EntityStore> ref, Store<EntityStore> store) {
+    public void onClose(Ref<EntityStore> ref, Store<EntityStore> store, boolean reopenIslandPage) {
         Player player = store.getComponent(ref, Player.getComponentType());
 
         if (player == null) return;
 
-        player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(this.playerRef, this.islandsManager, this.islandLevelManager));
+        if(reopenIslandPage) {
+            player.getPageManager().openCustomPage(ref, store, new PlayerIslandsPage(this.playerRef, this.islandsManager, this.islandLevelManager));
+        } else {
+            player.getPageManager().setPage(ref, store, Page.None);
+        }
     }
 
     public void onDismiss(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {

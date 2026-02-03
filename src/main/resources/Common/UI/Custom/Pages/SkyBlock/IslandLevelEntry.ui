@@ -13,25 +13,32 @@ Group {
     // Header: Level, Title, XP
     Group {
         LayoutMode: Left;
-        Anchor: (Bottom: 5);
+        Anchor: (Bottom: 10);
 
-        Label #LevelLabel {
-            Text: "Nível 1";
-            Style: (
-                TextColor: #FFFFFF,
-                FontSize: 16,
-                RenderBold: true,
-                HorizontalAlignment: Center
-            );
-            Anchor: (Width: 80);
+        Group {
+            Anchor: (Width: 30, Height: 30);
+            Background: (TexturePath: "../../Common/Buttons/Primary.png", Border: 16);
+
+            Label #LevelLabel {
+                Text: "1";
+                Style: (
+                    TextColor: #FFFFFF,
+                    HorizontalAlignment: Center,
+                    VerticalAlignment: Center,
+                    FontSize: 16,
+                    RenderBold: true
+                );
+            }
         }
 
         Label #TitleLabel {
             Text: "Título do Nível";
+            Anchor: (Left: 10);
             Style: (
-                TextColor: #FFFFFF,
-                FontSize: 14,
-                RenderBold: true
+                TextColor: #b7cedd,
+                FontSize: 16,
+                RenderBold: true,
+                VerticalAlignment: Center
             );
             FlexWeight: 1;
         }
@@ -41,20 +48,27 @@ Group {
             Style: (
                 TextColor: #7ed56f,
                 FontSize: 14,
-                HorizontalAlignment: End
+                HorizontalAlignment: End,
+                RenderBold: true,
+                VerticalAlignment: Center
             );
-            Anchor: (Width: 100);
+            Anchor: (Width: 120);
         }
     }
 
     // Icon and Description
     Group {
         LayoutMode: Left;
-        Anchor: (Bottom: 5);
+        Anchor: (Bottom: 10);
 
-        ItemIcon #LevelIcon {
-            ItemId: "icon_level_1";
-            Anchor: (Width: 40, Height: 40);
+        Group {
+            Anchor: (Width: 80, Height: 80);
+            Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+
+            ItemIcon #LevelIcon {
+                ItemId: "icon_level_1";
+                Anchor: (Width: 60, Height: 60);
+            }
         }
 
         Label #DescriptionLabel {
@@ -62,30 +76,20 @@ Group {
             Style: (
                 ...@InfoLabelStyle,
                 TextColor: #bfcdd5,
-                FontSize: 12
+                FontSize: 13,
+                VerticalAlignment: Start
             );
             FlexWeight: 1;
-            Anchor: (Left: 10);
+            Anchor: (Left: 15);
         }
     }
 
     // Rewards
     Group #RewardsGroup {
-        LayoutMode: Left;
-        Anchor: (Top: 5);
-
-        Label {
-            Text: "Recompensas:";
-            Style: (
-                TextColor: #FFFFFF,
-                FontSize: 12,
-                RenderBold: true
-            );
-            Anchor: (Width: 100);
-        }
+        LayoutMode: Right;
 
         Group #RewardsList {
-            LayoutMode: Left;
+            LayoutMode: Right;
             FlexWeight: 1;
         }
     }

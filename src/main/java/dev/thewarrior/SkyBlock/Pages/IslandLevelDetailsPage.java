@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
 import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelConfig;
 import dev.thewarrior.SkyBlock.Managers.Levels.IslandLevelReward;
@@ -60,7 +61,7 @@ public class IslandLevelDetailsPage extends InteractiveCustomUIPage<IslandLevelD
 
             commandBuilder.append("#LevelList", "Pages/SkyBlock/IslandLevelEntry.ui");
 
-            commandBuilder.set(selector + " #LevelLabel.Text", "Nível " + level.getLevel());
+            commandBuilder.set(selector + " #LevelLabel.Text", String.valueOf(level.getLevel()));
             commandBuilder.set(selector + " #TitleLabel.Text", level.getDisplayName());
             commandBuilder.set(selector + " #XPRequiredLabel.Text", "XP: " + level.getRequiredPoints());
             commandBuilder.set(selector + " #LevelIcon.ItemId", level.getIcon());
@@ -72,6 +73,7 @@ public class IslandLevelDetailsPage extends InteractiveCustomUIPage<IslandLevelD
                 String rewardSelector = selector + " #RewardsList[0]";
                 commandBuilder.append(selector + " #RewardsList", "Pages/SkyBlock/RewardItem.ui");
                 commandBuilder.set(rewardSelector + " #ItemIcon.ItemId", "Ingredient_Powder_Boom");
+                commandBuilder.set(rewardSelector + ".TooltipTextSpans", ColorUtil.colorize("&fRecompensa: &l&eMoedas\n&f&xQuantidade: &l&b" + reward.getCointAmount()));
                 if (reward.getCointAmount() > 1) {
                     commandBuilder.set(rewardSelector + " #QuantityLabel.Text", String.valueOf(reward.getCointAmount()));
                     commandBuilder.set(rewardSelector + " #QuantityLabel.Visible", true);
@@ -85,6 +87,7 @@ public class IslandLevelDetailsPage extends InteractiveCustomUIPage<IslandLevelD
                 String rewardSelector = selector + " #RewardsList[" + index + "]";
                 commandBuilder.append(selector + " #RewardsList", "Pages/SkyBlock/RewardItem.ui");
                 commandBuilder.set(rewardSelector + " #ItemIcon.ItemId", reward.getItemId());
+                commandBuilder.set(rewardSelector + ".TooltipTextSpans", ColorUtil.colorize("&fRecompensa: &l&e" + reward.getItemId() + "\n&f&xQuantidade: &l&b" + reward.getItemAmount()));
                 if (reward.getItemAmount() > 1) {
                     commandBuilder.set(rewardSelector + " #QuantityLabel.Text", String.valueOf(reward.getItemAmount()));
                     commandBuilder.set(rewardSelector + " #QuantityLabel.Visible", true);
