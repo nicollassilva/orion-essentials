@@ -1,0 +1,31 @@
+$C = "../../Common.ui";
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+$C.@PageOverlay {}
+
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 600, Height: 700);
+
+    #Title {
+        $C.@Title { @Text = "Detalhes dos Níveis de Ilha"; }
+    }
+
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 15, Top: 10);
+
+        Group #LevelList {
+            LayoutMode: TopScrolling;
+            ScrollbarStyle: $C.@DefaultScrollbarStyle;
+            FlexWeight: 1;
+        }
+    }
+}
+
+$C.@BackButton {}

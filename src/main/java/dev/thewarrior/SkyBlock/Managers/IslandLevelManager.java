@@ -23,7 +23,7 @@ public class IslandLevelManager extends StorableManager<IslandLevelSettings> {
 
         for (int i = 1; i <= 30; i++) {
             String displayName = "Temporada do Nível " + i; // Placeholder para alteração posterior
-            String icon = "icon_level_" + i; // Placeholder
+            String icon = "Bench_Memories"; // Placeholder
             String description = "Descrição para o nível " + i; // Placeholder
             double requiredPoints = 100.0 * i * i; // Pontos necessários aumentam quadraticamente
 

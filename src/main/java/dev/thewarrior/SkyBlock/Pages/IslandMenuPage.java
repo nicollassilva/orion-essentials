@@ -175,15 +175,13 @@ public class IslandMenuPage extends InteractiveCustomUIPage<IslandMenuPageData> 
     }
 
     private void onOpenLevelUpInfo(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
-        if (refIsValid) {
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&aAbrindo info de level...")
-            );
-        }
+        if (!refIsValid) return;
 
-        // TODO: Abrir página de info de level
-        this.onClose(ref, store);
+        Player player = store.getComponent(ref, Player.getComponentType());
+
+        if (player != null && !player.wasRemoved()) {
+            player.getPageManager().openCustomPage(ref, store, new IslandLevelDetailsPage(playerRef, this.islandLevelManager));
+        }
     }
 
     private void onOpenIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {

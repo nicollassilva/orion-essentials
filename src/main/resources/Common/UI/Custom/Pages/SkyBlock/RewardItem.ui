@@ -1,0 +1,21 @@
+Group {
+    Anchor: (Width: 50, Height: 50, Right: 5);
+    Background: (TexturePath: "../../Common/Buttons/Disabled.png", Border: 16);
+
+    ItemIcon #ItemIcon {
+        ItemId: "Rock_Stone_Cobble";
+        Anchor: (Width: 40, Height: 40);
+    }
+
+    Label #QuantityLabel {
+        Text: "1";
+        Style: (
+            TextColor: #FFFFFF,
+            HorizontalAlignment: Center,
+            VerticalAlignment: End,
+            FontSize: 12,
+            RenderBold: true
+        );
+        Anchor: (Width: 40, Height: 20, Bottom: 0);
+    }
+}

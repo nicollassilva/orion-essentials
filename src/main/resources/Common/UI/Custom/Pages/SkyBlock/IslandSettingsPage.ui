@@ -109,6 +109,10 @@ $C.@DecoratedContainer {
 
                 ProgressBar #ProgressBar {
                     BarTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarFill.png";
+                    EffectTexturePath: "../../Pages/Memories/MemoriesProgress/MemoriesBarTipOfTheBar.png";
+                    EffectWidth: 114;
+                    EffectHeight: 32;
+                    EffectOffset: 104;
                     Value: 0.5;
                 }
 

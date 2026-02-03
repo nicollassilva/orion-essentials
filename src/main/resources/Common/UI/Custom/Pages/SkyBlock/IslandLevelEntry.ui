@@ -1,0 +1,92 @@
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+Group {
+    LayoutMode: Top;
+    Anchor: (Bottom: 10);
+    Background: (TexturePath: "../../Common/InputBox.png", Border: 16);
+    Padding: (Full: 10);
+
+    // Header: Level, Title, XP
+    Group {
+        LayoutMode: Left;
+        Anchor: (Bottom: 5);
+
+        Label #LevelLabel {
+            Text: "Nível 1";
+            Style: (
+                TextColor: #FFFFFF,
+                FontSize: 16,
+                RenderBold: true,
+                HorizontalAlignment: Center
+            );
+            Anchor: (Width: 80);
+        }
+
+        Label #TitleLabel {
+            Text: "Título do Nível";
+            Style: (
+                TextColor: #FFFFFF,
+                FontSize: 14,
+                RenderBold: true
+            );
+            FlexWeight: 1;
+        }
+
+        Label #XPRequiredLabel {
+            Text: "XP: 100";
+            Style: (
+                TextColor: #7ed56f,
+                FontSize: 14,
+                HorizontalAlignment: End
+            );
+            Anchor: (Width: 100);
+        }
+    }
+
+    // Icon and Description
+    Group {
+        LayoutMode: Left;
+        Anchor: (Bottom: 5);
+
+        ItemIcon #LevelIcon {
+            ItemId: "icon_level_1";
+            Anchor: (Width: 40, Height: 40);
+        }
+
+        Label #DescriptionLabel {
+            Text: "Descrição do nível";
+            Style: (
+                ...@InfoLabelStyle,
+                TextColor: #bfcdd5,
+                FontSize: 12
+            );
+            FlexWeight: 1;
+            Anchor: (Left: 10);
+        }
+    }
+
+    // Rewards
+    Group #RewardsGroup {
+        LayoutMode: Left;
+        Anchor: (Top: 5);
+
+        Label {
+            Text: "Recompensas:";
+            Style: (
+                TextColor: #FFFFFF,
+                FontSize: 12,
+                RenderBold: true
+            );
+            Anchor: (Width: 100);
+        }
+
+        Group #RewardsList {
+            LayoutMode: Left;
+            FlexWeight: 1;
+        }
+    }
+}
