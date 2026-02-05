@@ -77,6 +77,10 @@ public class IslandsManager extends StorableManager<IslandsData> {
         return this.data.getIslandByNameAndOwner(islandName, ownerName);
     }
 
+    public IslandData getFirstIslandForOwner(final UUID ownerId) {
+        return this.data.getFirstIslandForOwner(ownerId);
+    }
+
     public List<IslandData> getIslandsForPlayer(final UUID ownerId) {
         return this.data.getIslandsForPlayer(ownerId);
     }

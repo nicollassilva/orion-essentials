@@ -2,18 +2,23 @@ package dev.thewarrior.SkyBlock.Handlers;
 
 import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import com.hypixel.hytale.server.core.util.UUIDUtil;
 import dev.thewarrior.Essentials.Utils.Logger;
+import dev.thewarrior.Essentials.Utils.PermissionUtil;
+import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandLastVisitData;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.SkyBlockBootstrap;
 
 import java.util.UUID;
 
 public class SkyBlockPlayerEventHandler {
+    public static String visitBypassPermission = PermissionUtil.getPermission("skyblock.visit.bypass");
+
     public static void onPlayerAddedToWorld(final AddPlayerToWorldEvent event, final SkyBlockBootstrap plugin) {
         if(!event.getWorld().getName().startsWith("island_")) return;
 
@@ -33,6 +38,16 @@ public class SkyBlockPlayerEventHandler {
         if(islandData == null) {
             Logger.error("IslandData não encontrado para o jogador " + playerRef.getUsername() + " ao entrar no mundo " + event.getWorld().getName());
             return;
+        }
+
+        if(!islandData.getOwnerId().equals(uuid)) {
+            final Player player = holder.getComponent(Player.getComponentType());
+
+            if(player != null && !player.hasPermission(visitBypassPermission)) {
+                islandData.addLastVisitData(new IslandLastVisitData(playerRef.getUsername()));
+
+                plugin.getIslandManager().save(islandData);
+            }
         }
 
         if(islandData.getEnterTitle() != null && !islandData.getEnterTitle().isBlank()) {

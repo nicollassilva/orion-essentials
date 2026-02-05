@@ -59,6 +59,22 @@ public class IslandsData {
         return list;
     }
 
+    public IslandData getFirstIslandForOwner(final UUID ownerId) {
+        IslandData firstIsland = null;
+
+        for (final IslandData island : this.islands.values()) {
+            if(!island.getOwnerId().equals(ownerId) && !island.isFriend(ownerId)) continue;
+
+            if(firstIsland == null) firstIsland = island;
+
+            if(island.getCreatedAt() < firstIsland.getCreatedAt()) {
+                firstIsland = island;
+            }
+        }
+
+        return firstIsland;
+    }
+
     public int getIslandCountForPlayer(final PlayerRef ref) {
         int count = 0;
 

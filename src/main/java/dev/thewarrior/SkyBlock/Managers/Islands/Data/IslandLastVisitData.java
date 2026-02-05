@@ -11,4 +11,9 @@ public class IslandLastVisitData {
     public String getUsername() {
         return username;
     }
+
+    public IslandLastVisitData(String username) {
+        this.time = System.currentTimeMillis();
+        this.username = username;
+    }
 }

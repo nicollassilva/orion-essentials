@@ -66,7 +66,15 @@ public class IslandTeleportCommand extends AbstractPlayerCommand {
             ownerId = player.getUuid();
         }
 
-        final IslandData islandData = this.islandsManager.getIslandByNameAndOwner(islandName, ownerId);
+        IslandData islandData = null;
+
+        if(islandName.equals("Default")) {
+            islandData = this.islandsManager.getIslandByNameAndOwner(islandName, ownerId);
+
+            if(islandData == null) {
+                islandData = this.islandsManager.getFirstIslandForOwner(ownerId);
+            }
+        }
 
         if(islandData == null) {
             final Message message = ownerId.equals(playerRef.getUuid())

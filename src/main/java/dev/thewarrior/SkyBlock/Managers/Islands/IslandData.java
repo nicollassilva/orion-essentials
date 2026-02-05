@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@SuppressWarnings(value = { "FieldMayBeFinal", "FieldCanBeLocal" })
 public class IslandData {
     private UUID id;
     private String name;
@@ -24,13 +25,13 @@ public class IslandData {
     private int level = 1;
     private double experience = 0d;
 
-    private IslandLastVisitData lastVisitData;
-
-    private transient AtomicBoolean needsUpdate = new AtomicBoolean(false);
-
     private IslandSettings settings;
+    private long createdAt;
 
-    private ObjectArrayList<IslandFriendData> friends = new ObjectArrayList<>();
+    private ObjectArrayList<IslandLastVisitData> lastVisitData;
+    private ObjectArrayList<IslandFriendData> friends;
+
+    private transient AtomicBoolean needsUpdate;
 
     public IslandData(UUID ownerId, String worldName, Vector3d spawnLocation, Vector3d spawnRotation) {
         this.id = UUID.randomUUID();
@@ -40,10 +41,15 @@ public class IslandData {
         this.spawnLocation = spawnLocation.clone();
         this.spawnRotation = spawnRotation.clone();
         this.settings = new IslandSettings();
+        this.createdAt = System.currentTimeMillis();
 
         if(!worldName.endsWith("1")) {
             this.name += worldName.substring(worldName.length() - 1);
         }
+
+        this.lastVisitData = new ObjectArrayList<>();
+        this.friends = new ObjectArrayList<>();
+        this.needsUpdate = new AtomicBoolean(false);
 
         this.needsUpdate.set(true);
     }
@@ -113,11 +119,24 @@ public class IslandData {
     }
 
     public IslandLastVisitData getLastVisitData() {
-        return this.lastVisitData;
+        if(this.lastVisitData == null || this.lastVisitData.isEmpty()) return null;
+
+        return this.lastVisitData.getLast();
     }
 
-    public void setLastVisitData(IslandLastVisitData lastVisitData) {
-        this.lastVisitData = lastVisitData;
+    public void addLastVisitData(IslandLastVisitData lastVisitData) {
+        final IslandLastVisitData lastVisit = this.getLastVisitData();
+
+        if(lastVisit != null
+                && lastVisit.getUsername().equals(lastVisitData.getUsername())
+                && (System.currentTimeMillis() - lastVisit.getTime()) < 300000
+        ) return;
+
+        if(this.lastVisitData.size() >= 20) {
+            this.lastVisitData.removeFirst();
+        }
+
+        this.lastVisitData.add(lastVisitData);
         this.setNeedsUpdate(true);
     }
 
@@ -126,7 +145,7 @@ public class IslandData {
     }
 
     public boolean isFriend(UUID friendUuid) {
-        if(this.friends == null) return false;
+        if(this.friends == null || this.friends.isEmpty()) return false;
 
         for (IslandFriendData friendData : this.friends) {
             if(friendData.getUuid().equals(friendUuid)) {
@@ -172,6 +191,10 @@ public class IslandData {
         }
     }
     /*********/
+
+    public long getCreatedAt() {
+        return this.createdAt;
+    }
 
     public UUID getOwnerId() {
         return this.ownerId;

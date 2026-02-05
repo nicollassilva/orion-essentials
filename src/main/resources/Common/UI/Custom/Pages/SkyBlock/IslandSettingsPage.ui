@@ -380,13 +380,13 @@ $C.@DecoratedContainer {
             LayoutMode: Left;
             Anchor: (Height: 40);
 
-            $C.@SecondaryTextButton #TeleportButton {
+            $C.@TextButton #TeleportButton {
                 @Text = "TELEPORTAR";
                 FlexWeight: 1;
                 Anchor: (Right: 8, Height: 40);
             }
 
-            $C.@TextButton #StatsButton {
+            $C.@SecondaryTextButton #StatsButton {
                 FlexWeight: 1;
                 Anchor: (Right: 8, Height: 40);
                 Text: "ESTATÍSTICAS";
