@@ -127,12 +127,12 @@ public class IslandData {
     public void addLastVisitData(IslandLastVisitData lastVisitData) {
         final IslandLastVisitData lastVisit = this.getLastVisitData();
 
-        if(lastVisit != null
-                && lastVisit.getUsername().equals(lastVisitData.getUsername())
-                && (System.currentTimeMillis() - lastVisit.getTime()) < 300000
-        ) return;
+//        if(lastVisit != null
+//                && lastVisit.getUsername().equals(lastVisitData.getUsername())
+//                && (System.currentTimeMillis() - lastVisit.getTime()) < 300000
+//        ) return;
 
-        this.addLastVisitDataInternal(lastVisit);
+        this.addLastVisitDataInternal(lastVisitData);
     }
 
     private void addLastVisitDataInternal(IslandLastVisitData lastVisitData) {
@@ -143,6 +143,13 @@ public class IslandData {
         }
 
         this.lastVisitData.add(lastVisitData);
+        this.setNeedsUpdate(true);
+    }
+
+    public void clearLastVisitsData() {
+        if(this.lastVisitData == null || this.lastVisitData.isEmpty()) return;
+
+        this.lastVisitData.clear();
         this.setNeedsUpdate(true);
     }
 
@@ -215,5 +222,9 @@ public class IslandData {
 
     public IslandSettings getSettings() {
         return this.settings;
+    }
+
+    public ObjectArrayList<IslandLastVisitData> getLastVisitDataList() {
+        return this.lastVisitData;
     }
 }

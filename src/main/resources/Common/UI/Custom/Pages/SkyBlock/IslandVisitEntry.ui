@@ -1,0 +1,34 @@
+Group {
+    LayoutMode: Left;
+    Anchor: (Bottom: 5);
+    Background: #42526d;
+    Padding: (Full: 3);
+
+    Group {
+        LayoutMode: Left;
+        Padding: (Full: 8);
+        Background: #21344b;
+        Anchor: (Height: 40);
+        FlexWeight: 1;
+
+        Label #NameLabel {
+            Style: (
+                FontSize: 16,
+                TextColor: #FFFFFF,
+                VerticalAlignment: Center
+            );
+            FlexWeight: 1;
+        }
+
+        Label #TimeLabel {
+            Style: (
+                FontSize: 13,
+                TextColor: #96a9be,
+                VerticalAlignment: Center,
+                HorizontalAlignment: End,
+                RenderItalics: true
+            );
+            Anchor: (Width: 100);
+        }
+    }
+}

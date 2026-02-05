@@ -1,0 +1,100 @@
+$C = "../../Common.ui";
+
+@InfoLabelStyle = LabelStyle(
+    FontSize: 13,
+    TextColor: #96a9be,
+    VerticalAlignment: Center
+);
+
+@MenuButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+@SecondaryButtonStyle = ButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary.png", Border: 12)),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Hovered.png", Border: 12)),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Secondary_Pressed.png", Border: 12)),
+    Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Disabled.png", Border: 12)),
+    Sounds: $C.@ButtonSounds
+);
+
+$C.@PageOverlay {}
+
+$C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 500, Height: 600);
+
+    #Title {
+        $C.@Title { @Text = "Lista de Visitas"; }
+    }
+
+    #Content {
+        LayoutMode: Top;
+        Padding: (Full: 20, Top: 10);
+
+        // Header with clear button
+        Group {
+            LayoutMode: Left;
+
+            Label {
+                Text: "Lista de Visitas";
+                Style: (
+                    TextColor: #b7cedd,
+                    FontSize: 18,
+                    RenderBold: true,
+                    VerticalAlignment: Center
+                );
+                FlexWeight: 1;
+            }
+
+            Button #ClearButton {
+                Style: @SecondaryButtonStyle;
+                Anchor: (Width: 80, Height: 30);
+
+                Label {
+                    Text: "Limpar";
+                    Style: (
+                        FontSize: 14,
+                        TextColor: #FFFFFF,
+                        HorizontalAlignment: Center,
+                        VerticalAlignment: Center
+                    );
+                }
+            }
+        }
+
+        // Separator
+        $C.@ContentSeparator {
+            Anchor: (Top: 10, Bottom: 10);
+        }
+
+        // Visits container
+        Group {
+            FlexWeight: 1;
+            Anchor: (Top: 10);
+
+            Label #VisitLabel {
+                Text: "Nenhuma visita encontrada.";
+                Style: (
+                    ...@InfoLabelStyle,
+                    FontSize: 16,
+                    HorizontalAlignment: Center,
+                    VerticalAlignment: Center,
+                    RenderItalics: true
+                );
+                Visible: false;
+            }
+
+            Group #VisitContainer {
+                LayoutMode: TopScrolling;
+                ScrollbarStyle: @DefaultScrollbarStyle;
+            }
+        }
+    }
+}
+
+$C.@BackButton {}

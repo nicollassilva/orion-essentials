@@ -13,7 +13,7 @@ public class IslandLastVisitData {
     }
 
     public IslandLastVisitData(String username) {
-        this.time = System.currentTimeMillis();
         this.username = username;
+        this.time = System.currentTimeMillis();
     }
 }

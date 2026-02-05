@@ -43,11 +43,11 @@ public class SkyBlockPlayerEventHandler {
         //if(!islandData.getOwnerId().equals(uuid)) {
             final Player player = holder.getComponent(Player.getComponentType());
 
-            if(player != null && !player.hasPermission(visitBypassPermission)) {
+            //if(player != null && !player.hasPermission(visitBypassPermission)) {
                 islandData.addLastVisitData(new IslandLastVisitData(playerRef.getUsername()));
 
                 plugin.getIslandManager().save(islandData);
-            }
+            //}
         //}
 
         if(islandData.getEnterTitle() != null && !islandData.getEnterTitle().isBlank()) {

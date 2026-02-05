@@ -70,6 +70,14 @@ public class IslandMembersPage extends InteractiveCustomUIPage<IslandMembersPage
                 false
         );
 
+        if(members.isEmpty()) {
+            commandBuilder.set("#ScrollingEmptyLabel.Visible", true);
+            commandBuilder.clear("#MemberList");
+            return;
+        }
+
+        commandBuilder.set("#ScrollingEmptyLabel.Visible", false);
+
         // Dynamically add member entries
         for (int i = 0; i < members.size(); i++) {
             IslandMemberData member = members.get(i);

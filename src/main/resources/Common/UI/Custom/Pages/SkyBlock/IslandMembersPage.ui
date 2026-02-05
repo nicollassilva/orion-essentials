@@ -64,12 +64,25 @@ $C.@DecoratedContainer {
             Anchor: (Bottom: 10, Top: 10);
         }
 
-        // Lista de membros
-        Group #MemberList {
-            LayoutMode: TopScrolling;
-            ScrollbarStyle: $C.@DefaultScrollbarStyle;
-            Anchor: (Height: 400);
-            // Entries will be appended here
+        Group {
+            Label #ScrollingEmptyLabel {
+                Text: "Nenhuma membro encontrado.";
+                Style: (
+                    ...@InfoLabelStyle,
+                    FontSize: 16,
+                    HorizontalAlignment: Center,
+                    VerticalAlignment: Center,
+                    RenderItalics: true
+                );
+                Visible: false;
+            }
+
+            Group #MemberList {
+                LayoutMode: TopScrolling;
+                ScrollbarStyle: $C.@DefaultScrollbarStyle;
+                Anchor: (Height: 400);
+                // Entries will be appended here
+            }
         }
     }
 }
