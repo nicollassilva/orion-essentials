@@ -40,7 +40,7 @@ public class SkyBlockPlayerEventHandler {
             return;
         }
 
-        if(!islandData.getOwnerId().equals(uuid)) {
+        //if(!islandData.getOwnerId().equals(uuid)) {
             final Player player = holder.getComponent(Player.getComponentType());
 
             if(player != null && !player.hasPermission(visitBypassPermission)) {
@@ -48,7 +48,7 @@ public class SkyBlockPlayerEventHandler {
 
                 plugin.getIslandManager().save(islandData);
             }
-        }
+        //}
 
         if(islandData.getEnterTitle() != null && !islandData.getEnterTitle().isBlank()) {
             EventTitleUtil.showEventTitleToPlayer(

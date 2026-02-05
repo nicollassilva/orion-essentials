@@ -67,7 +67,7 @@ public class IslandInvitePage extends InteractiveCustomUIPage<IslandInvitePageDa
         List<PlayerRef> onlinePlayers = Universe.get().getPlayers();
 
         for (final PlayerRef onlinePlayer : onlinePlayers) {
-            if (this.islandData.isFriend(onlinePlayer.getUuid())) continue;
+            if (this.islandData.isMember(onlinePlayer.getUuid())) continue;
 
             final Ref<EntityStore> onlinePlayerRef = onlinePlayer.getReference();
 
@@ -113,7 +113,7 @@ public class IslandInvitePage extends InteractiveCustomUIPage<IslandInvitePageDa
                 final List<PlayerRef> onlinePlayers = Universe.get().getPlayers();
 
                 for (PlayerRef p : onlinePlayers) {
-                    if(this.islandData.isFriend(p.getUuid())) continue;
+                    if(this.islandData.isMember(p.getUuid())) continue;
 
                     final Ref<EntityStore> onlinePlayerRef = p.getReference();
 
@@ -134,12 +134,12 @@ public class IslandInvitePage extends InteractiveCustomUIPage<IslandInvitePageDa
                     return;
                 }
 
-                if (this.islandData.isFriend(target.getUuid())) {
+                if (this.islandData.isMember(target.getUuid())) {
                     NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cEste jogador já é membro da ilha."));
                     return;
                 }
 
-                this.islandData.addFriend(target, targetPlayer.getDisplayName());
+                boolean added = this.islandData.addMember(target);
                 this.islandsManager.save(islandData);
 
                 NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aO usuário &f" + targetPlayer.getDisplayName() + " &afoi adicionado nesta ilha."));
@@ -156,7 +156,7 @@ public class IslandInvitePage extends InteractiveCustomUIPage<IslandInvitePageDa
                 Player targetPlayer = null;
 
                 for (PlayerRef p : onlinePlayers) {
-                    if(this.islandData.isFriend(p.getUuid())) continue;
+                    if(this.islandData.isMember(p.getUuid())) continue;
 
                     final Ref<EntityStore> onlinePlayerRef = p.getReference();
 
@@ -176,12 +176,12 @@ public class IslandInvitePage extends InteractiveCustomUIPage<IslandInvitePageDa
                     return;
                 }
 
-                if (islandData.isFriend(target.getUuid())) {
+                if (islandData.isMember(target.getUuid())) {
                     NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&cEste jogador já é membro da ilha."));
                     return;
                 }
 
-                this.islandData.addFriend(target, targetPlayer.getDisplayName());
+                this.islandData.addMember(target);
                 this.islandsManager.save(islandData);
 
                 NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aO usuário &f" + targetPlayer.getDisplayName() + "&a foi adicionado nesta ilha."));

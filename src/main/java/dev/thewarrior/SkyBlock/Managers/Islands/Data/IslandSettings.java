@@ -1,70 +1,84 @@
 package dev.thewarrior.SkyBlock.Managers.Islands.Data;
 
 public class IslandSettings {
-    private boolean allowVisitors = true;
-    private boolean allowVisitorsChat = true;
+    private boolean allowAnonymousToVisit = true;
+    private boolean allowAnonymousToChat = true;
 
     private boolean allowVisitorsToBuild = false;
 
-    private boolean allowFriendsToVisit = true;
-    private boolean allowFriendsToBuild = true;
-    private boolean allowFriendsToDestroy = false;
+    private boolean allowMembersToVisit = true;
+    private boolean allowMembersToBuild = true;
+    private boolean allowMembersToDestroy = false;
 
     private boolean pvpEnabled = false;
 
-    public boolean isAllowVisitors() {
-        return allowVisitors;
+    public boolean isAllowAnonymousToVisit() {
+        return allowAnonymousToVisit;
     }
 
-    public boolean isAllowVisitorsChat() {
-        return allowVisitorsChat;
+    public boolean isAllowAnonymousToChat() {
+        return allowAnonymousToChat;
     }
 
     public boolean isAllowVisitorsToBuild() {
         return allowVisitorsToBuild;
     }
 
-    public boolean isAllowFriendsToVisit() {
-        return allowFriendsToVisit;
+    public boolean isAllowMembersToVisit() {
+        return allowMembersToVisit;
     }
 
-    public boolean isAllowFriendsToBuild() {
-        return allowFriendsToBuild;
+    public boolean isAllowMembersToBuild() {
+        return allowMembersToBuild;
     }
 
-    public boolean isAllowFriendsToDestroy() {
-        return allowFriendsToDestroy;
+    public boolean isAllowMembersToDestroy() {
+        return allowMembersToDestroy;
     }
 
     public boolean isPvpEnabled() {
         return pvpEnabled;
     }
 
-    public void setAllowVisitors(boolean allowVisitors) {
-        this.allowVisitors = allowVisitors;
+    public void setAllowAnonymousToVisit(boolean allowAnonymousToVisit) {
+        this.allowAnonymousToVisit = allowAnonymousToVisit;
     }
 
-    public void setAllowVisitorsChat(boolean allowVisitorsChat) {
-        this.allowVisitorsChat = allowVisitorsChat;
+    public void setAllowAnonymousToChat(boolean allowAnonymousToChat) {
+        this.allowAnonymousToChat = allowAnonymousToChat;
     }
 
     public void setAllowVisitorsToBuild(boolean allowVisitorsToBuild) {
         this.allowVisitorsToBuild = allowVisitorsToBuild;
     }
 
-    public void setAllowFriendsToVisit(boolean allowFriendsToVisit) {
-        this.allowFriendsToVisit = allowFriendsToVisit;
+    public void setAllowMembersToVisit(boolean allowMembersToVisit) {
+        this.allowMembersToVisit = allowMembersToVisit;
     }
 
-    public void setAllowFriendsToBuild(boolean allowFriendsToBuild) {
-        this.allowFriendsToBuild = allowFriendsToBuild;
+    public void setAllowMembersToBuild(boolean allowMembersToBuild) {
+        this.allowMembersToBuild = allowMembersToBuild;
     }
 
-    public void setAllowFriendsToDestroy(boolean allowFriendsToDestroy) {
-        this.allowFriendsToDestroy = allowFriendsToDestroy;
+    public void setAllowMembersToDestroy(boolean allowMembersToDestroy) {
+        this.allowMembersToDestroy = allowMembersToDestroy;
     }
 
     public void setPvpEnabled(boolean pvpEnabled) {
         this.pvpEnabled = pvpEnabled;
+    }
+
+    public IslandSettings copy() {
+        IslandSettings copy = new IslandSettings();
+
+        copy.setAllowAnonymousToVisit(this.allowAnonymousToVisit);
+        copy.setAllowAnonymousToChat(this.allowAnonymousToChat);
+        copy.setAllowVisitorsToBuild(this.allowVisitorsToBuild);
+        copy.setAllowMembersToVisit(this.allowMembersToVisit);
+        copy.setAllowMembersToBuild(this.allowMembersToBuild);
+        copy.setAllowMembersToDestroy(this.allowMembersToDestroy);
+        copy.setPvpEnabled(this.pvpEnabled);
+
+        return copy;
     }
 }

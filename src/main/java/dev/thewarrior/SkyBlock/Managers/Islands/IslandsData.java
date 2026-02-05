@@ -63,7 +63,7 @@ public class IslandsData {
         IslandData firstIsland = null;
 
         for (final IslandData island : this.islands.values()) {
-            if(!island.getOwnerId().equals(ownerId) && !island.isFriend(ownerId)) continue;
+            if(!island.getOwnerId().equals(ownerId) && !island.isMember(ownerId)) continue;
 
             if(firstIsland == null) firstIsland = island;
 

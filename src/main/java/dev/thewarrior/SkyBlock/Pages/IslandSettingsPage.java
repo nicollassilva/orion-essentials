@@ -263,12 +263,12 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
     }
 
     private boolean checkAndUpdateIslandSettings(IslandSettingsPageData data) {
-        boolean hasAllowVisitorsChange = this.islandData.getSettings().isAllowVisitors() != data.allowVisitors;
-        boolean hasAllowVisitorsChatChange = this.islandData.getSettings().isAllowVisitorsChat() != data.allowVisitorsChat;
+        boolean hasAllowVisitorsChange = this.islandData.getSettings().isAllowAnonymousToVisit() != data.allowVisitors;
+        boolean hasAllowVisitorsChatChange = this.islandData.getSettings().isAllowAnonymousToChat() != data.allowVisitorsChat;
         boolean hasAllowVisitorsBuildChange = this.islandData.getSettings().isAllowVisitorsToBuild() != data.allowVisitorsBuild;
-        boolean hasAllowFriendsVisitChange = this.islandData.getSettings().isAllowFriendsToVisit() != data.allowFriendsVisit;
-        boolean hasAllowFriendsBuildChange = this.islandData.getSettings().isAllowFriendsToBuild() != data.allowFriendsBuild;
-        boolean hasAllowFriendsDestroyChange = this.islandData.getSettings().isAllowFriendsToDestroy() != data.allowFriendsDestroy;
+        boolean hasAllowFriendsVisitChange = this.islandData.getSettings().isAllowMembersToVisit() != data.allowFriendsVisit;
+        boolean hasAllowFriendsBuildChange = this.islandData.getSettings().isAllowMembersToBuild() != data.allowFriendsBuild;
+        boolean hasAllowFriendsDestroyChange = this.islandData.getSettings().isAllowMembersToDestroy() != data.allowFriendsDestroy;
         boolean hasPvpEnabledChange = this.islandData.getSettings().isPvpEnabled() != data.pvpEnabled;
 
         boolean hasAnySettingsChanges = hasAllowVisitorsChange || hasAllowVisitorsChatChange || hasAllowVisitorsBuildChange ||
@@ -277,12 +277,12 @@ public class IslandSettingsPage extends InteractiveCustomUIPage<IslandSettingsPa
         if(hasAnySettingsChanges) {
             final IslandSettings settings = this.islandData.getSettings();
 
-            if(hasAllowVisitorsChange) settings.setAllowVisitors(data.allowVisitors);
-            if(hasAllowVisitorsChatChange) settings.setAllowVisitorsChat(data.allowVisitorsChat);
+            if(hasAllowVisitorsChange) settings.setAllowAnonymousToVisit(data.allowVisitors);
+            if(hasAllowVisitorsChatChange) settings.setAllowAnonymousToChat(data.allowVisitorsChat);
             if(hasAllowVisitorsBuildChange) settings.setAllowVisitorsToBuild(data.allowVisitorsBuild);
-            if(hasAllowFriendsVisitChange) settings.setAllowFriendsToVisit(data.allowFriendsVisit);
-            if(hasAllowFriendsBuildChange) settings.setAllowFriendsToBuild(data.allowFriendsBuild);
-            if(hasAllowFriendsDestroyChange) settings.setAllowFriendsToDestroy(data.allowFriendsDestroy);
+            if(hasAllowFriendsVisitChange) settings.setAllowMembersToVisit(data.allowFriendsVisit);
+            if(hasAllowFriendsBuildChange) settings.setAllowMembersToBuild(data.allowFriendsBuild);
+            if(hasAllowFriendsDestroyChange) settings.setAllowMembersToDestroy(data.allowFriendsDestroy);
             if(hasPvpEnabledChange) settings.setPvpEnabled(data.pvpEnabled);
         }
         return hasAnySettingsChanges;

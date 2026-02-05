@@ -2,7 +2,7 @@ package dev.thewarrior.SkyBlock.Managers.Islands;
 
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandFriendData;
+import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandMemberData;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandLastVisitData;
 import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandSettings;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -29,7 +29,7 @@ public class IslandData {
     private long createdAt;
 
     private ObjectArrayList<IslandLastVisitData> lastVisitData;
-    private ObjectArrayList<IslandFriendData> friends;
+    private ObjectArrayList<IslandMemberData> members;
 
     private transient AtomicBoolean needsUpdate;
 
@@ -48,7 +48,7 @@ public class IslandData {
         }
 
         this.lastVisitData = new ObjectArrayList<>();
-        this.friends = new ObjectArrayList<>();
+        this.members = new ObjectArrayList<>();
         this.needsUpdate = new AtomicBoolean(false);
 
         this.needsUpdate.set(true);
@@ -132,6 +132,12 @@ public class IslandData {
                 && (System.currentTimeMillis() - lastVisit.getTime()) < 300000
         ) return;
 
+        this.addLastVisitDataInternal(lastVisit);
+    }
+
+    private void addLastVisitDataInternal(IslandLastVisitData lastVisitData) {
+        if(this.lastVisitData == null) this.lastVisitData = new ObjectArrayList<>();
+
         if(this.lastVisitData.size() >= 20) {
             this.lastVisitData.removeFirst();
         }
@@ -140,14 +146,14 @@ public class IslandData {
         this.setNeedsUpdate(true);
     }
 
-    public ObjectArrayList<IslandFriendData> getFriends() {
-        return this.friends;
+    public ObjectArrayList<IslandMemberData> getMembers() {
+        return this.members;
     }
 
-    public boolean isFriend(UUID friendUuid) {
-        if(this.friends == null || this.friends.isEmpty()) return false;
+    public boolean isMember(UUID friendUuid) {
+        if(this.members == null || this.members.isEmpty()) return false;
 
-        for (IslandFriendData friendData : this.friends) {
+        for (IslandMemberData friendData : this.members) {
             if(friendData.getUuid().equals(friendUuid)) {
                 return true;
             }
@@ -156,18 +162,25 @@ public class IslandData {
         return false;
     }
 
-    public void addFriend(PlayerRef playerRef, String nickname) {
-        if(this.isFriend(playerRef.getUuid())) return;
+    public boolean addMember(PlayerRef playerRef) {
+        if(this.members == null) {
+            this.members = new ObjectArrayList<>();
+        }
 
-        this.friends.add(new IslandFriendData(playerRef.getUuid(), nickname));
+        if(this.isMember(playerRef.getUuid())) return false;
+        if(this.members.size() >= 5) return false;
+
+        this.members.add(new IslandMemberData(playerRef));
 
         this.setNeedsUpdate(true);
+
+        return true;
     }
 
-    public void removeFriend(UUID friendUuid) {
-        if(this.friends == null) return;
+    public void removeMember(UUID friendUuid) {
+        if(this.members == null) return;
 
-        this.friends.removeIf(friendData -> friendData.getUuid().equals(friendUuid));
+        this.members.removeIf(friendData -> friendData.getUuid().equals(friendUuid));
 
         this.setNeedsUpdate(true);
     }

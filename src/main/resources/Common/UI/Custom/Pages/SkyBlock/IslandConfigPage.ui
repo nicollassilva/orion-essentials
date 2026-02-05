@@ -101,15 +101,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #AllowVisitorsGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #AllowVisitorsButton {
+                    Button #AllowVisitorsButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #00FF00;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }
@@ -129,15 +131,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #AllowVisitorsChatGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #AllowVisitorsChatButton {
+                    Button #AllowVisitorsChatButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #00FF00;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }
@@ -157,15 +161,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #AllowVisitorsBuildGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #AllowVisitorsBuildButton {
+                    Button #AllowVisitorsBuildButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #FF0000;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }
@@ -185,15 +191,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #AllowMembersVisitGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #AllowFriendsVisitButton {
+                    Button #AllowMembersVisitButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #00FF00;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }
@@ -213,15 +221,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #AllowMembersBuildGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #AllowFriendsBuildButton {
+                    Button #AllowMembersBuildButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #00FF00;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }
@@ -241,15 +251,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #AllowMembersDestroyGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #AllowFriendsDestroyButton {
+                    Button #AllowMembersDestroyButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #FF0000;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }
@@ -268,15 +280,17 @@ $C.@DecoratedContainer {
                     FlexWeight: 1;
                 }
 
-                Group {
-                    Padding: (Full: 6);
-                    Background: #000000(0.3);
+                Group #PvpEnabledGroup {
+                    Padding: (Full: 2);
 
-                    TextButton #PvpEnabledButton {
+                    Button #PvpEnabledButton {
                         Anchor: (Width: 60, Height: 30);
                         Background: #FF0000;
                         Padding: (Horizontal: 14, Vertical: 5);
-                        Text: "";
+
+                        Group #Handler {
+                            Background: #000000(0.3);
+                        }
                     }
                 }
             }

@@ -1,6 +1,6 @@
 package dev.thewarrior.SkyBlock.Managers.Islands.Enum;
 
-public enum IslandFriendPermission {
+public enum IslandMemberPermission {
     DEFAULT("default"),
     BUILD("build"),
     CO_OWNER("co_owner")
@@ -9,7 +9,7 @@ public enum IslandFriendPermission {
 
     private final String permissionName;
 
-    IslandFriendPermission(String permissionName) {
+    IslandMemberPermission(String permissionName) {
         this.permissionName = permissionName;
     }
 

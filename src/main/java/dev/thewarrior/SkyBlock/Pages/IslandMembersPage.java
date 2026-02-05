@@ -16,8 +16,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.thewarrior.Essentials.Utils.ColorUtil;
 import dev.thewarrior.SkyBlock.Managers.IslandLevelManager;
-import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandFriendData;
-import dev.thewarrior.SkyBlock.Managers.Islands.Enum.IslandFriendPermission;
+import dev.thewarrior.SkyBlock.Managers.Islands.Data.IslandMemberData;
+import dev.thewarrior.SkyBlock.Managers.Islands.Enum.IslandMemberPermission;
 import dev.thewarrior.SkyBlock.Managers.Islands.IslandData;
 import dev.thewarrior.SkyBlock.Managers.IslandsManager;
 import dev.thewarrior.SkyBlock.Pages.Data.IslandMembersPageData;
@@ -49,8 +49,8 @@ public class IslandMembersPage extends InteractiveCustomUIPage<IslandMembersPage
     ) {
         commandBuilder.append("Pages/SkyBlock/IslandMembersPage.ui");
 
-        ObjectArrayList<IslandFriendData> friends = this.islandData.getFriends();
-        int memberCount = friends.size();
+        ObjectArrayList<IslandMemberData> members = this.islandData.getMembers();
+        int memberCount = members.size();
 
         commandBuilder.set("#TitleLabel.Text", "Membros da Ilha (" + memberCount + "/5)");
 
@@ -71,8 +71,8 @@ public class IslandMembersPage extends InteractiveCustomUIPage<IslandMembersPage
         );
 
         // Dynamically add member entries
-        for (int i = 0; i < friends.size(); i++) {
-            IslandFriendData friend = friends.get(i);
+        for (int i = 0; i < members.size(); i++) {
+            IslandMemberData member = members.get(i);
             String entrySelector = "#MemberList[" + i + "] ";
 
             commandBuilder.append("#MemberList", "Pages/SkyBlock/IslandMemberEntry.ui");
@@ -86,10 +86,10 @@ public class IslandMembersPage extends InteractiveCustomUIPage<IslandMembersPage
 
             commandBuilder.set(entrySelector + "#PermissionDropdown.Entries", permissionEntries);
 
-            commandBuilder.set(entrySelector + "#MemberNameLabel.Text", friend.getNickname());
+            commandBuilder.set(entrySelector + "#MemberNameLabel.Text", member.getNickname());
 
             // Set current value
-            commandBuilder.set(entrySelector + "#PermissionDropdown.Value", friend.getPermission().getPermissionName());
+            commandBuilder.set(entrySelector + "#PermissionDropdown.Value", member.getPermission().getPermissionName());
 
             // Bind permission change
             eventBuilder.addEventBinding(
@@ -130,10 +130,10 @@ public class IslandMembersPage extends InteractiveCustomUIPage<IslandMembersPage
                 }
             }
             case "ChangePermission" -> {
-                if (memberIndex < 0 || memberIndex >= islandData.getFriends().size() || data.newPermission == null || data.newPermission.isBlank()) return;
+                if (memberIndex < 0 || memberIndex >= islandData.getMembers().size() || data.newPermission == null || data.newPermission.isBlank()) return;
 
-                IslandFriendData friend = islandData.getFriends().get(memberIndex);
-                IslandFriendPermission newPerm = IslandFriendPermission.valueOf(data.newPermission.toUpperCase());
+                IslandMemberData friend = islandData.getMembers().get(memberIndex);
+                IslandMemberPermission newPerm = IslandMemberPermission.valueOf(data.newPermission.toUpperCase());
 
                 friend.setPermission(newPerm);
 
@@ -143,11 +143,11 @@ public class IslandMembersPage extends InteractiveCustomUIPage<IslandMembersPage
                 NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aPermissão de &f" + friend.getNickname() + "&a alterada para &e" + newPerm.getPermissionName() + "&a."));
             }
             case "RemoveMember" -> {
-                if (memberIndex < 0 || memberIndex >= islandData.getFriends().size()) return;
+                if (memberIndex < 0 || memberIndex >= islandData.getMembers().size()) return;
 
-                IslandFriendData friend = islandData.getFriends().get(memberIndex);
+                IslandMemberData friend = islandData.getMembers().get(memberIndex);
 
-                islandData.removeFriend(friend.getUuid());
+                islandData.removeMember(friend.getUuid());
                 islandsManager.save(islandData);
 
                 NotificationUtil.sendNotification(playerRef.getPacketHandler(), ColorUtil.colorize("&aO usuário &f" + friend.getNickname() + "&a foi removido da sua ilha."));

@@ -6,6 +6,8 @@ import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
+import com.hypixel.hytale.server.core.ui.Anchor;
+import com.hypixel.hytale.server.core.ui.Value;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
@@ -22,11 +24,12 @@ import javax.annotation.Nonnull;
 
 public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageData> {
     private final PlayerRef playerRef;
+
     private final IslandData islandData;
     private final IslandSettings localSettings;
 
-    private IslandsManager islandsManager;
-    private IslandLevelManager islandLevelManager;
+    private final IslandsManager islandsManager;
+    private final IslandLevelManager islandLevelManager;
 
     public IslandConfigPage(@Nonnull PlayerRef playerRef, IslandData islandData, IslandsManager islandsManager, IslandLevelManager islandLevelManager) {
         super(playerRef, CustomPageLifetime.CanDismiss, IslandConfigPageData.CODEC);
@@ -36,15 +39,7 @@ public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageDa
         this.islandsManager = islandsManager;
         this.islandLevelManager = islandLevelManager;
 
-        this.localSettings = new IslandSettings();
-
-        this.localSettings.setAllowVisitors(islandData.getSettings().isAllowVisitors());
-        this.localSettings.setAllowVisitorsChat(islandData.getSettings().isAllowVisitorsChat());
-        this.localSettings.setAllowVisitorsToBuild(islandData.getSettings().isAllowVisitorsToBuild());
-        this.localSettings.setAllowFriendsToVisit(islandData.getSettings().isAllowFriendsToVisit());
-        this.localSettings.setAllowFriendsToBuild(islandData.getSettings().isAllowFriendsToBuild());
-        this.localSettings.setAllowFriendsToDestroy(islandData.getSettings().isAllowFriendsToDestroy());
-        this.localSettings.setPvpEnabled(islandData.getSettings().isPvpEnabled());
+        this.localSettings = islandData.getSettings().copy();
     }
 
     @Override
@@ -65,35 +60,33 @@ public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageDa
         commandBuilder.set("#NameInput.Value", this.islandData.getName());
         commandBuilder.set("#TitleInput.Value", this.islandData.getEnterTitle() != null ? this.islandData.getEnterTitle() : "");
 
-        // Allow Visitors
-        this.updateButton(commandBuilder, "#AllowVisitorsButton", "#AllowVisitorsLabel", this.localSettings.isAllowVisitors());
-
-        // Allow Visitors Chat
-        this.updateButton(commandBuilder, "#AllowVisitorsChatButton", "#AllowVisitorsChatLabel", this.localSettings.isAllowVisitorsChat());
-
-        // Allow Visitors Build
-        this.updateButton(commandBuilder, "#AllowVisitorsBuildButton", "#AllowVisitorsBuildLabel", this.localSettings.isAllowVisitorsToBuild());
-
-        // Allow Friends Visit
-        this.updateButton(commandBuilder, "#AllowFriendsVisitButton", "#AllowFriendsVisitLabel", this.localSettings.isAllowFriendsToVisit());
-
-        // Allow Friends Build
-        this.updateButton(commandBuilder, "#AllowFriendsBuildButton", "#AllowFriendsBuildLabel", this.localSettings.isAllowFriendsToBuild());
-
-        // Allow Friends Destroy
-        this.updateButton(commandBuilder, "#AllowFriendsDestroyButton", "#AllowFriendsDestroyLabel", this.localSettings.isAllowFriendsToDestroy());
-
-        // PvP Enabled
-        this.updateButton(commandBuilder, "#PvpEnabledButton", "#PvpEnabledLabel", this.localSettings.isPvpEnabled());
+        this.updateButton(commandBuilder, "#AllowVisitorsButton", this.localSettings.isAllowAnonymousToVisit());
+        this.updateButton(commandBuilder, "#AllowVisitorsChatButton", this.localSettings.isAllowAnonymousToChat());
+        this.updateButton(commandBuilder, "#AllowVisitorsBuildButton", this.localSettings.isAllowVisitorsToBuild());
+        this.updateButton(commandBuilder, "#AllowMembersVisitButton", this.localSettings.isAllowMembersToVisit());
+        this.updateButton(commandBuilder, "#AllowMembersBuildButton", this.localSettings.isAllowMembersToBuild());
+        this.updateButton(commandBuilder, "#AllowMembersDestroyButton", this.localSettings.isAllowMembersToDestroy());
+        this.updateButton(commandBuilder, "#PvpEnabledButton", this.localSettings.isPvpEnabled());
     }
 
-    private void updateButton(UICommandBuilder commandBuilder, String buttonId, String labelId, boolean value) {
+    private void updateButton(UICommandBuilder commandBuilder, String buttonId, boolean value) {
+        Anchor anchor = new Anchor();
+
+        anchor.setWidth(Value.of(17));
+        anchor.setHeight(Value.of(25));
+
         if (value) {
+            anchor.setLeft(Value.of(26));
+
+            commandBuilder.set(buttonId.replace("Button", "Group") + ".Background", "#74a77c");
             commandBuilder.set(buttonId + ".Background", "#497B51");
-            commandBuilder.set(buttonId + ".Text", "ON");
+            commandBuilder.setObject(buttonId + " #Handler.Anchor", anchor);
         } else {
-            commandBuilder.set(buttonId + ".Background", "#FA2E12");
-            commandBuilder.set(buttonId + ".Text", "OFF");
+            anchor.setLeft(Value.of(-11));
+
+            commandBuilder.set(buttonId.replace("Button", "Group") + ".Background", "#FA2E12");
+            commandBuilder.set(buttonId + ".Background", "#C12E12");
+            commandBuilder.setObject(buttonId + " #Handler.Anchor", anchor);
         }
     }
 
@@ -121,22 +114,22 @@ public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageDa
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#AllowFriendsVisitButton",
-                EventData.of("Action", "ToggleAllowFriendsVisit"),
+                "#AllowMembersVisitButton",
+                EventData.of("Action", "ToggleAllowMembersVisit"),
                 false
         );
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#AllowFriendsBuildButton",
-                EventData.of("Action", "ToggleAllowFriendsBuild"),
+                "#AllowMembersBuildButton",
+                EventData.of("Action", "ToggleAllowMembersBuild"),
                 false
         );
 
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
-                "#AllowFriendsDestroyButton",
-                EventData.of("Action", "ToggleAllowFriendsDestroy"),
+                "#AllowMembersDestroyButton",
+                EventData.of("Action", "ToggleAllowMembersDestroy"),
                 false
         );
 
@@ -168,13 +161,13 @@ public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageDa
 
         switch (data.action) {
             case "ToggleAllowVisitors" -> {
-                this.localSettings.setAllowVisitors(!this.localSettings.isAllowVisitors());
+                this.localSettings.setAllowAnonymousToVisit(!this.localSettings.isAllowAnonymousToVisit());
                 UICommandBuilder commandBuilder = new UICommandBuilder();
                 this.updateConfig(commandBuilder);
                 this.sendUpdate(commandBuilder);
             }
             case "ToggleAllowVisitorsChat" -> {
-                this.localSettings.setAllowVisitorsChat(!this.localSettings.isAllowVisitorsChat());
+                this.localSettings.setAllowAnonymousToChat(!this.localSettings.isAllowAnonymousToChat());
                 UICommandBuilder commandBuilder = new UICommandBuilder();
                 this.updateConfig(commandBuilder);
                 this.sendUpdate(commandBuilder);
@@ -185,20 +178,20 @@ public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageDa
                 this.updateConfig(commandBuilder);
                 this.sendUpdate(commandBuilder);
             }
-            case "ToggleAllowFriendsVisit" -> {
-                this.localSettings.setAllowFriendsToVisit(!this.localSettings.isAllowFriendsToVisit());
+            case "ToggleAllowMembersVisit" -> {
+                this.localSettings.setAllowMembersToVisit(!this.localSettings.isAllowMembersToVisit());
                 UICommandBuilder commandBuilder = new UICommandBuilder();
                 this.updateConfig(commandBuilder);
                 this.sendUpdate(commandBuilder);
             }
-            case "ToggleAllowFriendsBuild" -> {
-                this.localSettings.setAllowFriendsToBuild(!this.localSettings.isAllowFriendsToBuild());
+            case "ToggleAllowMembersBuild" -> {
+                this.localSettings.setAllowMembersToBuild(!this.localSettings.isAllowMembersToBuild());
                 UICommandBuilder commandBuilder = new UICommandBuilder();
                 this.updateConfig(commandBuilder);
                 this.sendUpdate(commandBuilder);
             }
-            case "ToggleAllowFriendsDestroy" -> {
-                this.localSettings.setAllowFriendsToDestroy(!this.localSettings.isAllowFriendsToDestroy());
+            case "ToggleAllowMembersDestroy" -> {
+                this.localSettings.setAllowMembersToDestroy(!this.localSettings.isAllowMembersToDestroy());
                 UICommandBuilder commandBuilder = new UICommandBuilder();
                 this.updateConfig(commandBuilder);
                 this.sendUpdate(commandBuilder);
@@ -224,12 +217,12 @@ public class IslandConfigPage extends InteractiveCustomUIPage<IslandConfigPageDa
             this.islandData.setEnterTitle(data.updatedTitle);
         }
 
-        this.islandData.getSettings().setAllowVisitors(this.localSettings.isAllowVisitors());
-        this.islandData.getSettings().setAllowVisitorsChat(this.localSettings.isAllowVisitorsChat());
+        this.islandData.getSettings().setAllowAnonymousToVisit(this.localSettings.isAllowAnonymousToVisit());
+        this.islandData.getSettings().setAllowAnonymousToChat(this.localSettings.isAllowAnonymousToChat());
         this.islandData.getSettings().setAllowVisitorsToBuild(this.localSettings.isAllowVisitorsToBuild());
-        this.islandData.getSettings().setAllowFriendsToVisit(this.localSettings.isAllowFriendsToVisit());
-        this.islandData.getSettings().setAllowFriendsToBuild(this.localSettings.isAllowFriendsToBuild());
-        this.islandData.getSettings().setAllowFriendsToDestroy(this.localSettings.isAllowFriendsToDestroy());
+        this.islandData.getSettings().setAllowMembersToVisit(this.localSettings.isAllowMembersToVisit());
+        this.islandData.getSettings().setAllowMembersToBuild(this.localSettings.isAllowMembersToBuild());
+        this.islandData.getSettings().setAllowMembersToDestroy(this.localSettings.isAllowMembersToDestroy());
         this.islandData.getSettings().setPvpEnabled(this.localSettings.isPvpEnabled());
 
         this.islandData.setNeedsUpdate(true);
