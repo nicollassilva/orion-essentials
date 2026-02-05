@@ -21,6 +21,8 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPageData> {
     private final IslandsManager islandsManager;
@@ -46,6 +48,8 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
 
         this.updateIslands(commandBuilder, eventBuilder);
 
+        System.out.println("Olá");
+
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#CloseButton",
@@ -56,6 +60,17 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
 
     private void updateIslands(UICommandBuilder commandBuilder, UIEventBuilder eventBuilder) {
         List<IslandData> islands = this.islandsManager.getIslandsForPlayer(this.playerRef.getUuid());
+
+        if(islands.isEmpty()) {
+            commandBuilder.set("#EmptyState.Visible", true);
+            commandBuilder.set("#Islands.Visible", false);
+
+            eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#CreateIslandButton", EventData.of("Action", "CreateIsland"), false);
+            return;
+        }
+
+        commandBuilder.set("#EmptyState.Visible", false);
+        commandBuilder.set("#Islands.Visible", true);
 
         commandBuilder.clear("#Islands");
 
@@ -110,15 +125,21 @@ public class PlayerIslandsPage extends InteractiveCustomUIPage<PlayerIslandsPage
     }
 
     private void onCreateIsland(Ref<EntityStore> ref, Store<EntityStore> store, PlayerRef playerRef, boolean refIsValid) {
-        if (refIsValid) {
-            NotificationUtil.sendNotification(
-                    playerRef.getPacketHandler(),
-                    ColorUtil.colorize("&aCriando nova ilha...")
-            );
-        }
+        if (!refIsValid) return;
 
-        // TODO: Create new island
-        this.onClose(ref, store);
+        this.islandsManager.createIslandForPlayerAsync(
+                playerRef, store, ref,
+                () -> playerRef.sendMessage(ColorUtil.colorize("&aIlha criada com sucesso! Teleportando você para sua nova ilha...")),
+                () -> NotificationUtil.sendNotification(
+                        playerRef.getPacketHandler(), ColorUtil.colorize("&cErro ao criar a ilha. Tente novamente mais tarde.")
+                )
+        ).thenAccept(_ -> CompletableFuture.runAsync(() -> {
+            UICommandBuilder commandBuilder = new UICommandBuilder();
+            UIEventBuilder eventBuilder = new UIEventBuilder();
+
+            this.updateIslands(commandBuilder, eventBuilder);
+            this.sendUpdate(commandBuilder, eventBuilder, false);
+        }, CompletableFuture.delayedExecutor(1500, TimeUnit.MILLISECONDS)));
     }
 
     public void onClose(Ref<EntityStore> ref, Store<EntityStore> store) {

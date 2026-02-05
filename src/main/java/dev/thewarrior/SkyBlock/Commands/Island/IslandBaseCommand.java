@@ -24,7 +24,7 @@ public class IslandBaseCommand extends CommandBase {
 
         this.addAliases("is", "ilha");
 
-        this.addSubCommand(new IslandCreateCommand(skyBlockSettingsManager, islandsManager));
+        this.addSubCommand(new IslandCreateCommand(islandsManager));
         this.addSubCommand(new IslandTeleportCommand(islandsManager, teleportManager));
         this.addSubCommand(new IslandMenuCommand(islandsManager, islandLevelManager));
 

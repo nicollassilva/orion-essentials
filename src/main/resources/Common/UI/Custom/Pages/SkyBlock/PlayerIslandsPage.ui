@@ -55,6 +55,31 @@ $C.@DecoratedContainer {
                 LayoutMode: Top;
                 FlexWeight: 1;
 
+                Group #EmptyState {
+                    LayoutMode: Top;
+                    FlexWeight: 1;
+                    Visible: false;
+                    Anchor: (Height: 250);
+                    Padding: (Top: 75);
+
+                    Label #ScrollingEmptyLabel {
+                        Text: "Você ainda não possui uma ilha.";
+                        Style: (
+                            ...@InfoLabelStyle,
+                            FontSize: 16,
+                            HorizontalAlignment: Center,
+                            VerticalAlignment: Center,
+                            RenderItalics: true
+                        );
+                    }
+
+                    $C.@TextButton #CreateIslandButton {
+                        @Text = "Criar";
+                        Anchor: (Width: 160, Height: 40, Top: 15);
+                    }
+                }
+
+
                 Group #Islands {
                     LayoutMode: TopScrolling;
                     FlexWeight: 1;
